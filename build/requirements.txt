@@ -1,0 +1,4 @@
+pdftotext
+openai
+flask
+tiktoken
