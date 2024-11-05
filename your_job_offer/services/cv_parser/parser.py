@@ -7,6 +7,7 @@ import pdftotext
 from openai import OpenAI
 
 from .tokenizer import num_tokens_from_string
+import your_job_offer.services.cv_parser.errors as errors
 from your_job_offer.domain.models.user import User
 
 
@@ -37,43 +38,42 @@ def pdf2string(pdf_path: str) -> str:
     with open(pdf_path, "rb") as f:
         pdf = pdftotext.PDF(f)
     pdf_str = "\n\n".join(pdf)
-    pdf_str = re.sub("\s[,.]", ",", pdf_str)
+    pdf_str = re.sub(r"\s[,.]", ",", pdf_str)
     pdf_str = re.sub("[\n]+", "\n", pdf_str)
-    pdf_str = re.sub("[\s]+", " ", pdf_str)
-    pdf_str = re.sub("http[s]?(://)?", "", pdf_str)
+    pdf_str = re.sub(r"[\s]+", " ", pdf_str)
+    # pdf_str = re.sub("http[s]?(://)?", "", pdf_str)
     return pdf_str
 
 
 class _ResumeParser:
     def __init__(
-        self, OPENAI_API_KEY: str, max_tokens: int = 10000, model: str = "gpt-4o-mini"
+        self,
+        OPENAI_API_KEY: str,
+        max_tokens: int = 5000,
+        model: str = "gpt-4o-mini",
     ):
         self.prompt_questions = """
 Пожалуйста, резюмируй текст ниже в формате JSON без лишних строк текста. Вот структура, которой ты должен следовать:
 
 {
-  "basic_info": {
-    "birth_date": "",
-    "first_name": "",
-    "last_name": "",
-    "middle_name": "",
-    "gender": "",
-    "phone": "",
-    "email": "",
-    "country": "",
-    "city": "",
-    "country": "",
-    "cv": url,
-    "description": ""
-  },
-  "work_preference": {
-    "work_type": "",
-    "min_salary": "",
-    "max_salary": "",
-    "buisiness_trip_readiness": 0 or 1,
-    "work_hours": "",
-    "relocation": 0 or 1
-  },
+  "birth_date": "",
+  "first_name": "",
+  "last_name": "",
+  "middle_name": "",
+  "gender": "",
+  "phone": "",
+  "email": "",
+  "country": "",
+  "city": "",
+  "country": "",
+  "cv": url,
+  "description": "",
+  "work_type": "",
+  "min_salary": "",
+  "max_salary": "",
+  "buisiness_trip_readiness": 0 or 1,
+  "work_hours": "",
+  "relocation": 0 or 1,
   "project_experience": [
     {
       "title": "",
@@ -105,10 +105,7 @@ class _ResumeParser:
         self.max_tokens = max_tokens
         self.model = model
 
-        logging.basicConfig(
-            filename="logs/parser.log", level=logging.DEBUG
-        )  # TODO поставить нормальный путь до логов
-        self.logger = logging.getLogger()
+        self.logger = logging.getLogger(__name__)
 
     def parse(self, pdf_path: str) -> dict:
         """
@@ -116,24 +113,47 @@ class _ResumeParser:
         :param pdf_path: Path to the PDF file.
         :return dictionary of resume with keys (basic_info, work_experience).
         """
-        pdf_str = pdf2string(pdf_path)
+        try:
+            pdf_str = pdf2string(pdf_path)
+        except pdftotext.Error as e:
+            raise errors.NotPdf
 
         prompt = self.prompt_questions + "\n" + pdf_str
         estimated_prompt_tokens = num_tokens_from_string(prompt, self.model)
         max_answer_tokens = self.max_tokens - estimated_prompt_tokens
-
+        if max_answer_tokens < 0:
+            self._too_big_file_error(estimated_prompt_tokens)
         response = self.query_builder.query(prompt, max_tokens=max_answer_tokens)
         tokens_answer_count = num_tokens_from_string(response, self.model)
+        if tokens_answer_count == max_answer_tokens:
+            self._too_big_file_error(estimated_prompt_tokens)
         self.logger.info(
             f"Запрос отработан, на запросе {estimated_prompt_tokens}, на ответе {tokens_answer_count} токенов, всего на запрос затрачено {(0.0432 * estimated_prompt_tokens + 0.1728 * tokens_answer_count) / 1000} рублей"
         )
         resume = json.loads(response)
         return resume
+    
+    def _too_big_file_error(self, estimated_prompt_tokens: int) -> None:
+        self.logger.info(f"Слишком большой файл, {estimated_prompt_tokens} токенов")
+        raise errors.TooBigFile
 
 
 class ResumeParser:
     def __init__(self):
-        self.parser = _ResumeParser(getenv("OPENAI_API_KEY"))
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+        handler = logging.FileHandler(f"your_job_offer/logs/{__name__}.log", mode="w")
+        handler.setFormatter(
+            logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+        )
+        self.logger.addHandler(handler)
+        openai_api_key = getenv("OPENAI_API_KEY")
+        if openai_api_key is None:
+            self.logger.error("OPENAI_API_KEY не найден.")
+            raise KeyError(
+                "OPENAI_API_KEY не найден. Убедись, что запускал build.sh и есть файл .env c ключём"
+            )
+        self.parser = _ResumeParser(openai_api_key)
 
     def parse(self, pdf_path: str) -> User:
         result_dict: dict = self.parser.parse(pdf_path)
@@ -141,4 +161,4 @@ class ResumeParser:
 
     @staticmethod
     def _dict_to_user(user: dict) -> User:
-        return User(user["basic_info"]["first_name"], user["basic_info"]["last_name"])
+        return User(user.get("first_name"), user.get("last_name"))
