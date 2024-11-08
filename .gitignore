@@ -161,3 +161,5 @@ cython_debug/
 #.idea/
 
 your_job_offer/logs/
+.vscode/
+.tmp*

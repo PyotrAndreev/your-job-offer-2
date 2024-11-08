@@ -2,3 +2,4 @@ pdftotext
 openai
 flask
 tiktoken
+pandas

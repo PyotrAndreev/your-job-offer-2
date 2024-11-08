@@ -1,4 +1,5 @@
 pytest
-pandas
 numpy
 scipy
+flake8
+mypy
