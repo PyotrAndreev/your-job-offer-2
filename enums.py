@@ -28,8 +28,8 @@ class EmploymentEnum(Enum):
     PROBATION = 'probation'
 
 class ScheduleEnum(Enum):
-    FULL_DAY = 'full_day'
+    FULL_DAY = 'fullDay'
     SHIFT = 'shift'
     FLEXIBLE = 'flexible'
     REMOTE = 'remote'
-    FLY_IN_FLY_OUT = 'fly_in_fly_out'
+    FLY_IN_FLY_OUT = 'flyInFlyOut'
