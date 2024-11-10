@@ -58,7 +58,7 @@ class Project(Base):
     name = Column(String(50), nullable=False)
     description = Column(String(300), nullable=True)
     link = Column(String(50), nullable=True)
-    user = relationship('User', back_populates='projects')
+    user = relationship('User', back_populates='projects', uselist=False)
 
 
 class Achievement(Base):
@@ -68,7 +68,7 @@ class Achievement(Base):
     name = Column(String(50), nullable=False)
     description = Column(String(300), nullable=True)
     link = Column(String(50), nullable=True)
-    user = relationship('User', back_populates='achievement')
+    user = relationship('User', back_populates='achievement',uselist=False)
 
 
 class User(Base):

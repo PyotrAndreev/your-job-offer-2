@@ -67,8 +67,8 @@ class Vacancy(Base):
     employment = Column(PgEnum(EmploymentEnum, name='employment', create_type=True), nullable=True)
     schedule = Column(PgEnum(ScheduleEnum, name='schedule', create_type=True), nullable=True)
     hasTest = Column(Boolean, nullable=True, name='has_test')
-    cityId = Column(Integer, ForeignKey('city.id'), name='city_id')
-    countryId = Column(Integer, ForeignKey('country.id'), name='country_id')
+    cityId = Column(Integer, ForeignKey('city.id'), nullable= True, name='city_id')
+    countryId = Column(Integer, ForeignKey('country.id'), nullable=True, name='country_id')
 
     job = relationship('Job', back_populates='vacancy')
     skill = relationship('Skill', back_populates='vacancy')
