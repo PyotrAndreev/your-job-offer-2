@@ -5,6 +5,9 @@ import time
 
 from sqlalchemy import Date
 
+import db_methods
+from db_methods import save_vacancy
+from db_sessions import session
 from enums import *
 
 import requests
@@ -53,9 +56,9 @@ from jobs_db import *
 
 
 def get_vacancies():
-    ids = [
-        156, 160, 10, 12, 150, 25, 165, 34, 36, 73, 155,
-        96, 164, 104, 157, 107, 112, 113, 148, 114, 116, 121, 124, 125, 126]
+    ids = [156]
+        # 156, 160, 10, 12, 150, 25, 165, 34, 36, 73, 155,
+        # 96, 164, 104, 157, 107, 112, 113, 148, 114, 116, 121, 124, 125, 126]
 
     vacanciess = []
     for i in ids:
@@ -82,7 +85,7 @@ def get_vacancies_by_role(role: int):
     pages = res["pages"]
     print(role, pages)
     vacanciess = []
-    for i in range(pages):
+    for i in range(1):
         params = {
             "professional_role": role,
             "per_page": 100,
@@ -115,21 +118,15 @@ def get_vacancies_by_role(role: int):
                 job=item["name"],
                 area=item["area"]["name"]
             )
+            save_vacancy(vacancy)
             vacanciess.append(vacancy)
+
     return vacanciess
 
 
-def save_vacancy(vacancy):
-    db = create_engine('postgresql+psycopg2://postgres:password@localhost:5431/jobs')
+# a=get_vacancies()
+# print(len(a))
+list=db_methods.get_all_vacancies()
+print(len(list))
+print(list[0])
 
-    Session = sessionmaker(bind=db)
-    session = Session()
-    session.add(vacancy)
-    session.commit()
-
-
-vacancies = get_vacancies()
-# for i in vacancies:
-#     print(i)
-for i in vacancies:
-    save_vacancy(i)

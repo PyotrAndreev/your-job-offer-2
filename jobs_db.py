@@ -96,6 +96,8 @@ class Education(Base):
 class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
+    login = Column(String(50), nullable=False, name='login')
+    password = Column(String(200), nullable=False, name='password')
     birthDate = Column(String(50), nullable=True, name='birth_date')
     firstName = Column(String(50), nullable=True, name='first_name')
     lastName = Column(String(50), nullable=True, name='last_name')
