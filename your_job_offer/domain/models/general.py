@@ -17,31 +17,31 @@ class Date(pd.Timestamp):
 class Phone:
     phohe: str
 
-    def __post_init__(self):
-        if not re.match("^\\+?[1-9][0-9]{7,14}$", self.phohe):
-            self.phohe = ""
+    # def __post_init__(self):
+    #     if not re.match("^\\+?[1-9][0-9]{7,14}$", self.phohe):
+    #         self.phohe = ""
 
 
 @dataclass
 class Email:
     email: str
 
-    def __post_init__(self):
-        if not re.match(r"^\S+@\S+\.\S+$", self.email):
-            self.email = ""
+    # def __post_init__(self):
+    #     if not re.match(r"^\S+@\S+\.\S+$", self.email):
+    #         self.email = ""
 
 
 @dataclass
 class Salary:
     salary: int | str
 
-    def __post_init__(self):
-        if isinstance(self.salary, str):
-            if len(self.salary) == 0:
-                self.salary = 0
-            else:
-                self.salary = int(self.salary)
-        self.salary = max(0, self.salary)
+    # def __post_init__(self):
+    #     if isinstance(self.salary, str):
+    #         if len(self.salary) == 0:
+    #             self.salary = 0
+    #         else:
+    #             self.salary = int(self.salary)
+    #     self.salary = max(0, self.salary)
 
 
 @dataclass

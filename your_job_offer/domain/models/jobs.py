@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .general import Phone, Email, Salary, WorkHours, Date
+from .general import *
 
 
 @dataclass
@@ -22,4 +22,7 @@ class Vacancy:
     work_hours: WorkHours
     relocation: bool
     has_test: bool
-    skills: list[str]
+    requirement: str
+    responsibility: str
+    schedule: str
+    employment: str

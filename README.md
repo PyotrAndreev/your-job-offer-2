@@ -6,7 +6,7 @@
 Перед запуском нужно написать
 
 ```bash
-source build/build.sh
+source build/build.bash
 ```
 
 ## Тесты
