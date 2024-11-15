@@ -2,7 +2,7 @@ from db_sessions import session
 from sqlalchemy import select
 
 from jobs_db import Vacancy
-from enums import EmploymentEnum, ScheduleEnum, WorkTypeEnum, BusinessTripReadinessEnum
+from enums import EmploymentEnum, ScheduleEnum, WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum
 
 
 def get_vacancies_with_statement(stmt):
@@ -55,4 +55,9 @@ def get_vacancies_by_test(has_test):
 
 def get_vacancies_by_area(area):
     stmt = select(Vacancy).where(Vacancy.area == area)
+    return get_vacancies_with_statement(stmt)
+
+
+def get_vacancies_by_relocation(relocation: RelocationEnum):
+    stmt = select(Vacancy).where(Vacancy.relocation == relocation)
     return get_vacancies_with_statement(stmt)
