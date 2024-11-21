@@ -4,3 +4,5 @@ scipy
 flake8
 mypy
 tqdm
+ipykernel
+ipywidgets

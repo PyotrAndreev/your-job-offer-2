@@ -71,8 +71,8 @@ def get_vacancies_by_role(role: int):
     if "pages" not in res:
         print("pages", res)
         return []
-    # pages = res["pages"]
-    pages = 1
+    pages = res["pages"]
+    # pages = 1
     print(role, pages)
     vacanciess = []
     for i in range(pages):

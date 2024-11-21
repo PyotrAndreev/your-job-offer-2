@@ -62,3 +62,11 @@ class User:
     projects: list[Project]
     skills: list[str]
     work_experience: list[WorkExperience]
+
+
+@dataclass
+class EmailMessage:
+    sender: str = ""
+    date: str = ""
+    header: str = ""
+    body: str = ""

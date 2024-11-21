@@ -8,5 +8,3 @@ nltk
 pymorphy2
 psycopg2
 requests
-transformers
-torch

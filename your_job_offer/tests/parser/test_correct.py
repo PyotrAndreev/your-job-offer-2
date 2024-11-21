@@ -6,32 +6,28 @@ FILE_PATH = "your_job_offer/tests/parser/files/"
 
 
 @pytest.fixture(scope="module")
-def parser_instance() -> ResumeParser:
-    parser = ResumeParser()
-    return parser
+def parser() -> ResumeParser:
+    parser_instance = ResumeParser()
+    return parser_instance
 
 
-def test_correct(parser_instance):
-    user = parser_instance.parse(FILE_PATH + "resume1.pdf")
+def test_correct(parser: ResumeParser):
+    user = parser.parse(FILE_PATH + "resume1.pdf")
     assert user.first_name == "Руслан"
     assert user.last_name == "Яфаров"
 
 
-def test_image(parser_instance):
-    user = parser_instance.parse(FILE_PATH + "resume_with_photo.pdf")
+def test_image(parser: ResumeParser):
+    user = parser.parse(FILE_PATH + "resume_with_photo.pdf")
     assert user.first_name == "Janine"
     assert user.last_name == "Nel"
 
 
-def test_too_big_file(parser_instance):
-    try:
-        parser_instance.parse(FILE_PATH + "too_big_file.pdf")
-    except ValueError as e:
-        assert e == errors.TooBigFile
+def test_too_big_file(parser: ResumeParser):
+    with pytest.raises(errors.TooBigFile):
+        parser.parse(FILE_PATH + "too_big_file.pdf")
 
 
-def test_not_pdf(parser_instance):
-    try:
-        parser_instance.parse(FILE_PATH + "resume_docx.docx")
-    except ValueError as e:
-        assert e == errors.NotPdf
+def test_not_pdf(parser: ResumeParser):
+    with pytest.raises(errors.NotPdf):
+        parser.parse(FILE_PATH + "resume_docx.docx")
