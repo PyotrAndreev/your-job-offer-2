@@ -1,7 +1,7 @@
 from db_sessions import session
-from sqlalchemy import select
+from sqlalchemy import select, or_, and_
 
-from jobs_db import Vacancy
+from jobs_db import Vacancy, User
 from enums import EmploymentEnum, ScheduleEnum, WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum
 
 
@@ -61,3 +61,26 @@ def get_vacancies_by_area(area):
 def get_vacancies_by_relocation(relocation: RelocationEnum):
     stmt = select(Vacancy).where(Vacancy.relocation == relocation)
     return get_vacancies_with_statement(stmt)
+
+
+def get_vacancies_by_user(usr: User):
+    stmt = select(Vacancy).where(
+        or_(usr.relocation == None, Vacancy.relocation == usr.relocation),
+        or_(usr.employment == None, Vacancy.employment == usr.employment),
+        or_(usr.workType == None, Vacancy.workType == usr.workType),
+        or_( usr.businessTripReadiness == None, Vacancy.businessTripReadiness == usr.businessTripReadiness),
+        or_(usr.schedule == None, Vacancy.schedule == usr.schedule),
+    )
+    if usr.workHours != None:
+        stmt = stmt.where(or_(Vacancy.workHours == None, Vacancy.workHours <= usr.workHours))
+
+    if usr.minSalary != None:
+        stmt = stmt.where(or_(Vacancy.minSalary == None, Vacancy.minSalary >= usr.minSalary))
+
+    return get_vacancies_with_statement(stmt)
+
+
+# user = User(firstName="Daria", minSalary=100000)
+# vac = get_vacancies_by_user(user)
+# for i in vac:
+#     print(i.job, ' ', i.minSalary)
