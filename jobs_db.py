@@ -167,8 +167,8 @@ class Vacancy(Base):
     employment = Column(PgEnum(EmploymentEnum, name='employment', create_type=True), nullable=True)
     schedule = Column(PgEnum(ScheduleEnum, name='schedule', create_type=True), nullable=True)
     hasTest = Column(Boolean, nullable=True, name='has_test')
-    requirement = Column(String, nullable=True, name='requirement')
-    responsibility = Column(String, nullable=True, name='responsibility')
+    requirement = Column(String(2000), nullable=True, name='requirement')
+    responsibility = Column(String(2000), nullable=True, name='responsibility')
     area = Column(String(200), nullable=True)
 
 
