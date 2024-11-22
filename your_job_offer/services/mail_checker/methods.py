@@ -75,7 +75,7 @@ def get_messages(username: str, password_app: str) -> list[EmailMessage]:
 
     result: list[EmailMessage] = []
     # Перебираем каждое письмо
-    for email_id in email_ids[-10:]:  # Получаем последние 10 писем
+    for email_id in email_ids:
         # Получаем письмо
         res, msg = mail.fetch(email_id, "(RFC822)")
 
