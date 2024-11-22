@@ -62,6 +62,8 @@ class User:
     projects: list[Project]
     skills: list[str]
     work_experience: list[WorkExperience]
+    inner_email: str = ""
+    inner_email_password: str = ""
 
 
 @dataclass

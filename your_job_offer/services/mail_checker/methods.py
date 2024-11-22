@@ -3,7 +3,7 @@ import imaplib
 import email
 from email.header import decode_header
 
-from your_job_offer.domain.models.user import EmailMessage
+from your_job_offer.domain.models.user import EmailMessage, User
 from .handlers import *
 
 handlers = {
@@ -90,3 +90,7 @@ def get_messages(username: str, password_app: str) -> list[EmailMessage]:
     mail.logout()
 
     return result
+
+
+def get_email_messages(user: User) -> list[EmailMessage]:
+    return get_messages(user.inner_email, user.inner_email_password)
