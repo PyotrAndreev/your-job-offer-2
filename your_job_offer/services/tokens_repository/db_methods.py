@@ -1,3 +1,7 @@
+from sqlalchemy.exc import NoResultFound
+
+from entities.hh_token import HHTokenModel
+from mappers.mapper import map_token
 from models.hh_token import HH_Token
 from services.tokens_repository.db_session import session
 
@@ -5,3 +9,22 @@ from services.tokens_repository.db_session import session
 def save_token(token: HH_Token):
     session.add(token)
     session.commit()
+
+
+def get_hh_tokens(login: str) -> HHTokenModel:
+    token = session.query(HH_Token).filter_by(login=login).one()
+    return map_token(token)
+
+
+def update_token(hh_token: HHTokenModel):
+    try:
+        hh_token_db = session.query(HH_Token).filter_by(login=hh_token.login).one()
+        setattr(hh_token_db, "access_token", hh_token.access)
+        setattr(hh_token_db, "refresh_token", hh_token.refresh)
+        save_token(hh_token_db)
+    except NoResultFound:
+        print(f"Пользователь с логином '{hh_token.login}' не найден.")
+    except Exception as e:
+        print(f"Неизвестная ошибка: {e}")
+        session.rollback()
+

@@ -1,5 +1,7 @@
+from entities.hh_token import HHTokenModel
 from entities.jobs import VacancyModel
 from entities.user import *
+from models.hh_token import HH_Token
 from models.user import User
 from models.vacancy import Vacancy
 
@@ -86,4 +88,12 @@ def map_vacancy(vacancy: Vacancy) -> VacancyModel:
         requirement=vacancy.requirement,
         responsibility=vacancy.responsibility,
         area=vacancy.area,
+    )
+
+def map_token(token: HH_Token) -> HHTokenModel:
+    return HHTokenModel(
+        id=token.id,
+        login=token.login,
+        access=token.access_token,
+        refresh=token.refresh_token
     )
