@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models.user import User
 from services.vacancies_repository import db_methods
 
-app = Flask(__name__)
+app = Flask("app")
 
 
 @app.route(rule="/", methods=["GET", "POST"])

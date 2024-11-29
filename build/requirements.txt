@@ -1,4 +1,3 @@
-pdftotext
 openai
 flask
 tiktoken
@@ -6,5 +5,4 @@ pandas
 sqlalchemy
 nltk
 pymorphy2
-psycopg2
 requests

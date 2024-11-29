@@ -1,13 +1,5 @@
 services:
-#  users-db:
-#    image: postgres
-#    environment:
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: password
-#      POSTGRES_DB: users
-#    ports:
-#      - "5430:5432"
-  jobs-db:
+  db:
     image: postgres
     environment:
       POSTGRES_USER: postgres
@@ -15,4 +7,26 @@ services:
       POSTGRES_DB: jobs
     ports:
       - "5431:5432"
+  create-db:
+    build:
+      context: .
+      dockerfile: Dockerfile.jobs_db
+    volumes:
+      - ./:/app
+    restart: on-failure
+    depends_on:
+      - db
+
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    ports:
+      - "8000:5000"
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+      - create-db
 
