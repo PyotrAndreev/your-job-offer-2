@@ -1,8 +1,21 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from your_job_offer.domain.models.jobs import Vacancy, SourceEnum
-from your_job_offer.domain.models.general import Date
+from entities.jobs import VacancyModel
+import pandas as pd
+
+
+class SourceEnum(Enum):
+    HHRU = "hh.ru"
+
+
+class Date(pd.Timestamp):
+    def __init__(self, date: str):
+        try:
+            pd.Timestamp(date)
+            super().__init__(date)
+        except Exception:
+            super().__init__()
 
 
 class StageEnum(Enum):
@@ -24,7 +37,7 @@ class Stage:
 
 @dataclass
 class TrackUnit:  # я не знаю, как еще назвать)
-    vacancy: Vacancy
+    vacancy: VacancyModel
     stages: list[Stage]
 
 

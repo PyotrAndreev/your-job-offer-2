@@ -3,7 +3,8 @@ import imaplib
 import email
 from email.header import decode_header
 
-from your_job_offer.domain.models.user import EmailMessage, User
+from entities.user import EmailMessage
+from models.user import User
 from .handlers import *
 
 handlers = {

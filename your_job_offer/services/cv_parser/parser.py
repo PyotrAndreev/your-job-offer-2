@@ -7,9 +7,9 @@ import pdftotext
 from openai import OpenAI
 
 from .tokenizer import num_tokens_from_string
-import your_job_offer.services.cv_parser.errors as errors
-import your_job_offer.domain.models.user as user_models
-import your_job_offer.domain.models.general as general_models
+import services.cv_parser.errors as errors
+import entities.user as user_models
+import entities.general as general_models
 
 
 class OpenaAIQueryBuilder:

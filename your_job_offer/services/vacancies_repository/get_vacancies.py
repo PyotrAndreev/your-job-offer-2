@@ -1,19 +1,12 @@
 from __future__ import annotations
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 import time
 
-from sqlalchemy import Date
-
-import db_methods
 from db_methods import save_vacancy
-from db_sessions import session
-from your_job_offer.domain.models.enums import *
 
 import requests
 
-from dataclasses import dataclass
-from jobs_db import *
+from entities.enums import EmploymentEnum, ScheduleEnum
+from models.vacancy import Vacancy
 
 
 def get_vacancies():

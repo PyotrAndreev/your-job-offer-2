@@ -1,23 +1,16 @@
 from sqlalchemy import (
-    create_engine,
     Column,
     Integer,
     String,
     ForeignKey,
     Date,
-    Boolean,
 )
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 
-from your_job_offer.domain.models.enums import *
-
-engine = create_engine(
-    "postgresql+psycopg2://postgres:password@localhost:5431/jobs"
-)
-
-Base = declarative_base()
+from entities.enums import BusinessTripReadinessEnum, WorkTypeEnum, RelocationEnum, EmploymentEnum, GenderEnum, \
+    ScheduleEnum
+from services.vacancies_repository.db_session import Base
 
 
 class Country(Base):
@@ -41,7 +34,7 @@ class Language(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=True)
     user = relationship(
-        "User", secondary="language_user", back_populates="language"
+        "User", secondary='language_user', back_populates="language"
     )
 
 
@@ -50,7 +43,7 @@ class Skill(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=True)
     description = Column(String(300), nullable=True)
-    user = relationship("User", secondary="skill_user", back_populates="skill")
+    user = relationship("User", secondary='skill_user', back_populates="skill")
 
 
 class Job(Base):
@@ -158,12 +151,8 @@ class User(Base):
     achievement = relationship("Achievement", back_populates="user")
     workexperience = relationship("Workexperience", back_populates="user")
     education = relationship("Education", back_populates="user")
-    skill = relationship(
-        "Skill", secondary="skill_user", back_populates="user"
-    )
-    language = relationship(
-        "Language", secondary="language_user", back_populates="user"
-    )
+    skill = relationship('Skill', secondary='skill_user', back_populates='user')
+    language = relationship('Language', secondary='language_user', back_populates='user')
     country = relationship("Country", back_populates="user")
     city = relationship("City", back_populates="user")
 
@@ -180,50 +169,3 @@ class LanguageUser(Base):
     id = Column(Integer, primary_key=True)
     userId = Column(Integer, ForeignKey("user.id"))
     languageId = Column(Integer, ForeignKey("language.id"))
-
-
-class Vacancy(Base):
-    __tablename__ = "vacancy"
-    id = Column(Integer, primary_key=True)
-    job = Column(String(200), nullable=True)
-    description = Column(String(300), nullable=True)
-    minSalary = Column(Integer, nullable=True, name="min_salary")
-    maxSalary = Column(Integer, nullable=True, name="max_salary")
-    address = Column(String(200), nullable=True)
-    link = Column(String(200), nullable=True)
-    applyLink = Column(String(200), nullable=True, name="apply_link")
-    phone = Column(String(50), nullable=True)
-    email = Column(String(50), nullable=True)
-    employer = Column(String(200), nullable=True)
-    createdAt = Column(Date, nullable=True, name="created_at")
-    updatedAt = Column(Date, nullable=True, name="updated_at")
-    workType = Column(
-        PgEnum(WorkTypeEnum, name="work_type", create_type=True), nullable=True
-    )
-    businessTripReadiness = Column(
-        PgEnum(
-            BusinessTripReadinessEnum,
-            name="business_trip_readiness",
-            create_type=True,
-        ),
-        nullable=True,
-    )
-    workHours = Column(Integer, nullable=True, name="work_hours")
-    relocation = Column(
-        PgEnum(RelocationEnum, name="relocation", create_type=True),
-        nullable=True,
-    )
-    employment = Column(
-        PgEnum(EmploymentEnum, name="employment", create_type=True),
-        nullable=True,
-    )
-    schedule = Column(
-        PgEnum(ScheduleEnum, name="schedule", create_type=True), nullable=True
-    )
-    hasTest = Column(Boolean, nullable=True, name="has_test")
-    requirement = Column(String, nullable=True, name="requirement")
-    responsibility = Column(String, nullable=True, name="responsibility")
-    area = Column(String(200), nullable=True)
-
-
-Base.metadata.create_all(engine)
