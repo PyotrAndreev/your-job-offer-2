@@ -7,7 +7,16 @@ services:
       POSTGRES_DB: jobs
     ports:
       - "5431:5432"
-  create-db:
+  db-tokens:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: tokens
+    ports:
+      - "5430:5432"
+
+  create-jobs-db:
     build:
       context: .
       dockerfile: Dockerfile.jobs_db
@@ -16,6 +25,15 @@ services:
     restart: on-failure
     depends_on:
       - db
+  create-tokens-db:
+    build:
+      context: .
+      dockerfile: Dockerfile.token_db
+    volumes:
+      - ./:/app
+    restart: on-failure
+    depends_on:
+      - db-tokens
 
 
   app:
@@ -28,5 +46,6 @@ services:
       - ./:/app
     depends_on:
       - db
-      - create-db
+      - create-jobs-db
+      - create-tokens-db
 

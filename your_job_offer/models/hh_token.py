@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from db_sessions import Base
+from services.tokens_repository.db_session import Base
 
 
 class HH_Token(Base):
