@@ -6,7 +6,10 @@ from typing import Optional
 from .enums import WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum, EmploymentEnum, ScheduleEnum
 from .general import *
 
+from dataclasses_json import dataclass_json
 
+
+@dataclass_json
 @dataclass
 class VacancyModel:
     id: int

@@ -8,9 +8,9 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 
-from entities.enums import BusinessTripReadinessEnum, WorkTypeEnum, RelocationEnum, EmploymentEnum, GenderEnum, \
+from your_job_offer.entities.enums import BusinessTripReadinessEnum, WorkTypeEnum, RelocationEnum, EmploymentEnum, GenderEnum, \
     ScheduleEnum
-from services.vacancies_repository.db_session import Base
+from your_job_offer.services.vacancies_repository.db_session import Base
 
 
 class Country(Base):

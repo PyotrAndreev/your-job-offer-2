@@ -2,12 +2,14 @@ from dataclasses import dataclass, field
 import re
 from datetime import date
 from typing import Optional, List
+from dataclasses_json import dataclass_json
 
 from entities.enums import WorkTypeEnum, BusinessTripReadinessEnum, EmploymentEnum, RelocationEnum, ScheduleEnum, \
     GenderEnum
 from entities.general import SkillModel, LanguageModel, CityModel, CountryModel
 
 
+@dataclass_json
 @dataclass
 class Name:
     name: str
@@ -20,6 +22,7 @@ class Name:
             self.name = ""
 
 
+@dataclass_json
 @dataclass
 class ProjectModel:
     id: int
@@ -31,6 +34,7 @@ class ProjectModel:
         return f"Project(id={self.id}, name={self.name}, description={self.description}, link={self.link})"
 
 
+@dataclass_json
 @dataclass
 class AchievementModel:
     id: int
@@ -42,6 +46,7 @@ class AchievementModel:
         return f"Achievement(id={self.id}, name={self.name}, description={self.description}, link={self.link})"
 
 
+@dataclass_json
 @dataclass
 class WorkExperienceModel:
     id: int
@@ -58,6 +63,7 @@ class WorkExperienceModel:
         )
 
 
+@dataclass_json
 @dataclass
 class EducationModel:
     id: int
@@ -76,6 +82,7 @@ class EducationModel:
         )
 
 
+@dataclass_json
 @dataclass
 class UserModel:
     id: int
@@ -118,6 +125,7 @@ class UserModel:
         )
 
 
+@dataclass_json
 @dataclass
 class EmailMessage:
     sender: str = ""
