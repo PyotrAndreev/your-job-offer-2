@@ -8,9 +8,9 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 
-from your_job_offer.entities.enums import BusinessTripReadinessEnum, WorkTypeEnum, RelocationEnum, EmploymentEnum, GenderEnum, \
+from entities.enums import GenderEnum, WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum, EmploymentEnum, \
     ScheduleEnum
-from your_job_offer.services.vacancies_repository.db_session import Base
+from repository.vacancies_repository.db_session import Base
 
 
 class Country(Base):
@@ -73,7 +73,7 @@ class Achievement(Base):
     user = relationship("User", back_populates="achievement", uselist=False)
 
 
-class Workexperience(Base):
+class WorkExperience(Base):
     __tablename__ = "workexperience"
     id = Column(Integer, primary_key=True)
     userId = Column(Integer, ForeignKey("user.id"))

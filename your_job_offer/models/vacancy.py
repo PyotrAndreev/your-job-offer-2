@@ -8,7 +8,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 
 from entities.enums import WorkTypeEnum, BusinessTripReadinessEnum, ScheduleEnum, EmploymentEnum, RelocationEnum
-from services.vacancies_repository.db_session import Base
+from repository.vacancies_repository.db_session import Base
 
 
 class Vacancy(Base):

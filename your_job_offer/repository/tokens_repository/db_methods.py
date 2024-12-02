@@ -4,7 +4,7 @@ import logger
 from entities.hh_token import HHTokenModel
 from mappers.mapper import map_token
 from models.hh_token import HH_Token
-from services.tokens_repository.db_session import session
+from repository.tokens_repository.db_session import session
 
 log = logger.get_logger(__name__)
 

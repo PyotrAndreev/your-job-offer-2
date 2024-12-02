@@ -1,3 +1,4 @@
+
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -5,9 +6,9 @@ import logger
 from entities.user import UserModel
 from models.hh_token import HH_Token
 from models.user import User
-from services.tokens_repository.db_methods import save_hh_token
-from services.vacancies_repository import db_methods
-from services.vacancies_repository.db_methods import update_user
+from repository.tokens_repository.db_methods import save_hh_token
+from repository.vacancies_repository import db_methods
+from repository.vacancies_repository.db_methods import update_user
 
 app = Flask("app")
 
@@ -84,9 +85,11 @@ def hh_auth():
         access_token = data['access']
         refresh_token = data['refresh']
         login = data["login"]
-
         save_hh_token(HH_Token(login=login, access_token=access_token, refresh_token=refresh_token))
         return make_response("OK", 200)
+
     except Exception as e:
         log.error(f"Ошибка авторизации на hh.ru: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
+
+

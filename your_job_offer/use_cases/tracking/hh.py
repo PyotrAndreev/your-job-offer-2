@@ -1,9 +1,7 @@
 import re
 
-from your_job_offer.domain.models.user import EmailMessage
-from your_job_offer.domain.models.tracking import (
-    StageEnum,
-)
+from entities.tracking import StageEnum
+from entities.user import EmailMessage
 
 
 def clean_body_from_hh(message: EmailMessage) -> str:

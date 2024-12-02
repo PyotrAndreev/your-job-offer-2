@@ -1,12 +1,13 @@
-from sqlalchemy import exists, select, or_
+
+from entities.tracking import VacancyKey
+from sqlalchemy import select, or_
 from sqlalchemy.exc import NoResultFound
 
 import logger
 from entities.enums import EmploymentEnum, ScheduleEnum, WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum
-from mappers import mapper
 from models.user import User
 from models.vacancy import Vacancy
-from services.vacancies_repository.db_session import session
+from repository.vacancies_repository.db_session import session
 
 log = logger.get_logger(__name__)
 
@@ -16,27 +17,35 @@ def save_vacancy(vacancy: Vacancy):
     session.commit()
 
 
-def get_all_vacancies():
+def get_all_vacancies() -> [Vacancy]:
     vacancies = session.execute(select(Vacancy)).scalars().all()
-    vacanciesModels = []
-    for item in vacancies:
-        vacanciesModels.append(mapper.map_vacancy(item))
-    return vacanciesModels
+    return vacancies
 
 
 def save_user(user: User):
-    session.add(user)
+    session.add()
     session.commit()
 
 
-def get_user(login: str) -> User:
-    user = session.query(User).filter_by(login=login).one()
+def get_user(login: str, password: str) -> User:
+    user = session.query(User).filter_by(login=login, password=password).one()
     return user
 
 
 def if_exist_user(login: str) -> bool:
     exist = session.execute(select(User).filter_by(login=login)).scalar()
     return True if exist else False
+
+
+def update_user(newUser: User):
+    user = get_user(newUser.login, newUser.password)
+    user = newUser
+    session.commit()
+
+
+def get_vacancy(key: VacancyKey) -> Vacancy:
+    vacancy = session.query(Vacancy).filter_by(job_id=key.id).one()
+    return vacancy
 
 
 def get_vacancies_with_statement(stmt):
@@ -97,36 +106,36 @@ def get_vacancies_by_relocation(relocation: RelocationEnum):
     return get_vacancies_with_statement(stmt)
 
 
-def get_vacancies_by_user(usr: User):
+def get_vacancies_by_user(user: User):
     stmt = select(Vacancy).where(
-        or_(usr.relocation is None, Vacancy.relocation == usr.relocation),
-        or_(usr.employment is None, Vacancy.employment == usr.employment),
-        or_(usr.workType is None, Vacancy.workType == usr.workType),
-        or_(usr.businessTripReadiness is None, Vacancy.businessTripReadiness == usr.businessTripReadiness),
-        or_(usr.schedule is None, Vacancy.schedule == usr.schedule),
+        or_(user.relocation is None, Vacancy.relocation == user.relocation),
+        or_(user.employment is None, Vacancy.employment == user.employment),
+        or_(user.workType is None, Vacancy.workType == user.workType),
+        or_(user.businessTripReadiness is None, Vacancy.businessTripReadiness == user.businessTripReadiness),
+        or_(user.schedule is None, Vacancy.schedule == user.schedule),
     )
-    if usr.workHours is not None:
-        stmt = stmt.where(or_(Vacancy.workHours is None, Vacancy.workHours <= usr.workHours))
+    if user.workHours is not None:
+        stmt = stmt.where(or_(Vacancy.workHours is None, Vacancy.workHours <= user.workHours))
 
-    if usr.minSalary is not None:
-        stmt = stmt.where(or_(Vacancy.minSalary is None, Vacancy.minSalary >= usr.minSalary))
+    if user.minSalary is not None:
+        stmt = stmt.where(or_(Vacancy.minSalary is None, Vacancy.minSalary >= user.minSalary))
 
     return get_vacancies_with_statement(stmt)
 
 
-def update_user(usr: User):
+def update_user(user: User):
     try:
-        user = session.query(User).filter_by(login=usr.login).one()
+        user = session.query(User).filter_by(login=user.login).one()
 
         for field in User.__table__.columns.keys():
             if field not in ['id', 'login', 'password']:
-                new_value = getattr(usr, field, None)
+                new_value = getattr(user, field, None)
                 if new_value is not None:
                     setattr(user, field, new_value)
         session.commit()
-        log.info(f"Пользователь с логином '{usr.login}' успешно обновлен.")
+        log.info(f"Пользователь с логином '{user.login}' успешно обновлен.")
     except NoResultFound:
-        log.error(f"Пользователь с логином '{usr.login}' не найден.")
+        log.error(f"Пользователь с логином '{user.login}' не найден.")
     except Exception as e:
         log.error(f"Ошибка обновления: {e}")
         session.rollback()
