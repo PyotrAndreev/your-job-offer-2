@@ -12,6 +12,37 @@ from dataclasses_json import dataclass_json
 @dataclass_json
 @dataclass
 class VacancyModel:
+    """
+    Represents a job vacancy.
+
+    Attributes:
+        id (int): The unique identifier of the vacancy.
+        job (Optional[str]): The job title.
+        description (Optional[str]): A description of the job responsibilities.
+        min_salary (Optional[int]): The minimum salary offered for the job.
+        max_salary (Optional[int]): The maximum salary offered for the job.
+        address (Optional[str]): The job location address.
+        link (Optional[str]): A link to the job posting.
+        apply_link (Optional[str]): A link where applicants can apply for the job.
+        phone (Optional[str]): The contact phone number for the employer.
+        email (Optional[str]): The contact email for the employer.
+        employer (Optional[str]): The name of the employer or company offering the job.
+        created_at (Optional[date]): The date the job vacancy was created.
+        updated_at (Optional[date]): The date the job vacancy was last updated.
+        work_type (Optional[WorkTypeEnum]): The type of work (e.g., full-time, part-time).
+        business_trip_readiness (Optional[BusinessTripReadinessEnum]): The employer's readiness for business trips.
+        work_hours (Optional[int]): The number of work hours per week.
+        relocation (Optional[RelocationEnum]): Whether the employer offers relocation assistance.
+        employment (Optional[EmploymentEnum]): The type of employment (e.g., contract, permanent).
+        schedule (Optional[ScheduleEnum]): The preferred work schedule (e.g., flexible, 9-to-5).
+        has_test (Optional[bool]): Whether there is a test associated with the job application process.
+        requirement (Optional[str]): The required qualifications or skills for the job.
+        responsibility (Optional[str]): The responsibilities of the role.
+        area (Optional[str]): The job area or department.
+
+    Methods:
+        __str__: Returns a string representation of the VacancyModel instance.
+    """
     id: int
     job: Optional[str] = None
     description: Optional[str] = None

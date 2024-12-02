@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -117,5 +116,3 @@ def hh_auth():
     except Exception as e:
         log.error(f"Ошибка авторизации на hh.ru: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
-
-
