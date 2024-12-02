@@ -5,6 +5,16 @@ log = logger.get_logger(__name__)
 
 
 def get_messages(nid: str, access_token: str) -> list[str]:
+    """
+    Retrieves messages from a specified negotiation thread on hh.ru.
+
+    Args:
+        nid (str): The ID of the negotiation thread.
+        access_token (str): The access token for authentication.
+
+    Returns:
+        list[str]: A list of message texts from the thread.
+    """
     headers = {
         "HH-User-Agent": "YourJobOffer (zaitseva.dr@phystech.edu)",
         "Authorization": f"Bearer {access_token}",

@@ -2,12 +2,19 @@ import logger
 from entities.hh_token import HHTokenModel
 import requests
 
-from services.tokens_repository.db_methods import update_hh_token
+from repository.tokens_repository.db_methods import update_hh_token
 
 log = logger.get_logger(__name__)
 
 
 def refresh_hh_token(hh_token: HHTokenModel):
+    """
+    Refreshes the HH token and updates it in the database.
+
+    Args:
+        hh_token (HHTokenModel): The HH token model containing the current access and refresh tokens.
+
+    """
     headers = {
         "HH-User-Agent": "YourJobOffer (zaitseva.dr@phystech.edu)",
     }
