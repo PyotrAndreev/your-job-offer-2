@@ -60,6 +60,19 @@ def loginUser():
 
 @app.route('/form', methods=['POST'])
 def get_form():
+    """
+    Handles the POST request for the form submission. Validates the input data,
+    updates the user, and returns an appropriate response.
+
+    If the required fields ('login', 'password', 'id') are missing or invalid,
+    returns a 400 error with an explanation.
+
+    If an exception occurs during the process, logs the error and returns a 500 error.
+
+    Returns:
+        Response: The HTTP response object with status code 200 if successful,
+                  or 400/500 if an error occurs.
+    """
     try:
         data = request.json
         if not data or 'login' not in data or 'password' not in data or 'id' not in data:
@@ -76,6 +89,19 @@ def get_form():
 
 @app.route('/hh_auth', methods=['POST'])
 def hh_auth():
+    """
+    Handles the POST request for authenticating with hh.ru. It validates the input data and
+    saves the provided access and refresh tokens along with the user's login.
+
+    If the required fields ('login', 'access', 'refresh') are missing or invalid,
+    returns a 400 error with an explanation.
+
+    If an exception occurs during the process, logs the error and returns a 500 error.
+
+    Returns:
+        Response: The HTTP response object with status code 200 if successful,
+                  or 400/500 if an error occurs.
+    """
     try:
         data = request.json
         if not data or 'access' not in data or 'refresh' not in data or 'login' not in data:
