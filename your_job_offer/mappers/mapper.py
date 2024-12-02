@@ -1,3 +1,5 @@
+import token
+
 from entities.hh_token import HHTokenModel
 from entities.jobs import VacancyModel
 from entities.user import *
@@ -154,4 +156,6 @@ def map_userModel(user: UserModel) -> User:
         ],
         skill=[Skill(id=s.id, name=s.name, description=s.description) for s in user.skills],
         language=[Language(id=l.id, name=l.name) for l in user.languages],
+        access_token=token.access_token,
+        refresh_token=token.refresh_token
     )

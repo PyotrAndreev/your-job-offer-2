@@ -1,11 +1,23 @@
-from os import abort
 
-from flask import Flask, request, make_response
+from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
+
+import logger
+from entities.user import UserModel
+from models.hh_token import HH_Token
 from models.user import User
+from repository.tokens_repository.db_methods import save_hh_token
 from repository.vacancies_repository import db_methods
+from repository.vacancies_repository.db_methods import update_user
 
 app = Flask("app")
+
+log = logger.get_logger(__name__)
+
+
+@app.route('/ping')
+def ping():
+    return make_response("OK", 200)
 
 
 @app.route('/register', methods=['POST'])
@@ -45,33 +57,39 @@ def loginUser():
     else:
         return make_response("Wrong password", 401)
 
+
 @app.route('/form', methods=['POST'])
 def get_form():
-    if not request.json or not 'user' in request.json:
-        abort(400)
+    try:
+        data = request.json
+        if not data or 'login' not in data or 'password' not in data or 'id' not in data:
+            return make_response(jsonify({"error": "Invalid request. 'login', 'password', 'id' fields are "
+                                                   "required."}), 400)
 
-    return make_response("OK", 200)
+        user = UserModel.from_json(data)
+        update_user(user)
+        return make_response("OK", 200)
+    except Exception as e:
+        log.error(f"Ошибка сохранения данных из формы: {e}")
+        return make_response(jsonify({"error": str(e)}), 500)
 
 
 @app.route('/hh_auth', methods=['POST'])
 def hh_auth():
-    if not request.json or not 'user' in request.json:
-        abort(400)
+    try:
+        data = request.json
+        if not data or 'access' not in data or 'refresh' not in data or 'login' not in data:
+            return make_response(jsonify({"error": "Invalid request. 'login', 'access' and 'refresh' fields are "
+                                                   "required."}), 400)
 
-    return make_response("OK", 200)
+        access_token = data['access']
+        refresh_token = data['refresh']
+        login = data["login"]
+        save_hh_token(HH_Token(login=login, access_token=access_token, refresh_token=refresh_token))
+        return make_response("OK", 200)
+
+    except Exception as e:
+        log.error(f"Ошибка авторизации на hh.ru: {e}")
+        return make_response(jsonify({"error": str(e)}), 500)
 
 
-@app.route('/cv', methods=['POST'])
-def cv():
-    if not request.json or not 'user' in request.json:
-        abort(400)
-
-    return make_response("OK", 200)
-
-
-@app.route('/cv', methods=['GET'])
-def getCV():
-    if not request.json or not 'user' in request.json:
-        abort(400)
-
-    return make_response("OK", 200)
