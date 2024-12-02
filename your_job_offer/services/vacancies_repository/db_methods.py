@@ -1,11 +1,14 @@
 from sqlalchemy import exists, select, or_
 from sqlalchemy.exc import NoResultFound
 
+import logger
 from entities.enums import EmploymentEnum, ScheduleEnum, WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum
 from mappers import mapper
 from models.user import User
 from models.vacancy import Vacancy
 from services.vacancies_repository.db_session import session
+
+log = logger.get_logger(__name__)
 
 
 def save_vacancy(vacancy: Vacancy):
@@ -111,27 +114,6 @@ def get_vacancies_by_user(usr: User):
     return get_vacancies_with_statement(stmt)
 
 
-# def update_user(login, update_fields):
-#     try:
-#         user = session.query(User).filter_by(login=login).one()
-#
-#         for field, value in update_fields.items():
-#             if hasattr(user, field):  # Проверяем, что поле существует
-#                 setattr(user, field, value)
-#             else:
-#                 raise AttributeError(f"Поле '{field}' не существует у модели User.")
-#
-#         session.commit()
-#         print(f"Пользователь с логином '{login}' успешно обновлен.")
-#     except NoResultFound:
-#         print(f"Пользователь с логином '{login}' не найден.")
-#     except AttributeError as e:
-#         print(f"Ошибка обновления: {e}")
-#         session.rollback()
-#     except Exception as e:
-#         print(f"Неизвестная ошибка: {e}")
-#         session.rollback()
-
 def update_user(usr: User):
     try:
         user = session.query(User).filter_by(login=usr.login).one()
@@ -142,9 +124,9 @@ def update_user(usr: User):
                 if new_value is not None:
                     setattr(user, field, new_value)
         session.commit()
-        print(f"Пользователь с логином '{usr.login}' успешно обновлен.")
+        log.info(f"Пользователь с логином '{usr.login}' успешно обновлен.")
     except NoResultFound:
-        print(f"Пользователь с логином '{usr.login}' не найден.")
+        log.error(f"Пользователь с логином '{usr.login}' не найден.")
     except Exception as e:
-        print(f"Ошибка обновления: {e}")
+        log.error(f"Ошибка обновления: {e}")
         session.rollback()

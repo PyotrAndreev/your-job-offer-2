@@ -5,7 +5,7 @@ import logger
 from entities.user import UserModel
 from models.hh_token import HH_Token
 from models.user import User
-from services.tokens_repository.db_methods import save_token
+from services.tokens_repository.db_methods import save_hh_token
 from services.vacancies_repository import db_methods
 from services.vacancies_repository.db_methods import update_user
 
@@ -69,7 +69,7 @@ def get_form():
         update_user(user)
         return make_response("OK", 200)
     except Exception as e:
-        log.error(jsonify({"function": "api: get_form", "error": str(e)}))
+        log.error(f"Ошибка сохранения данных из формы: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
 
 
@@ -85,8 +85,8 @@ def hh_auth():
         refresh_token = data['refresh']
         login = data["login"]
 
-        save_token(HH_Token(login=login, access_token=access_token, refresh_token=refresh_token))
+        save_hh_token(HH_Token(login=login, access_token=access_token, refresh_token=refresh_token))
         return make_response("OK", 200)
     except Exception as e:
-        # logging.error(jsonify({"function": "api: hh_auth", "error": str(e)}))
+        log.error(f"Ошибка авторизации на hh.ru: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
