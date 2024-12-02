@@ -9,8 +9,8 @@ from nltk.tokenize import word_tokenize
 from nltk import download as nltk_download
 from pymorphy2 import MorphAnalyzer
 
-from your_job_offer.domain.models.jobs import Vacancy
-from your_job_offer.domain.models.user import User
+from entities.jobs import VacancyModel
+from entities.user import UserModel
 
 punctuation = punctuation.replace("+", "")  # чтобы не ликвидировать C++
 
@@ -76,8 +76,8 @@ def isin(skills: list[str], requirement: str | None) -> int:
 
 
 def _match_vacancies_by_word_entry(
-    vacancies: list[Vacancy], user: User
-) -> list[Vacancy]:
+    vacancies: list[VacancyModel], user: UserModel
+) -> list[VacancyModel]:
     """
     [Baseline]
     проверяет, что хотя бы один скилл из user входит в хотя бы одно слово из requirement

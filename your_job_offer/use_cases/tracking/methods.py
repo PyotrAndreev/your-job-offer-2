@@ -1,17 +1,10 @@
 from collections import defaultdict
 
-from your_job_offer.domain.models.user import User, EmailMessage
-from your_job_offer.domain.models.jobs import SourceEnum
-from your_job_offer.domain.models.tracking import (
-    TrackUnit,
-    VacancyKey,
-    Stage,
-    StageEnum,
-)
-
-from your_job_offer.services.mail_checker.methods import get_email_messages
-from your_job_offer.services.vacancies_repository.db_methods import get_vacancy
-
+from entities.tracking import SourceEnum, VacancyKey, StageEnum, TrackUnit, Stage
+from entities.user import EmailMessage, UserModel
+from models.user import User
+from repository.vacancies_repository.db_methods import get_vacancy
+from services.mail_checker.methods import get_email_messages
 from .hh import (
     get_stage_type_from_hh,
     clean_body_from_hh,
@@ -78,7 +71,7 @@ def separate_by_vacancy(
     return ans
 
 
-def get_all_stages(user: User) -> list[TrackUnit]:
+def get_all_stages(user: UserModel) -> list[TrackUnit]:
     email_messages = get_email_messages(user)
     email_messages = filter_and_clean_messages(email_messages)
     separated_messages = separate_by_vacancy(email_messages)

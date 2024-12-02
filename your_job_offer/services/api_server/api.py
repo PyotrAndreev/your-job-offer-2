@@ -1,7 +1,9 @@
-from flask import Flask, request, jsonify
+from os import abort
+
+from flask import Flask, request, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.user import User
-from services.vacancies_repository import db_methods
+from repository.vacancies_repository import db_methods
 
 app = Flask("app")
 
@@ -60,7 +62,7 @@ def hh_auth():
 
 
 @app.route('/cv', methods=['POST'])
-def hh_auth():
+def cv():
     if not request.json or not 'user' in request.json:
         abort(400)
 
@@ -68,7 +70,7 @@ def hh_auth():
 
 
 @app.route('/cv', methods=['GET'])
-def hh_auth():
+def getCV():
     if not request.json or not 'user' in request.json:
         abort(400)
 

@@ -1,8 +1,15 @@
-from sqlalchemy import exists, select
+from operator import or_
+
+from sqlalchemy import select
+from sqlalchemy.exc import NoResultFound
+
+from entities.enums import EmploymentEnum, ScheduleEnum, WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum
+from entities.tracking import VacancyKey
+from entities.user import UserModel
 from mappers import mapper
 from models.user import User
 from models.vacancy import Vacancy
-from services.vacancies_repository.db_session import session
+from repository.vacancies_repository.db_session import session
 
 
 def save_vacancy(vacancy: Vacancy):
@@ -10,27 +17,35 @@ def save_vacancy(vacancy: Vacancy):
     session.commit()
 
 
-def get_all_vacancies():
+def get_all_vacancies() -> [Vacancy]:
     vacancies = session.execute(select(Vacancy)).scalars().all()
-    vacanciesModels = []
-    for item in vacancies:
-        vacanciesModels.append(mapper.map_vacancy(item))
-    return vacanciesModels
+    return vacancies
 
 
 def save_user(user: User):
-    session.add(user)
+    session.add()
     session.commit()
 
 
-def get_user(login: str) -> User:
-    user = session.query(User).filter_by(login=login).one()
+def get_user(login: str, password: str) -> User:
+    user = session.query(User).filter_by(login=login, password=password).one()
     return user
 
 
 def if_exist_user(login: str) -> bool:
     exist = session.execute(select(User).filter_by(login=login)).scalar()
     return True if exist else False
+
+
+def update_user(newUser: User):
+    user = get_user(newUser.login, newUser.password)
+    user = newUser
+    session.commit()
+
+
+def get_vacancy(key: VacancyKey) -> Vacancy:
+    vacancy = session.query(Vacancy).filter_by(job_id=key.id).one()
+    return vacancy
 
 
 def get_vacancies_with_statement(stmt):
@@ -106,25 +121,3 @@ def get_vacancies_by_user(usr: User):
         stmt = stmt.where(or_(Vacancy.minSalary is None, Vacancy.minSalary >= usr.minSalary))
 
     return get_vacancies_with_statement(stmt)
-
-
-def update_user(login, update_fields):
-    try:
-        user = session.query(User).filter_by(login=login).one()
-
-        for field, value in update_fields.items():
-            if hasattr(user, field):  # Проверяем, что поле существует
-                setattr(user, field, value)
-            else:
-                raise AttributeError(f"Поле '{field}' не существует у модели User.")
-
-        session.commit()
-        print(f"Пользователь с логином '{login}' успешно обновлен.")
-    except NoResultFound:
-        print(f"Пользователь с логином '{login}' не найден.")
-    except AttributeError as e:
-        print(f"Ошибка обновления: {e}")
-        session.rollback()
-    except Exception as e:
-        print(f"Неизвестная ошибка: {e}")
-        session.rollback()
