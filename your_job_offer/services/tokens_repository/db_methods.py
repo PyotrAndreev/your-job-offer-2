@@ -14,7 +14,7 @@ def save_hh_token(token: HH_Token):
     session.commit()
 
 
-def get_hh_tokens(login: str) -> HHTokenModel:
+def get_hh_token(login: str) -> HHTokenModel:
     token = session.query(HH_Token).filter_by(login=login).one()
     return map_token(token)
 
