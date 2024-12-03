@@ -1,4 +1,4 @@
-FROM python:3.8.3-slim-buster
+FROM python:3.9-slim-buster
 WORKDIR /app
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
