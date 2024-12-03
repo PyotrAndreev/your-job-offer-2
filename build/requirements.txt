@@ -7,3 +7,4 @@ nltk
 pymorphy2
 requests
 python3-dataclasses-json
+dataclasses-json
