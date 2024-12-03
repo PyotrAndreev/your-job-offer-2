@@ -7,3 +7,4 @@ nltk
 pymorphy2
 requests
 dataclasses-json
+sentry-sdk
