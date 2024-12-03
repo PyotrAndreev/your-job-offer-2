@@ -41,7 +41,7 @@ services:
       context: .
       dockerfile: Dockerfile.app
     ports:
-      - "127.0.0.1:8080:5000"
+      - "8080:5000"
     volumes:
       - ./:/app
     depends_on:
