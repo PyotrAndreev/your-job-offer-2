@@ -1,5 +1,9 @@
 import logging
 
+from sentry_sdk.integrations.flask import FlaskIntegration
+import sentry_sdk
+from sentry_sdk.integrations.logging import LoggingIntegration
+
 _log_format = f"%(asctime)s - [%(levelname)s] - %(name)s - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
 
 
@@ -23,3 +27,14 @@ def get_logger(name):
     logger.addHandler(get_file_handler(name))
     logger.addHandler(get_stream_handler())
     return logger
+
+
+def init_sentry():
+    sentry_sdk.init(
+        dsn="https://<your_sentry_dsn>",
+        integrations=[FlaskIntegration(), LoggingIntegration(
+            level=logging.INFO,
+            event_level=logging.INFO
+        ), ],
+        traces_sample_rate=1.0
+    )

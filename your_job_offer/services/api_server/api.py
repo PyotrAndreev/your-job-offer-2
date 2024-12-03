@@ -9,6 +9,8 @@ from repository.tokens_repository.db_methods import save_hh_token
 from repository.vacancies_repository import db_methods
 from repository.vacancies_repository.db_methods import update_user
 
+logger.init_sentry()
+
 app = Flask("app")
 
 log = logger.get_logger(__name__)
