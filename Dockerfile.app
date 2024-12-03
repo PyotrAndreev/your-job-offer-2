@@ -7,4 +7,4 @@ COPY build/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 COPY your_job_offer ./your_job_offer
-CMD ["python", "your_job_offer/app.py"]
+CMD ["python3", "your_job_offer/app.py"]
