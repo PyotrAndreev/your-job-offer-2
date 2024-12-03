@@ -18,6 +18,7 @@ log = logger.get_logger(__name__)
 
 @app.route('/ping')
 def ping():
+    log.error("ping")
     return make_response("OK", 200)
 
 
