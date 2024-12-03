@@ -2,7 +2,7 @@ FROM python:3.8.3-slim-buster
 WORKDIR /app
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
-RUN apt-get update && apt-get -y install libpq-dev gcc && pip install psycopg2
+RUN apt-get update && apt-get -y install libpq-dev gcc && pip install psycopg2 && apt install sentry-sdk
 COPY build/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
