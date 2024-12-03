@@ -31,7 +31,7 @@ def get_logger(name):
 
 def init_sentry():
     sentry_sdk.init(
-        dsn="https://<your_sentry_dsn>",
+        dsn="https://c4ae42687e4ad55f3107e293cea8db25@o4508405530558464.ingest.de.sentry.io/4508405614837840",
         integrations=[FlaskIntegration(), LoggingIntegration(
             level=logging.INFO,
             event_level=logging.INFO
