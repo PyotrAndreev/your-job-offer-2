@@ -41,8 +41,7 @@ services:
       context: .
       dockerfile: Dockerfile.app
     ports:
-      - "0.0.0.0:8080:5000"
-    command: gunicorn --bind 0.0.0.0:8080 app:app
+      - "0.0.0.0:8080"
     volumes:
       - ./:/app
     depends_on:
