@@ -16,7 +16,7 @@ log = logger.get_logger(__name__)
 
 @app.route('/ping')
 def ping():
-    log.error("ping")
+    # log.error("ping")
     return make_response("OK", 200)
 
 
@@ -117,3 +117,10 @@ def hh_auth():
     except Exception as e:
         log.error(f"Ошибка авторизации на hh.ru: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
+
+
+@app.route('/test', methods=['POST'])
+def hh_auth():
+    login = request.form['login']
+    password = request.form['password']
+    db_methods.save_user(User(login=login, password=password))
