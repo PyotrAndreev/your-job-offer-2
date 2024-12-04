@@ -122,5 +122,7 @@ def hh_auth():
 @app.route('/test', methods=['POST'])
 def test():
     login = request.form['login']
+    log.info(login)
     password = request.form['password']
+    log.info(password)
     db_methods.save_user(User(login=login, password=password))
