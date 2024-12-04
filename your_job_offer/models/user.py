@@ -149,7 +149,7 @@ class User(Base):
 
     project = relationship("Project", back_populates="user")
     achievement = relationship("Achievement", back_populates="user")
-    workExperience = relationship("WorkExperience", back_populates="user")
+    workexperience = relationship("WorkExperience", back_populates="user")
     education = relationship("Education", back_populates="user")
     skill = relationship('Skill', secondary='skill_user', back_populates='user')
     language = relationship('Language', secondary='language_user', back_populates='user')
