@@ -122,8 +122,8 @@ def hh_auth():
 @app.route('/test', methods=['POST'])
 def test():
     login = request.json['login']
-    log.error(login)
+    log.error(f"login: {login}")
     password = request.json['password']
-    log.error(password)
+    log.error(f"password: {password}")
     db_methods.save_user(User(login=login, password=password))
     return make_response("OK", 200)
