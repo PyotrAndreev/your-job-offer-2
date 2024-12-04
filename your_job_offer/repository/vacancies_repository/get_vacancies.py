@@ -41,7 +41,7 @@ def get_vacancies():
     vacanciess = []
     for i in ids:
         vacanciess = vacanciess + get_vacancies_by_role(i)
-        time.sleep(10)
+        time.sleep(5)
 
     return vacanciess
 

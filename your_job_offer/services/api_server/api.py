@@ -9,6 +9,9 @@ from repository.tokens_repository.db_methods import save_hh_token
 from repository.vacancies_repository import db_methods
 from repository.vacancies_repository.db_methods import update_user
 
+from your_job_offer.mappers.mapper import map_vacancy
+from your_job_offer.repository.vacancies_repository.get_vacancies import get_vacancies
+
 app = Flask("app")
 
 log = logger.get_logger(__name__)
@@ -121,9 +124,10 @@ def hh_auth():
 
 @app.route('/test', methods=['POST'])
 def test():
-    login = request.json['login']
+    login = request.form['login']
     log.error(f"login: {login}")
-    password = request.json['password']
+    password = request.form['password']
     log.error(f"password: {password}")
-    db_methods.save_user(User(login=login, password=password))
-    return make_response("OK", 200)
+    # db_methods.save_user(User(login=login, password=password))
+    vac = get_vacancies()
+    return make_response(map_vacancy(vac[0]).to_json(), 200)
