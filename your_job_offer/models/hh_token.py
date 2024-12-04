@@ -15,8 +15,8 @@ class HH_Token(Base):
         access_token (str): The access token used for authentication with the hh.ru API.
         refresh_token (str): The refresh token used to obtain a new access token when the old one expires.
     """
-    __tablename__ = "tokens"
+    __tablename__ = "hh_tokens"
     id = Column(Integer, primary_key=True)
     login = Column(String(50), nullable=False, name="login")
-    access_token = Column(String(512), nullable=False, name="access")
-    refresh_token = Column(String(512), nullable=False, name="refresh")
+    access_token = Column(String(512), nullable=False, name="access_token")
+    refresh_token = Column(String(512), nullable=False, name="refresh_token")
