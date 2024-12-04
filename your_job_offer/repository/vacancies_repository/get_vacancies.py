@@ -1,7 +1,7 @@
 from __future__ import annotations
 import time
 
-from db_methods import save_vacancy
+from repository.vacancies_repository.db_methods import save_vacancy
 
 import requests
 
