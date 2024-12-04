@@ -1,6 +1,8 @@
-from logger import init_sentry
+import logger
 from services.api_server.api import app
 
-init_sentry()
+log = logger.get_logger(__name__)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
+    log.info("App started")
