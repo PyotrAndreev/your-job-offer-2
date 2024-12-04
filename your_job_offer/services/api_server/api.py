@@ -9,8 +9,8 @@ from repository.tokens_repository.db_methods import save_hh_token
 from repository.vacancies_repository import db_methods
 from repository.vacancies_repository.db_methods import update_user
 
-from your_job_offer.mappers.mapper import map_vacancy
-from your_job_offer.repository.vacancies_repository.get_vacancies import get_vacancies
+from mappers.mapper import map_vacancy
+from repository.vacancies_repository.get_vacancies import get_vacancies
 
 app = Flask("app")
 
