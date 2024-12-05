@@ -74,7 +74,7 @@ class Achievement(Base):
 
 
 class WorkExperience(Base):
-    __tablename__ = "workexperience"
+    __tablename__ = "workExperience"
     id = Column(Integer, primary_key=True)
     userId = Column(Integer, ForeignKey("user.id"))
     jobId = Column(Integer, nullable=True)
@@ -82,7 +82,7 @@ class WorkExperience(Base):
     description = Column(String(300), nullable=True)
     startDate = Column(Date, nullable=True, name="start_date")
     finishDate = Column(Date, nullable=True, name="finish_date")
-    user = relationship("User", back_populates="workexperience")
+    user = relationship("User", back_populates="workExperience")
 
 
 class Education(Base):
@@ -149,7 +149,7 @@ class User(Base):
 
     project = relationship("Project", back_populates="user")
     achievement = relationship("Achievement", back_populates="user")
-    workexperience = relationship("WorkExperience", back_populates="user")
+    workExperience = relationship("WorkExperience", back_populates="user")
     education = relationship("Education", back_populates="user")
     skill = relationship('Skill', secondary='skill_user', back_populates='user')
     language = relationship('Language', secondary='language_user', back_populates='user')

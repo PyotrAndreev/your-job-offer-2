@@ -13,6 +13,7 @@ from mappers.mapper import map_vacancy
 from repository.vacancies_repository.get_vacancies import get_vacancies
 
 from repository.tokens_repository.get_hh_token import get_hh_token
+from use_cases import user_cases
 
 app = Flask("app")
 
@@ -27,38 +28,28 @@ def ping():
 
 @app.route('/register', methods=['POST'])
 def registerUser():
-    login = request.form['login']
-    password = request.form['password']
-    # firstname = request.form['firstname']
-    # lastname = request.form['lastname']
-    # middlename = request.form['middlename']
-    # birthdate = request.form['birthdate']
-    # phone = request.form['phone']
-    # email = request.form['email']
+    user = UserModel.from_dict(request.json)
 
-    if db_methods.if_exist_user(login):
-        return make_response("User not exists", 401)
-
-    hashed_password = generate_password_hash(password)
-    db_methods.save_user(User(login=login, password=hashed_password))
-    # firstName=firstname, lastName=lastname, middleName=middlename,
-    # birthDate=birthdate, phone=phone, email=email))
-
-    return make_response("OK", 200)
+    if db_methods.if_exist_user(user.login):
+        return make_response("User exists", 401)
+    old_password = user.password
+    hashed_password = generate_password_hash(user.password)
+    user.password = hashed_password
+    user = user_cases.saveUser(user)
+    user.password = old_password
+    return make_response(user.to_json(), 200)
 
 
 @app.route('/login', methods=['POST'])
 def loginUser():
-    login = request.form['login']
-    password = request.form['password']
-    user1 = db_methods.if_exist_user(login)
-    print(user1)
-    if not user1:
+    user = UserModel.from_dict(request.json)
+    if not user_cases.ifExistUser(user.login):
         return make_response("User not exists", 401)
-    user = db_methods.get_user(login)
+    user_login = user_cases.getUser(user.login)
     print(user)
-    if check_password_hash(user.password, password):
-        return make_response("OK", 200)
+    if check_password_hash(user_login.password, user.password):
+        user_login.password = user.password
+        return make_response(user_login.to_json(), 200)
     else:
         return make_response("Wrong password", 401)
 

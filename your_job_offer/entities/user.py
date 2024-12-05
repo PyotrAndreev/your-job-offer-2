@@ -175,9 +175,9 @@ class UserModel:
     Methods:
         __str__: Returns a string representation of the UserModel instance.
     """
-    id: int
     login: str
     password: str
+    id: Optional[int] = None
     birth_date: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
