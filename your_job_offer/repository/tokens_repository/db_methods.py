@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
 import logger
@@ -39,6 +40,11 @@ def get_hh_token(login: str) -> HHTokenModel:
         log.error(f"Токен hh.ru для пользователя с логином {login} не найден")
     except Exception as e:
         log.error(f"Ошибка получения токена: {e}")
+
+
+def get_tokens():
+    tokens = session.execute(select(HH_Token)).scalars().all()
+    return tokens
 
 
 def update_hh_token(hh_token: HHTokenModel):

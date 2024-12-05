@@ -5,7 +5,7 @@ import logger
 from entities.user import UserModel
 from models.hh_token import HH_Token
 from models.user import User
-from repository.tokens_repository.db_methods import save_hh_token
+from repository.tokens_repository.db_methods import save_hh_token, get_tokens
 from repository.vacancies_repository import db_methods
 from repository.vacancies_repository.db_methods import update_user
 
@@ -116,7 +116,7 @@ def hh_auth():
         access_token = data['access']
         refresh_token = data['refresh']
         login = data["login"]
-        log.info(f"login={login} \nrefresh={refresh_token} \naccess_token={access_token}")
+        log.info(f"login={login} \nrefresh_token={refresh_token} \naccess_token={access_token}")
         save_hh_token(HH_Token(login=login, access_token=access_token, refresh_token=refresh_token))
         return make_response("OK", 200)
 
@@ -131,5 +131,9 @@ def test():
     log.error(f"login: {login}")
     password = request.json['password']
     log.error(f"password: {password}")
+    tokens = get_tokens()
+    for t in tokens:
+        log.info(str(t))
     hh_token = get_hh_token(login)
+    log.error(hh_token)
     return make_response(hh_token.to_json(), 200)
