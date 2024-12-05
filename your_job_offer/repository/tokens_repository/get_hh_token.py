@@ -5,6 +5,7 @@ from services.hh_api.refresh_hh_token import refresh_hh_token
 
 log = logger.get_logger(__name__)
 
+
 def get_hh_token(login: str) -> HHTokenModel:
     """
     Retrieves the HH token for a given user login. If the token is expired or not found,
@@ -18,7 +19,6 @@ def get_hh_token(login: str) -> HHTokenModel:
 
     """
     hh_token = db_methods.get_hh_token(login)
-    log.error(hh_token)
     refresh_hh_token(hh_token)
     hh_token = db_methods.get_hh_token(login)
     return hh_token

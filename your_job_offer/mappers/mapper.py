@@ -93,8 +93,17 @@ def map_vacancy(vacancy: Vacancy) -> VacancyModel:
     )
 
 
-def map_token(hh_token: HH_Token) -> HHTokenModel:
+def map_hh_token(hh_token: HH_Token) -> HHTokenModel:
     return HHTokenModel(
+        id=hh_token.id,
+        login=hh_token.login,
+        access_token=hh_token.access_token,
+        refresh_token=hh_token.refresh_token
+    )
+
+
+def map_hh_token_model(hh_token: HHTokenModel) -> HH_Token:
+    return HH_Token(
         id=hh_token.id,
         login=hh_token.login,
         access_token=hh_token.access_token,
