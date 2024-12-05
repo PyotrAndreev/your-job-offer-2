@@ -126,9 +126,9 @@ def hh_auth():
 
 @app.route('/test', methods=['POST'])
 def test():
-    login = request.form['login']
+    login = request.json['login']
     log.error(f"login: {login}")
-    password = request.form['password']
+    password = request.json['password']
     log.error(f"password: {password}")
     hh_token = get_hh_token(login)
     return make_response(hh_token.to_json(), 200)
