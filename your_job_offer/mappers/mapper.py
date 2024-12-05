@@ -93,12 +93,12 @@ def map_vacancy(vacancy: Vacancy) -> VacancyModel:
     )
 
 
-def map_token(token: HH_Token) -> HHTokenModel:
+def map_token(hh_token: HH_Token) -> HHTokenModel:
     return HHTokenModel(
-        id=token.id,
-        login=token.login,
-        access=token.access_token,
-        refresh=token.refresh_token
+        id=hh_token.id,
+        login=hh_token.login,
+        access=hh_token.access_token,
+        refresh=hh_token.refresh_token
     )
 
 

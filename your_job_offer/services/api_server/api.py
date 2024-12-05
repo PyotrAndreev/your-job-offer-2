@@ -133,7 +133,9 @@ def test():
     log.error(f"password: {password}")
     tokens = get_tokens()
     for t in tokens:
-        log.info(str(t))
+        log.info(t.login)
+        log.info(t.access_token)
+        log.info(t.refresh_token)
     hh_token = get_hh_token(login)
     log.error(hh_token)
     return make_response(hh_token.to_json(), 200)
