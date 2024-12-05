@@ -116,6 +116,7 @@ def hh_auth():
         access_token = data['access']
         refresh_token = data['refresh']
         login = data["login"]
+        log.info(f"login={login} \nrefresh={refresh_token} \naccess_token={access_token}")
         save_hh_token(HH_Token(login=login, access_token=access_token, refresh_token=refresh_token))
         return make_response("OK", 200)
 

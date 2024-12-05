@@ -30,6 +30,7 @@ def refresh_hh_token(hh_token: HHTokenModel):
         log.error(f"Error refreshing hh token: {res.json()}")
         # raise ValueError("Error refreshing hh token")
     else:
+        log.error(f"Refreshing hh token: {res.json()}")
         hh_token.access_token = responce.get("access_token")
         hh_token.refresh_token = responce.get("refresh_token")
         update_hh_token(hh_token)
