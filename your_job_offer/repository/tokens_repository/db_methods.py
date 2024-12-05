@@ -34,8 +34,9 @@ def get_hh_token(login: str) -> HHTokenModel:
 
     """
     try:
-        token = session.query(HH_Token).filter_by(login=login).one()
-        return map_token(token)
+        hh_token = session.execute(select(HH_Token)).scalars().one()
+        # token = session.query(HH_Token).filter_by(login=login).one()
+        return map_token(hh_token)
     except NoResultFound:
         log.error(f"Токен hh.ru для пользователя с логином {login} не найден")
     except Exception as e:
@@ -56,7 +57,8 @@ def update_hh_token(hh_token: HHTokenModel):
 
     """
     try:
-        hh_token_db = session.query(HH_Token).filter_by(login=hh_token.login).one()
+        # hh_token_db = session.query(HH_Token).filter_by(login=hh_token.login).one()
+        hh_token_db = session.execute(select(HH_Token)).scalars().one()
         setattr(hh_token_db, "access_token", hh_token.access_token)
         setattr(hh_token_db, "refresh_token", hh_token.refresh_token)
         save_hh_token(hh_token_db)
