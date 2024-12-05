@@ -34,9 +34,7 @@ def get_hh_token(login: str) -> HHTokenModel:
 
     """
     try:
-        hh_token = session.execute(select(HH_Token)).scalars().one()
-        log.info(hh_token)
-        # token = session.query(HH_Token).filter_by(login=login).one()
+        hh_token = session.query(HH_Token).filter_by(login=login).one()
         return map_token(hh_token)
     except NoResultFound:
         log.error(f"Токен hh.ru для пользователя с логином {login} не найден")
