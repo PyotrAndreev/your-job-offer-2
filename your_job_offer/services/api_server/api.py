@@ -12,6 +12,8 @@ from repository.vacancies_repository.db_methods import update_user
 from mappers.mapper import map_vacancy
 from repository.vacancies_repository.get_vacancies import get_vacancies
 
+from repository.tokens_repository.get_hh_token import get_hh_token
+
 app = Flask("app")
 
 log = logger.get_logger(__name__)
@@ -128,6 +130,5 @@ def test():
     log.error(f"login: {login}")
     password = request.form['password']
     log.error(f"password: {password}")
-    # db_methods.save_user(User(login=login, password=password))
-    vac = get_vacancies()
-    return make_response(map_vacancy(vac[0]).to_json(), 200)
+    hh_token = get_hh_token(login)
+    return make_response(hh_token.to_json(), 200)
