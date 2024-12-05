@@ -97,8 +97,8 @@ def map_token(hh_token: HH_Token) -> HHTokenModel:
     return HHTokenModel(
         id=hh_token.id,
         login=hh_token.login,
-        access=hh_token.access_token,
-        refresh=hh_token.refresh_token
+        access_token=hh_token.access_token,
+        refresh_token=hh_token.refresh_token
     )
 
 
