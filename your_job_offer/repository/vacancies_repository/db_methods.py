@@ -89,22 +89,22 @@ def if_exist_user(login: str) -> bool:
     return True if exist else False
 
 
-def update_user(newUser: User):
-    """
-    Updates an existing user's information in the database.
-
-    Args:
-        newUser (User): The updated user object.
-
-    Returns:
-        None
-
-    Raises:
-        NoResultFound: If the user is not found.
-    """
-    user = get_user(newUser.login)
-    user = newUser
-    session.commit()
+# def update_user(newUser: User):
+#     """
+#     Updates an existing user's information in the database.
+#
+#     Args:
+#         newUser (User): The updated user object.
+#
+#     Returns:
+#         None
+#
+#     Raises:
+#         NoResultFound: If the user is not found.
+#     """
+#     user = get_user(newUser.login)
+#     user = newUser
+#     session.commit()
 
 
 def get_vacancy(key: VacancyKey) -> Vacancy:
@@ -316,29 +316,29 @@ def get_vacancies_by_user(user: User):
 
     return get_vacancies_with_statement(stmt)
 
-# def update_user(user: User):
-#     """
-#     Updates the information of an existing user in the database.
-#
-#     This function iterates over the columns of the User model (except 'id', 'login', and 'password')
-#     and updates the corresponding fields of the user with the new values.
-#
-#     Args:
-#         user (User): The updated user object.
-#
-#     """
-#     try:
-#         user = session.query(User).filter_by(login=user.login).one()
-#
-#         for field in User.__table__.columns.keys():
-#             if field not in ['id', 'login', 'password']:
-#                 new_value = getattr(user, field, None)
-#                 if new_value is not None:
-#                     setattr(user, field, new_value)
-#         session.commit()
-#         log.info(f"Пользователь с логином '{user.login}' успешно обновлен.")
-#     except NoResultFound:
-#         log.error(f"Пользователь с логином '{user.login}' не найден.")
-#     except Exception as e:
-#         log.error(f"Ошибка обновления: {e}")
-#         session.rollback()
+def update_user(user: User):
+    """
+    Updates the information of an existing user in the database.
+
+    This function iterates over the columns of the User model (except 'id', 'login', and 'password')
+    and updates the corresponding fields of the user with the new values.
+
+    Args:
+        user (User): The updated user object.
+
+    """
+    try:
+        user = session.query(User).filter_by(login=user.login).one()
+
+        for field in User.__table__.columns.keys():
+            if field not in ['id', 'login', 'password']:
+                new_value = getattr(user, field, None)
+                if new_value is not None:
+                    setattr(user, field, new_value)
+        session.commit()
+        log.info(f"Пользователь с логином '{user.login}' успешно обновлен.")
+    except NoResultFound:
+        log.error(f"Пользователь с логином '{user.login}' не найден.")
+    except Exception as e:
+        log.error(f"Ошибка обновления: {e}")
+        session.rollback()
