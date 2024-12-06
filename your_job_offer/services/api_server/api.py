@@ -86,9 +86,8 @@ def get_form():
                                                    "required."}), 400)
 
         user = UserModel.from_json(request.data)
-        print(user)
-        log.info(user)
-        # update_user(user)
+        log.info(f"User: {user}")
+        update_user(user)
         return make_response("OK", 200)
     except Exception as e:
         log.error(f"Ошибка сохранения данных из формы: {e}")

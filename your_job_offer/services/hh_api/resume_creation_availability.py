@@ -15,5 +15,6 @@ def is_resume_creation_available(access_token: str) -> bool:
         log.error(f"Error checking possibility of creation resume: {res.json()}")
     else:
         data = res.json()
-        log.info(f"Creation availability: {data.get("is_creation_available")}")
+        field = "is_creation_available"
+        log.info(f"Creation availability: {data.get(field)}")
         return data.get("is_creation_available")
