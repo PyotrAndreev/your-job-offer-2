@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from typing import Optional
 
-from entities.enums import LevelEnum
+from entities.enums import LanguageLevelEnum
 
 
 @dataclass_json
@@ -64,7 +64,7 @@ class LanguageModel:
     """
     id: int
     name: Optional[str] = None
-    level: Optional[LevelEnum] = None
+    level: Optional[LanguageLevelEnum] = None
 
     def __str__(self):
         return f"Language(id={self.id}, name={self.name}, level={self.level})"

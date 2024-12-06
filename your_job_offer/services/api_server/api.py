@@ -130,7 +130,7 @@ def hh_auth():
 
 @app.route('/test', methods=['POST'])
 def test():
-    log.info(request.json())
+    log.info(request.json)
     login = request.json['login']
     log.info(f"login: {login}")
     password = request.json['password']
