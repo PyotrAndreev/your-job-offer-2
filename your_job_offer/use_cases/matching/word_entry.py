@@ -105,4 +105,7 @@ def _match_vacancies_by_word_entry(
         ::-1
     ][: sum(counts_isin != 0)]
 
+    if len(indexes) == 0:
+        return []
+
     return itemgetter(*indexes)(vacancies)
