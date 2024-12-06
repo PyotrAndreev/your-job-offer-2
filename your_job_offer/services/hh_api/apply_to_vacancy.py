@@ -42,7 +42,8 @@ def apply_to_vacancy(vacancy_id: int, resume_id: str, message: str, access_token
             log.error("Заголовок Location отсутствует.")
             return None
     elif res.status_code == 303:
-        log.error(f"Вакансия с подачей не на hh.ru: {res.headers.get("Location")} ")
+        loc = "Location"
+        log.error(f"Вакансия с подачей не на hh.ru: {res.headers.get(loc)}")
     else:
         log.error(f"Ошибка при подаче на вакансию: {res.json()}")
         return None
