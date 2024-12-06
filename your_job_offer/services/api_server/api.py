@@ -144,10 +144,12 @@ def apply():
         hh_token = get_hh_token(login)
         vacancy_id = data.get("vacancy_id")
         message = data.get("message")
-        apply_to_vacancy(vacancy_id=vacancy_id, message=message, access_token=hh_token.access_token, resume_id=user.hh_resume_id)
+        apply_to_vacancy(vacancy_id=vacancy_id, message=message, access_token=hh_token.access_token,
+                         resume_id=user.hh_resume_id)
     except Exception as e:
         log.error(f"Ошибка подачи на вакансию на hh.ru: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
+
 
 @app.route('/test', methods=['POST'])
 def test():
