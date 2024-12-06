@@ -13,6 +13,7 @@ from mappers.mapper import map_vacancy
 from repository.vacancies_repository.get_vacancies import get_vacancies
 
 from repository.tokens_repository.get_hh_token import get_hh_token
+from services.hh_api.apply_to_vacancy import apply_to_vacancy
 from use_cases import user_cases
 from use_cases.matching import match_vacancies
 from use_cases.user_cases import getUser
@@ -61,8 +62,8 @@ def getVacancies():
     if not user_cases.ifExistUser(user.login):
         return make_response("User not exists", 401)
     user = user_cases.getUser(user.login)
-    vac=match_vacancies.get_match_vacancies(user=user)
-    return  make_response(vac.to_json())
+    vac = match_vacancies.get_match_vacancies(user=user)
+    return make_response(vac.to_json())
 
 
 @app.route('/form', methods=['POST'])
@@ -82,8 +83,8 @@ def get_form():
     """
     try:
         data = request.json
-        if not data or 'login' not in data or 'password' not in data or 'id' not in data:
-            return make_response(jsonify({"error": "Invalid request. 'login', 'password', 'id' fields are "
+        if not data or 'login' not in data or 'password' not in data:
+            return make_response(jsonify({"error": "Invalid request. 'login', 'password' fields are "
                                                    "required."}), 400)
 
         user = UserModel.from_json(request.data)
@@ -128,6 +129,25 @@ def hh_auth():
         return make_response(jsonify({"error": str(e)}), 500)
 
 
+@app.route('/apply', methods=['POST'])
+def apply():
+    try:
+        data = request.json
+        if not data or 'login' not in data or 'password' not in data or 'vacancy_id' not in data:
+            return make_response(jsonify({"error": "Invalid request. 'login', 'password' fields are "
+                                                   "required."}), 400)
+
+        login = data.get("login")
+        user = getUser(login)
+        hh_token = get_hh_token(login)
+        vacancy_id = data.get("vacancy_id")
+        message = data.get("message")
+        apply_to_vacancy(vacancy_id=vacancy_id, message=message, access_token=hh_token.access_token, resume_id=user.hh_resume_id)
+    except Exception as e:
+        log.error(f"Ошибка подачи на вакансию на hh.ru: {e}")
+        return make_response(jsonify({"error": str(e)}), 500)
+
+
 @app.route('/test', methods=['POST'])
 def test():
     log.info(request.json)
@@ -140,7 +160,7 @@ def test():
 
 @app.route('/some', methods=['GET'])
 def some():
-    user=user_cases.getUser(login="admin")
-    vacs=match_vacancies.get_match_vacancies(user)
+    user = user_cases.getUser(login="admin")
+    vacs = match_vacancies.get_match_vacancies(user)
     print(vacs)
     return make_response(vacs, 200)
