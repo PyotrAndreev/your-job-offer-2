@@ -23,7 +23,6 @@ log = logger.get_logger(__name__)
 
 @app.route('/ping')
 def ping():
-    # log.error("ping")
     return make_response("OK", 200)
 
 
@@ -86,8 +85,10 @@ def get_form():
             return make_response(jsonify({"error": "Invalid request. 'login', 'password', 'id' fields are "
                                                    "required."}), 400)
 
-        user = UserModel.from_json(data)
-        update_user(user)
+        user = UserModel.from_json(request.data)
+        print(user)
+        log.info(user)
+        # update_user(user)
         return make_response("OK", 200)
     except Exception as e:
         log.error(f"Ошибка сохранения данных из формы: {e}")
