@@ -3,7 +3,7 @@ from datetime import date
 from enum import Enum
 from typing import Optional
 
-from .enums import WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum, EmploymentEnum, ScheduleEnum
+from .enums import WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum, EmploymentEnum, ScheduleEnum, SourceEnum
 from .general import *
 
 from dataclasses_json import dataclass_json
@@ -66,6 +66,8 @@ class VacancyModel:
     requirement: Optional[str] = None
     responsibility: Optional[str] = None
     area: Optional[str] = None
+    source: Optional[SourceEnum] = None
+    id_vacancy_from_source: Optional[str] = None
 
     def __str__(self):
         return (

@@ -5,7 +5,7 @@ from typing import Optional, List
 from dataclasses_json import dataclass_json
 
 from entities.enums import WorkTypeEnum, BusinessTripReadinessEnum, EmploymentEnum, RelocationEnum, ScheduleEnum, \
-    GenderEnum, EducationLevelEnum
+    GenderEnum, EducationLevelEnum, SourceEnum
 from entities.general import SkillModel, LanguageModel, CityModel, CountryModel
 
 
@@ -200,6 +200,7 @@ class UserModel:
     schedule: Optional[ScheduleEnum] = None
     hh_resume_id: Optional[str] = None
     education_level: Optional[EducationLevelEnum] = None
+    source: Optional[SourceEnum] = None
     projects: List[ProjectModel] = field(default_factory=list)
     achievements: List[AchievementModel] = field(default_factory=list)
     work_experiences: List[WorkExperienceModel] = field(default_factory=list)

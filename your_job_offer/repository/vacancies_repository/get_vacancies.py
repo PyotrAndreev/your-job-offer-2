@@ -11,7 +11,7 @@ from models.vacancy import Vacancy
 
 def get_vacancies():
     ids = [
-        # 156,
+        156,
         # 160,
         # 10,
         # 12,

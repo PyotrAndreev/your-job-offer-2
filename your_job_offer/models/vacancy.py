@@ -7,7 +7,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 
-from entities.enums import WorkTypeEnum, BusinessTripReadinessEnum, ScheduleEnum, EmploymentEnum, RelocationEnum
+from entities.enums import WorkTypeEnum, BusinessTripReadinessEnum, ScheduleEnum, EmploymentEnum, RelocationEnum, \
+    SourceEnum
 from repository.vacancies_repository.db_session import Base
 
 
@@ -53,3 +54,7 @@ class Vacancy(Base):
     requirement = Column(String, nullable=True, name="requirement")
     responsibility = Column(String, nullable=True, name="responsibility")
     area = Column(String(200), nullable=True)
+    source = Column(
+        PgEnum(SourceEnum, name="source", create_type=True), nullable=True
+    )
+    idVacancyFromSource = Column(String, nullable=True, name="id_vacancy_from_source")
