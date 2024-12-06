@@ -328,13 +328,13 @@ def update_user(user: User):
 
     """
     try:
-        user = session.query(User).filter_by(login=user.login).one()
+        user_db = session.query(User).filter_by(login=user.login).one()
 
         for field in User.__table__.columns.keys():
             if field not in ['id', 'login', 'password']:
                 new_value = getattr(user, field, None)
                 if new_value is not None:
-                    setattr(user, field, new_value)
+                    setattr(user_db, field, new_value)
         session.commit()
         log.info(f"Пользователь с логином '{user.login}' успешно обновлен.")
     except NoResultFound:
