@@ -89,24 +89,6 @@ def if_exist_user(login: str) -> bool:
     return True if exist else False
 
 
-# def update_user(newUser: User):
-#     """
-#     Updates an existing user's information in the database.
-#
-#     Args:
-#         newUser (User): The updated user object.
-#
-#     Returns:
-#         None
-#
-#     Raises:
-#         NoResultFound: If the user is not found.
-#     """
-#     user = get_user(newUser.login)
-#     user = newUser
-#     session.commit()
-
-
 def get_vacancy(key: VacancyKey) -> Vacancy:
     """
     Retrieves a vacancy by its unique key (job ID).
@@ -315,6 +297,7 @@ def get_vacancies_by_user(user: User):
         stmt = stmt.where(or_(Vacancy.minSalary is None, Vacancy.minSalary >= user.minSalary))
 
     return get_vacancies_with_statement(stmt)
+
 
 def update_user(user: User):
     """
