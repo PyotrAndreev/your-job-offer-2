@@ -9,6 +9,8 @@ from models.vacancy import Vacancy
 
 
 def map_user(user: User) -> UserModel:
+    print("id:")
+    print(user.id)
     return UserModel(
         id=user.id,
         login=user.login,
@@ -46,7 +48,7 @@ def map_user(user: User) -> UserModel:
                 start_date=w.startDate,
                 finish_date=w.finishDate,
             )
-            for w in user.workexperience
+            for w in user.workExperience
         ],
         educations=[
             EducationModel(
@@ -165,6 +167,4 @@ def map_userModel(user: UserModel) -> User:
         ],
         skill=[Skill(id=s.id, name=s.name, description=s.description) for s in user.skills],
         language=[Language(id=l.id, name=l.name) for l in user.languages],
-        access_token=token.access_token,
-        refresh_token=token.refresh_token
     )

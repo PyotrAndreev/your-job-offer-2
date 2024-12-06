@@ -35,7 +35,7 @@ def get_all_vacancies() -> [Vacancy]:
     return vacancies
 
 
-def save_user(user: User):
+def save_user(user: User)->User:
     """
     Saves a user to the database.
 
@@ -45,15 +45,15 @@ def save_user(user: User):
     """
     session.add(user)
     session.commit()
+    return user
 
 
-def get_user(login: str, password: str) -> User:
+def get_user(login: str) -> User:
     """
     Retrieves a user from the database by login and password.
 
     Args:
         login (str): The user's login.
-        password (str): The user's password.
 
     Returns:
         User: The user object associated with the provided login and password.
@@ -61,7 +61,8 @@ def get_user(login: str, password: str) -> User:
     Raises:
         NoResultFound: If no user is found with the provided login and password.
     """
-    user = session.query(User).filter_by(login=login, password=password).one()
+    user = session.scalars(select(User).filter_by(login=login)).first()
+    print(user)
     return user
 
 
@@ -92,7 +93,7 @@ def update_user(newUser: User):
     Raises:
         NoResultFound: If the user is not found.
     """
-    user = get_user(newUser.login, newUser.password)
+    user = get_user(newUser.login)
     user = newUser
     session.commit()
 
