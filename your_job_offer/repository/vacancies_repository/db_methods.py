@@ -111,7 +111,7 @@ def get_vacancy(key: VacancyKey) -> Vacancy:
     Raises:
         NoResultFound: If no vacancy is found with the provided key.
     """
-    vacancy = session.query(Vacancy).filter_by(job_id=key.id).one()
+    vacancy = session.scalars(select(Vacancy).filter_by(job_id=key.id)).first()
     return vacancy
 
 
@@ -130,6 +130,16 @@ def get_vacancies_with_statement(stmt):
     for item in row:
         vacancies.append(item)
     return vacancies
+
+
+def get_vacancies_by_filters(filters: dict):
+    query = session.query(Vacancy)
+    for key, value in filters.items():
+        if value is not None:
+                query = query.filter(getattr(Vacancy, key) == value)  # Простое сравнение для числовых значений
+
+    vacancies= query.all()
+    print(vacancies)
 
 
 def get_vacancies_by_employment(employment: EmploymentEnum):

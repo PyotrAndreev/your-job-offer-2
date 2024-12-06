@@ -2,6 +2,8 @@ from enum import Enum
 
 from entities.jobs import VacancyModel
 from entities.user import UserModel
+from mappers import mapper
+from repository.vacancies_repository import db_methods
 from .word_entry import _match_vacancies_by_word_entry
 from .embeddings import _match_vacancies_by_embeddings
 
@@ -12,7 +14,7 @@ class MatchingEnum(Enum):
 
 
 def filter_without_skills(
-    vacancies: list[VacancyModel], user: UserModel
+        vacancies: list[VacancyModel], user: UserModel
 ) -> list[VacancyModel]:
     """
     фильтрует то, что не смогли отфильтровать по запросам к бд, но без учёта скиллов,
@@ -24,9 +26,9 @@ def filter_without_skills(
 
 
 def match_vacancies(
-    vacancies: list[VacancyModel],
-    user: UserModel,
-    mode: MatchingEnum = MatchingEnum.WORD_ENTRY,
+        vacancies: list[VacancyModel],
+        user: UserModel,
+        mode: MatchingEnum = MatchingEnum.WORD_ENTRY,
 ) -> list[VacancyModel]:
     """
     подбирает вакансии по mode, и отсортировывает их по релевантности
@@ -39,4 +41,13 @@ def match_vacancies(
     vacancies = filter_without_skills(vacancies, user)
     if mode == MatchingEnum.EMBEDDINGS:
         return _match_vacancies_by_embeddings(vacancies, user)
-    return _match_vacancies_by_word_entry(vacancies, UserModel)
+    return _match_vacancies_by_word_entry(vacancies, user)
+
+
+def get_match_vacancies(user: UserModel) -> list[VacancyModel]:
+    vacancies = db_methods.get_vacancies_by_user(mapper.map_userModel(user))
+    list_vac = []
+    for item in vacancies:
+        list_vac.append(mapper.map_vacancy(item))
+    list_vac = match_vacancies(list_vac, user)
+    return list_vac
