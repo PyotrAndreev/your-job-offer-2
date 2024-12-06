@@ -1,6 +1,7 @@
 import re
 from string import punctuation
 from operator import itemgetter
+from typing import Optional
 
 import numpy as np
 from nltk import word_tokenize
@@ -65,7 +66,7 @@ class TextPreprocessor:
         return lemmatized_text
 
 
-def isin(skills: list[str], requirement: str | None) -> int:
+def isin(skills: list[str], requirement: Optional[str] = None) -> int:
     if requirement is None or len(requirement) == 0:
         return 1
     ans = 0

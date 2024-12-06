@@ -198,6 +198,7 @@ class UserModel:
     relocation: Optional[RelocationEnum] = None
     employment: Optional[EmploymentEnum] = None
     schedule: Optional[ScheduleEnum] = None
+    hhResumeId: Optional[str] = None
     projects: List[ProjectModel] = field(default_factory=list)
     achievements: List[AchievementModel] = field(default_factory=list)
     work_experiences: List[WorkExperienceModel] = field(default_factory=list)

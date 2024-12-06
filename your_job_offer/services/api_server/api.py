@@ -14,6 +14,7 @@ from repository.vacancies_repository.get_vacancies import get_vacancies
 
 from repository.tokens_repository.get_hh_token import get_hh_token
 from use_cases import user_cases
+from use_cases.matching import match_vacancies
 
 app = Flask("app")
 
@@ -52,6 +53,16 @@ def loginUser():
         return make_response(user_login.to_json(), 200)
     else:
         return make_response("Wrong password", 401)
+
+
+@app.route('/get_vacancies', methods=['GET'])
+def getVacancies():
+    user = UserModel.from_dict(request.json)
+    if not user_cases.ifExistUser(user.login):
+        return make_response("User not exists", 401)
+    user = user_cases.getUser(user.login)
+    vac=match_vacancies.get_match_vacancies(user=user)
+    return  make_response(vac.to_json())
 
 
 @app.route('/form', methods=['POST'])
@@ -130,3 +141,11 @@ def test():
     hh_token = get_hh_token(login)
     log.error(hh_token)
     return make_response(hh_token.to_json(), 200)
+
+
+@app.route('/some', methods=['GET'])
+def some():
+    user=user_cases.getUser(login="admin")
+    vacs=match_vacancies.get_match_vacancies(user)
+    print(vacs)
+    return make_response(vacs, 200)

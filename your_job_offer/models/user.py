@@ -146,6 +146,7 @@ class User(Base):
     schedule = Column(
         PgEnum(ScheduleEnum, name="schedule", create_type=True), nullable=True
     )
+    hhResumeId = Column(String, name="hh_resume_id", nullable=True)
 
     project = relationship("Project", back_populates="user")
     achievement = relationship("Achievement", back_populates="user")
