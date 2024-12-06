@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 
 from entities.enums import GenderEnum, WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum, EmploymentEnum, \
-    ScheduleEnum
+    ScheduleEnum, LanguageLevelEnum, EducationLevelEnum
 from repository.vacancies_repository.db_session import Base
 
 
@@ -33,6 +33,10 @@ class Language(Base):
     __tablename__ = "language"
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=True)
+    level = Column(
+        PgEnum(LanguageLevelEnum, name="level", create_type=True),
+        nullable=True,
+    )
     user = relationship(
         "User", secondary='language_user', back_populates="language"
     )
@@ -145,6 +149,9 @@ class User(Base):
     )
     schedule = Column(
         PgEnum(ScheduleEnum, name="schedule", create_type=True), nullable=True
+    )
+    educationLevel = Column(
+        PgEnum(EducationLevelEnum, name="education_level", create_type=True), nullable=True
     )
     hhResumeId = Column(String, name="hh_resume_id", nullable=True)
 

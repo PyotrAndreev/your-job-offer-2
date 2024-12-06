@@ -6,6 +6,7 @@ from entities.user import *
 from models.hh_token import HH_Token
 from models.user import User, City, Country, Achievement, Project, WorkExperience, Education, Skill, Language
 from models.vacancy import Vacancy
+from repository.vacancies_repository.db_methods import get_job, get_job_id
 
 
 def map_user(user: User) -> UserModel:
@@ -43,7 +44,7 @@ def map_user(user: User) -> UserModel:
         work_experiences=[
             WorkExperienceModel(
                 id=w.id,
-                job_id=w.jobId,
+                job=get_job(w.jobId).name,
                 work_place=w.workPlace,
                 description=w.description,
                 start_date=w.startDate,
@@ -63,8 +64,10 @@ def map_user(user: User) -> UserModel:
             )
             for e in user.education
         ],
+        hh_resume_id=user.hhResumeId,
+        education_level=user.educationLevel,
         skills=[SkillModel(id=s.id, name=s.name, description=s.description) for s in user.skill],
-        languages=[LanguageModel(id=l.id, name=l.name) for l in user.language],
+        languages=[LanguageModel(id=l.id, name=l.name, level=l.level) for l in user.language],
     )
 
 
@@ -140,14 +143,14 @@ def map_userModel(user: UserModel) -> User:
         relocation=user.relocation,
         employment=user.employment,
         schedule=user.schedule,
-        hhResumeId=user.hhResumeId,
+        hhResumeId=user.hh_resume_id,
         project=[Project(id=p.id, name=p.name, description=p.description, link=p.link) for p in user.projects],
         achievement=[Achievement(id=a.id, name=a.name, description=a.description, link=a.link) for a in
                      user.achievements],
         workExperience=[
             WorkExperience(
                 id=w.id,
-                jobId=w.job_id,
+                jobId=get_job_id(w.job),
                 workPlace=w.work_place,
                 description=w.description,
                 startDate=w.start_date,
@@ -167,6 +170,7 @@ def map_userModel(user: UserModel) -> User:
             )
             for e in user.educations
         ],
+        educationLevel=user.education_level,
         skill=[Skill(id=s.id, name=s.name, description=s.description) for s in user.skills],
         language=[Language(id=l.id, name=l.name) for l in user.languages],
     )

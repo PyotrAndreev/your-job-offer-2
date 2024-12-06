@@ -32,4 +32,5 @@ def get_messages(nid: str, access_token: str) -> list[str]:
         log.error(f"Error getting messages: {res.json()}")
         # raise ValueError("Error getting messages")
     else:
+        log.info("Got messages")
         return [item.get("text") for item in responce.get("items")]

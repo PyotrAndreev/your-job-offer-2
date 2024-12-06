@@ -1,11 +1,10 @@
-
 from entities.tracking import VacancyKey
 from sqlalchemy import select, or_
 from sqlalchemy.exc import NoResultFound
 
 import logger
 from entities.enums import EmploymentEnum, ScheduleEnum, WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum
-from models.user import User
+from models.user import User, Job
 from models.vacancy import Vacancy
 from repository.vacancies_repository.db_session import session
 
@@ -35,7 +34,7 @@ def get_all_vacancies() -> [Vacancy]:
     return vacancies
 
 
-def save_user(user: User)->User:
+def save_user(user: User) -> User:
     """
     Saves a user to the database.
 
@@ -64,6 +63,16 @@ def get_user(login: str) -> User:
     user = session.scalars(select(User).filter_by(login=login)).first()
     print(user)
     return user
+
+
+def get_job(job_id: int) -> Job:
+    job = session.scalars(select(Job).filter_by(id=job_id)).first()
+    return job
+
+
+def get_job_id(name: str) -> int:
+    job = session.scalars(select(Job).filter_by(name=name)).first()
+    return job
 
 
 def if_exist_user(login: str) -> bool:
@@ -136,9 +145,9 @@ def get_vacancies_by_filters(filters: dict):
     query = session.query(Vacancy)
     for key, value in filters.items():
         if value is not None:
-                query = query.filter(getattr(Vacancy, key) == value)  # Простое сравнение для числовых значений
+            query = query.filter(getattr(Vacancy, key) == value)  # Простое сравнение для числовых значений
 
-    vacancies= query.all()
+    vacancies = query.all()
     print(vacancies)
 
 
@@ -306,7 +315,6 @@ def get_vacancies_by_user(user: User):
         stmt = stmt.where(or_(Vacancy.minSalary is None, Vacancy.minSalary >= user.minSalary))
 
     return get_vacancies_with_statement(stmt)
-
 
 # def update_user(user: User):
 #     """

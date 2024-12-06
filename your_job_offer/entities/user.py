@@ -5,7 +5,7 @@ from typing import Optional, List
 from dataclasses_json import dataclass_json
 
 from entities.enums import WorkTypeEnum, BusinessTripReadinessEnum, EmploymentEnum, RelocationEnum, ScheduleEnum, \
-    GenderEnum
+    GenderEnum, EducationLevelEnum
 from entities.general import SkillModel, LanguageModel, CityModel, CountryModel
 
 
@@ -78,7 +78,7 @@ class WorkExperienceModel:
 
     Attributes:
         id (int): The unique identifier of the work experience entry.
-        job_id (Optional[int]): The job identifier related to the work experience.
+        job (Optional[str]): The job name related to the work experience.
         work_place (Optional[str]): The company or organization where the user worked.
         description (Optional[str]): A brief description of the work performed.
         start_date (Optional[date]): The date when the work experience started.
@@ -88,7 +88,7 @@ class WorkExperienceModel:
         __str__: Returns a string representation of the WorkExperienceModel instance.
     """
     id: int
-    job_id: Optional[int] = None
+    job: Optional[str] = None
     work_place: Optional[str] = None
     description: Optional[str] = None
     start_date: Optional[date] = None
@@ -198,7 +198,8 @@ class UserModel:
     relocation: Optional[RelocationEnum] = None
     employment: Optional[EmploymentEnum] = None
     schedule: Optional[ScheduleEnum] = None
-    hhResumeId: Optional[str] = None
+    hh_resume_id: Optional[str] = None
+    education_level: Optional[EducationLevelEnum] = None
     projects: List[ProjectModel] = field(default_factory=list)
     achievements: List[AchievementModel] = field(default_factory=list)
     work_experiences: List[WorkExperienceModel] = field(default_factory=list)

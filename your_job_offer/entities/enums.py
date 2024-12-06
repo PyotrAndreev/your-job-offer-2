@@ -20,9 +20,9 @@ class BusinessTripReadinessEnum(Enum):
 
 
 class RelocationEnum(Enum):
-    NO = "no"
-    POSSIBLE = "possible"
-    DESIRABLE = "desirable"
+    NO = "no_relocation"
+    POSSIBLE = "relocation_possible"
+    DESIRABLE = "relocation_desirable"
 
 
 class EmploymentEnum(Enum):
@@ -39,3 +39,24 @@ class ScheduleEnum(Enum):
     FLEXIBLE = "flexible"
     REMOTE = "remote"
     FLY_IN_FLY_OUT = "flyInFlyOut"
+
+
+class LanguageLevelEnum(Enum):
+    A1 = "a1"
+    A2 = "a2"
+    B1 = "b1"
+    B2 = "b2"
+    C1 = "c1"
+    C2 = "c2"
+    L1 = "l1"
+
+
+class EducationLevelEnum(Enum):
+    SECONDARY = "secondary"
+    SPECIAL_SECONDARY = "special_secondary"
+    UNFINISHED_HIGHER = "unfinished_higher"
+    HIGHER = "higher"
+    BACHELOR = "bachelor"
+    MASTER = "master"
+    CANDIDATE = "candidate"
+    DOCTOR = "doctor"
