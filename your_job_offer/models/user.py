@@ -154,6 +154,8 @@ class User(Base):
         PgEnum(EducationLevelEnum, name="education_level", create_type=True), nullable=True
     )
     hhResumeId = Column(String, name="hh_resume_id", nullable=True)
+    innerEmail = Column(String, name="inner_email", nullable=True)
+    innerEmailPassword = Column(String, name="inner_email_password", nullable=True)
     project = relationship("Project", back_populates="user")
     achievement = relationship("Achievement", back_populates="user")
     workExperience = relationship("WorkExperience", back_populates="user")
@@ -162,6 +164,7 @@ class User(Base):
     language = relationship('Language', secondary='language_user', back_populates='user')
     country = relationship("Country", back_populates="user")
     city = relationship("City", back_populates="user")
+    vacancy = relationship('Vacancy', secondary='user_vacancy_status', back_populates='user')
 
 
 class SkillUser(Base):

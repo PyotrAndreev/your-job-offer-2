@@ -10,8 +10,6 @@ from repository.vacancies_repository.db_methods import get_job, get_job_id
 
 
 def map_user(user: User) -> UserModel:
-    print("id:")
-    print(user.id)
     return UserModel(
         id=user.id,
         login=user.login,
@@ -64,9 +62,12 @@ def map_user(user: User) -> UserModel:
             for e in user.education
         ],
         hh_resume_id=user.hhResumeId,
+        inner_email=user.innerEmail,
+        inner_email_password=user.innerEmailPassword,
         education_level=user.educationLevel,
         skills=[SkillModel(id=s.id, name=s.name, description=s.description) for s in user.skill],
         languages=[LanguageModel(id=l.id, name=l.name, level=l.level) for l in user.language],
+        vacancy=[map_vacancy(v) for v in user.vacancy]
     )
 
 
@@ -145,6 +146,8 @@ def map_userModel(user: UserModel) -> User:
         employment=user.employment,
         schedule=user.schedule,
         hhResumeId=user.hh_resume_id,
+        innerEmail=user.inner_email,
+        innerEmailPassword=user.inner_email_password,
         project=[Project(id=p.id, name=p.name, description=p.description, link=p.link) for p in user.projects],
         achievement=[Achievement(id=a.id, name=a.name, description=a.description, link=a.link) for a in
                      user.achievements],
@@ -174,4 +177,35 @@ def map_userModel(user: UserModel) -> User:
         educationLevel=user.education_level,
         skill=[Skill(id=s.id, name=s.name, description=s.description) for s in user.skills],
         language=[Language(id=l.id, name=l.name) for l in user.languages],
+        vacancy=[map_vacancy_model(v) for v in user.vacancy]
+    )
+
+
+def map_vacancy_model(vacancy: VacancyModel) -> Vacancy:
+    return Vacancy(
+        id=vacancy.id,
+        job=vacancy.job,
+        description=vacancy.description,
+        minSalary=vacancy.min_salary,
+        maxSalary=vacancy.max_salary,
+        address=vacancy.address,
+        link=vacancy.link,
+        applyLink=vacancy.apply_link,
+        phone=vacancy.phone,
+        email=vacancy.email,
+        employer=vacancy.employer,
+        createdAt=vacancy.created_at,
+        updatedAt=vacancy.updated_at,
+        workType=vacancy.work_type,
+        businessTripReadiness=vacancy.business_trip_readiness,
+        workHours=vacancy.work_hours,
+        relocation=vacancy.relocation,
+        employment=vacancy.employment,
+        schedule=vacancy.schedule,
+        hasTest=vacancy.has_test,
+        requirement=vacancy.requirement,
+        responsibility=vacancy.responsibility,
+        area=vacancy.area,
+        source=vacancy.source,
+        idVacancyFromSource=vacancy.id_vacancy_from_source
     )

@@ -54,7 +54,7 @@ def loginUser():
         return make_response("Wrong password", 401)
 
 
-@app.route('/get_vacancies', methods=['GET'])
+@app.route('/get_vacancies', methods=['POST'])
 def getVacancies():
     user = UserModel.from_dict(request.json)
     if not user_cases.ifExistUser(user.login):

@@ -7,6 +7,7 @@ from dataclasses_json import dataclass_json
 from entities.enums import WorkTypeEnum, BusinessTripReadinessEnum, EmploymentEnum, RelocationEnum, ScheduleEnum, \
     GenderEnum, EducationLevelEnum, SourceEnum
 from entities.general import SkillModel, LanguageModel, CityModel, CountryModel
+from entities.jobs import VacancyModel
 
 
 @dataclass_json
@@ -201,12 +202,15 @@ class UserModel:
     hh_resume_id: Optional[str] = None
     education_level: Optional[EducationLevelEnum] = None
     source: Optional[SourceEnum] = None
+    inner_email: Optional[str] = None
+    inner_email_password: Optional[str] = None
     projects: List[ProjectModel] = field(default_factory=list)
     achievements: List[AchievementModel] = field(default_factory=list)
     work_experiences: List[WorkExperienceModel] = field(default_factory=list)
     educations: List[EducationModel] = field(default_factory=list)
     skills: List[SkillModel] = field(default_factory=list)
     languages: List[LanguageModel] = field(default_factory=list)
+    vacancy: List[VacancyModel] = field(default_factory=list)
 
     def __str__(self):
         return (
