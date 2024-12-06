@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -63,7 +65,7 @@ def getVacancies():
         return make_response("User not exists", 401)
     user = user_cases.getUser(user.login)
     vac = match_vacancies.get_match_vacancies(user=user)
-    return make_response(vac.to_json())
+    return make_response(json.dumps([obj.to_json() for obj in vac]), 200)
 
 
 @app.route('/form', methods=['POST'])
@@ -146,7 +148,6 @@ def apply():
     except Exception as e:
         log.error(f"Ошибка подачи на вакансию на hh.ru: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
-
 
 @app.route('/test', methods=['POST'])
 def test():
