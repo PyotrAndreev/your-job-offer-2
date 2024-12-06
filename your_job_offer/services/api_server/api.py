@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -61,8 +63,8 @@ def getVacancies():
     if not user_cases.ifExistUser(user.login):
         return make_response("User not exists", 401)
     user = user_cases.getUser(user.login)
-    vac=match_vacancies.get_match_vacancies(user=user)
-    return  make_response(vac.to_json())
+    vac = match_vacancies.get_match_vacancies(user=user)
+    return make_response(json.dumps([obj.to_json() for obj in vac]), 200)
 
 
 @app.route('/form', methods=['POST'])
@@ -140,7 +142,7 @@ def test():
 
 @app.route('/some', methods=['GET'])
 def some():
-    user=user_cases.getUser(login="admin")
-    vacs=match_vacancies.get_match_vacancies(user)
+    user = user_cases.getUser(login="admin")
+    vacs = match_vacancies.get_match_vacancies(user)
     print(vacs)
     return make_response(vacs, 200)
