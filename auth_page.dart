@@ -12,8 +12,8 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  final String clientId = "JVK1MQ18SJ51T97OQ8VTET0SRM042AJDEGSN9PQ9056LLOEOG90S18L9630GJLM8";
-  final String clientSecret = "GUSTOVDGMU60SFS2MGGL45CJ5TD0GU1LFDSU4F9SG0ONOI1V9BC5AKIDKJF16G7K";
+  final String clientId = "";
+  final String clientSecret = "";
   final String redirectUri = "myapp://callback";
 
   String? accessToken;
@@ -55,7 +55,7 @@ class _AuthPageState extends State<AuthPage> {
 
   Future<void> _fetchAccessToken(String code) async {
     const String tokenUrl = "https://hh.ru/oauth/token";
-    const String backendUrl = "http://94.103.183.30:8080/hh_auth";
+    const String backendUrl = "";
 
     try {
       final response = await http.post(
