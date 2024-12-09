@@ -1,93 +1,31 @@
 from collections import defaultdict
 
-from entities.tracking import SourceEnum, VacancyKey, StageEnum, TrackUnit, Stage
-from entities.user import EmailMessage, UserModel
-from models.user import User
-from repository.vacancies_repository.db_methods import get_vacancy
-from services.mail_checker.methods import get_email_messages
-from .hh import (
-    get_stage_type_from_hh,
-    clean_body_from_hh,
-    get_id_from_hh,
-    clean_body_from_hh2,
+from your_job_offer.entities.user import User
+from your_job_offer.entities.tracking import (
+    TrackUnit,
 )
 
-MAIL_SOURCES = {
-    "=?UTF-8?B?0KDRg9GB0LvQsNC9INCv0YTQsNGA0L7Qsg==?= <afarovruslancrypto@gmail.com>": SourceEnum.HHRU,
-    "hh.ru <noreply@hh.ru>": SourceEnum.HHRU,
-}
+from your_job_offer.services.mail_checker.methods import get_email_messages
+from your_job_offer.repository.vacancies_repository.db_methods import (
+    get_vacancies_by_keys,
+)
+
+from .internal import *
 
 
-def clean_message(message: EmailMessage) -> None:
+def get_all_stages(user: User) -> list[TrackUnit]:
     """
-    удаляет все лишнее
+    Возвращает все поданные userом заявки
     """
-    if MAIL_SOURCES[message.sender] == SourceEnum.HHRU:
-        message.body = clean_body_from_hh(message)
-
-
-def clean_message2(message: EmailMessage) -> None:
-    """
-    Удаляет ссылку на вакансию и остальную ненужную информацию
-    """
-    if MAIL_SOURCES[message.sender] == SourceEnum.HHRU:
-        message.body = clean_body_from_hh2(message)
-
-
-def filter_and_clean_messages(
-    messages: list[EmailMessage],
-) -> list[EmailMessage]:
-    answer: list[EmailMessage] = []
-    for message in messages:
-        if message.sender in MAIL_SOURCES.keys():
-            clean_message(message)
-            if message.body != "":
-                answer.append(message)
-    return answer
-
-
-def get_id(source: SourceEnum, message: EmailMessage) -> str:
-    if source == SourceEnum.HHRU:
-        return get_id_from_hh(message)
-
-
-def get_vancancy_key(message: EmailMessage) -> VacancyKey:
-    source = MAIL_SOURCES[message.sender]
-    id = get_id(source, message)
-    return VacancyKey(source, id)
-
-
-def get_stage_type(source: SourceEnum, message: EmailMessage) -> StageEnum:
-    if source == SourceEnum.HHRU:
-        return get_stage_type_from_hh(message)
-
-
-def separate_by_vacancy(
-    messages: list[EmailMessage],
-) -> dict[VacancyKey, list[EmailMessage]]:
-    ans = defaultdict(list[EmailMessage])
-    for message in messages:
-        ans[get_vancancy_key(message)].append(message)
-    return ans
-
-
-def get_all_stages(user: UserModel) -> list[TrackUnit]:
-    email_messages = get_email_messages(user)
-    email_messages = filter_and_clean_messages(email_messages)
-    separated_messages = separate_by_vacancy(email_messages)
+    raw_messages = get_email_messages(user)
+    raw_messages = filter_from_spam(raw_messages)
+    cleaned_messages = clean_messages(raw_messages)
+    parsed_messages = parse_messages(cleaned_messages)
+    normal_messages = make_normal_messages(parsed_messages, raw_messages)
+    separated_messages = separate_by_vacancy(normal_messages)
+    vacancies = get_vacancies_by_keys(list(separated_messages.keys()))
     ans: list[TrackUnit] = []
-    for vacancy_key, messages in separated_messages.items():
-        vacancy = get_vacancy(vacancy_key)
-        stages: list[Stage] = []
-        for message in messages:
-            stage_type = get_stage_type(vacancy_key.source, message)
-            clean_message2(message)
-            stages.append(
-                Stage(
-                    stage_type,
-                    message.body,
-                    message.date,
-                )
-            )
-        ans.append(TrackUnit(vacancy, stages))
+    for vacancy, stages in zip(vacancies, separated_messages.values()):
+        if vacancy is not None:
+            ans.append(TrackUnit(vacancy, stages))
     return ans

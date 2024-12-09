@@ -6,7 +6,8 @@ import pandas as pd
 
 
 class SourceEnum(Enum):
-    HHRU = "hh.ru"
+    HH_RU = "hh.ru"
+    UNK = "unknown"
 
 
 class Date(pd.Timestamp):
@@ -31,8 +32,9 @@ class StageEnum(Enum):
 @dataclass
 class Stage:
     stage_type: StageEnum
-    message: str
-    date: Date
+    deadline: Date
+    date: Date = Date("")
+    message: str = ""
 
 
 @dataclass
@@ -43,5 +45,12 @@ class TrackUnit:  # я не знаю, как еще назвать)
 
 @dataclass(frozen=True)
 class VacancyKey:
-    source: SourceEnum
-    id: str
+    job: str
+    employer: str
+    id: str = ""
+
+
+@dataclass
+class ParsedMessage:
+    vacancy_key: VacancyKey
+    stage: Stage

@@ -8,3 +8,5 @@ pymorphy2
 requests
 dataclasses-json
 sentry-sdk
+beautifulsoup4
+lxml

@@ -3,10 +3,17 @@ from sqlalchemy import select, or_
 from sqlalchemy.exc import NoResultFound
 
 import logger
-from entities.enums import EmploymentEnum, ScheduleEnum, WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum
+from entities.enums import (
+    EmploymentEnum,
+    ScheduleEnum,
+    WorkTypeEnum,
+    BusinessTripReadinessEnum,
+    RelocationEnum,
+)
 from models.user import User, Job
 from models.vacancy import Vacancy
 from repository.vacancies_repository.db_session import session
+from your_job_offer.entities.tracking import VacancyKey, VacancyModel
 
 log = logger.get_logger(__name__)
 
@@ -127,7 +134,9 @@ def get_vacancies_by_filters(filters: dict):
     query = session.query(Vacancy)
     for key, value in filters.items():
         if value is not None:
-            query = query.filter(getattr(Vacancy, key) == value)  # Простое сравнение для числовых значений
+            query = query.filter(
+                getattr(Vacancy, key) == value
+            )  # Простое сравнение для числовых значений
 
     vacancies = query.all()
     print(vacancies)
@@ -287,14 +296,21 @@ def get_vacancies_by_user(user: User):
         or_(user.relocation is None, Vacancy.relocation == user.relocation),
         or_(user.employment is None, Vacancy.employment == user.employment),
         or_(user.workType is None, Vacancy.workType == user.workType),
-        or_(user.businessTripReadiness is None, Vacancy.businessTripReadiness == user.businessTripReadiness),
+        or_(
+            user.businessTripReadiness is None,
+            Vacancy.businessTripReadiness == user.businessTripReadiness,
+        ),
         or_(user.schedule is None, Vacancy.schedule == user.schedule),
     )
     if user.workHours is not None:
-        stmt = stmt.where(or_(Vacancy.workHours is None, Vacancy.workHours <= user.workHours))
+        stmt = stmt.where(
+            or_(Vacancy.workHours is None, Vacancy.workHours <= user.workHours)
+        )
 
     if user.minSalary is not None:
-        stmt = stmt.where(or_(Vacancy.minSalary is None, Vacancy.minSalary >= user.minSalary))
+        stmt = stmt.where(
+            or_(Vacancy.minSalary is None, Vacancy.minSalary >= user.minSalary)
+        )
 
     return get_vacancies_with_statement(stmt)
 
@@ -314,11 +330,11 @@ def update_user(user: User):
         user_db = session.query(User).filter_by(login=user.login).one()
 
         for field in User.__table__.columns.keys():
-            if field not in ['id', 'login', 'password']:
+            if field not in ["id", "login", "password"]:
                 new_value = getattr(user, field, None)
                 if new_value is not None:
                     setattr(user_db, field, new_value)
-    
+
         session.commit()
         log.info(f"Пользователь с логином '{user.login}' успешно обновлен.")
     except NoResultFound:
@@ -326,3 +342,13 @@ def update_user(user: User):
     except Exception as e:
         log.error(f"Ошибка обновления: {e}")
         session.rollback()
+
+
+def get_vacancies_by_keys(
+    keys: list[VacancyKey],
+) -> list[VacancyModel | None]:  # TODO Даша TODO Настя
+    """
+    :return: список вакансий точно такого же размера, как и keys
+    """
+    # здесь типа запрос к бд
+    return [VacancyModel(job=key.job, employer=key.employer) for key in keys]

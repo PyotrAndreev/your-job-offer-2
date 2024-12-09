@@ -13,8 +13,6 @@ export $(grep -v '^#' .env | xargs)
 SERVICE_NAME="jobs-db"
 if [ -z "$(docker ps -q -f name=${SERVICE_NAME})" ]; then
     docker-compose up -d
-    sleep 5
-    time python3 your_job_offer/services/vacancies_repository/get_vacancies.py
 else
     echo "Контейнер '${SERVICE_NAME}' уже запущен."
 fi

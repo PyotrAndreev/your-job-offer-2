@@ -161,7 +161,10 @@ class _ResumeParser:
     ) -> float:
         """Считает сколько примерно стоил запрос"""
         return (
-            0.0432 * estimated_prompt_tokens + 0.1728 * tokens_answer_count
+            self.PRICES[self.model]["request_per_thousand_token_price"]
+            * estimated_prompt_tokens
+            + self.PRICES[self.model]["response_per_thousand_token_price"]
+            * tokens_answer_count
         ) / 1000
 
 
