@@ -10,7 +10,7 @@ pip3 install -r build/requirements.txt
 pip3 install -r build/requirements-dev.txt
 pip3 install -e .
 export $(grep -v '^#' .env | xargs)
-SERVICE_NAME="jobs-db"
+SERVICE_NAME="db"
 if [ -z "$(docker ps -q -f name=${SERVICE_NAME})" ]; then
     docker-compose up -d
 else

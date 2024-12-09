@@ -2,14 +2,15 @@ import re
 import json
 from os import getenv
 import logging
+from typing import Optional
 
 import pdftotext
 from openai import OpenAI
 
 from .tokenizer import num_tokens_from_string
-import services.cv_parser.errors as errors
-import entities.user as user_models
-import entities.general as general_models
+
+import your_job_offer.entities.user as user_models
+import your_job_offer.services.cv_parser.errors as errors
 
 
 class OpenaAIQueryBuilder:
@@ -82,21 +83,22 @@ class _ResumeParser:
   "business_trip_readiness": 0 or 1,
   "work_hours": "",
   "relocation": 0 or 1,
+  "education": один из вариантов "secondary" "special_secondary" "unfinished_higher" "higher" "bachelor" "master" "candidate" "doctor",
   "project_experience": [
     {
-      "title": "",
+      "name": "",
       "description": "",
       "link": ""
     }
   ],
   "achievements": [
     {
-      "title": "",
+      "name": "",
       "description: "",
       "link": ""
     },
   ]
-  "work_experience": [
+  "work_experiences": [
     {
       "job": "",
       "work_place": "",
@@ -189,44 +191,63 @@ class ResumeParser:
             )
         self.parser = _ResumeParser(openai_api_key)
 
-    def parse(self, pdf_path: str) -> user_models.User:
+    def parse(self, pdf_path: str) -> user_models.UserModel:
         result_dict = self.parser.parse(pdf_path)
         return ResumeParser._dict_to_user(result_dict)
 
     @staticmethod
-    def _dict_to_user(user: dict) -> user_models.User:
+    def _field_to_int(field: str) -> Optional[int]:
+        if len(field) == 0:
+            return None
+        return int(field)
+
+    @staticmethod
+    def _field_to_str(field: str) -> Optional[str]:
+        if len(field) == 0:
+            return None
+        return field
+
+    @staticmethod
+    def _dict_to_user(user: dict) -> user_models.UserModel:
         projects = [
-            user_models.Project(**project)
+            user_models.ProjectModel(**project)
             for project in user["project_experience"]
         ]
         work_experience = [
-            user_models.WorkExperience(**work_experience)
-            for work_experience in user["work_experience"]
+            user_models.WorkExperienceModel(**work_experience)
+            for work_experience in user["work_experiences"]
         ]
         achievements = [
-            user_models.Achievement(**achievement)
+            user_models.AchievementModel(**achievement)
             for achievement in user["achievements"]
         ]
-        return user_models.User(
-            birth_date=general_models.Date(user["birth_date"]),
+        education_level = (
+            user_models.EducationLevelEnum(user["education"])
+            if user["education"] != ""
+            else None
+        )
+
+        return user_models.UserModel(
+            birth_date=ResumeParser._field_to_str(user["birth_date"]),
             first_name=user_models.Name(user["first_name"]),
             last_name=user_models.Name(user["last_name"]),
             middle_name=user_models.Name(user["middle_name"]),
             gender=user["gender"],
-            phone=general_models.Phone(user["phone"]),
-            email=general_models.Email(user["email"]),
+            phone=ResumeParser._field_to_str(user["phone"]),
+            email=ResumeParser._field_to_str(user["email"]),
             city=user["city"],
             country=user["country"],
             cv=user["cv"],
             description=user["description"],
             work_type=user["work_type"],
-            min_salary=general_models.Salary(user["min_salary"]),
-            max_salary=general_models.Salary(user["max_salary"]),
+            education_level=education_level,
+            min_salary=ResumeParser._field_to_int(user["min_salary"]),
+            max_salary=ResumeParser._field_to_int(user["max_salary"]),
             business_trip_readiness=user["business_trip_readiness"],
-            work_hours=general_models.WorkHours(user["work_hours"]),
+            work_hours=ResumeParser._field_to_int(user["work_hours"]),
             relocation=user["relocation"],
             projects=projects,
             skills=user["skills"],
-            work_experience=work_experience,
+            work_experiences=work_experience,
             achievements=achievements,
         )

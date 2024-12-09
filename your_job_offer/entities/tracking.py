@@ -1,13 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from entities.jobs import VacancyModel
+from .jobs import VacancyModel
 import pandas as pd
-
-
-class SourceEnum(Enum):
-    HH_RU = "hh.ru"
-    UNK = "unknown"
 
 
 class Date(pd.Timestamp):

@@ -1,6 +1,4 @@
-from collections import defaultdict
-
-from your_job_offer.entities.user import User
+from your_job_offer.entities.user import UserModel
 from your_job_offer.entities.tracking import (
     TrackUnit,
 )
@@ -13,7 +11,7 @@ from your_job_offer.repository.vacancies_repository.db_methods import (
 from .internal import *
 
 
-def get_all_stages(user: User) -> list[TrackUnit]:
+def get_all_stages(user: UserModel) -> list[TrackUnit]:
     """
     Возвращает все поданные userом заявки
     """

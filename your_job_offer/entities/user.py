@@ -4,10 +4,18 @@ from datetime import date
 from typing import Optional, List
 from dataclasses_json import dataclass_json
 
-from entities.enums import WorkTypeEnum, BusinessTripReadinessEnum, EmploymentEnum, RelocationEnum, ScheduleEnum, \
-    GenderEnum, EducationLevelEnum, SourceEnum
-from entities.general import SkillModel, LanguageModel, CityModel, CountryModel
-from entities.jobs import VacancyModel
+from .enums import (
+    WorkTypeEnum,
+    BusinessTripReadinessEnum,
+    EmploymentEnum,
+    RelocationEnum,
+    ScheduleEnum,
+    GenderEnum,
+    EducationLevelEnum,
+    SourceEnum,
+)
+from .general import SkillModel, LanguageModel, CityModel, CountryModel
+from .jobs import VacancyModel
 
 
 @dataclass_json
@@ -17,7 +25,7 @@ class Name:
 
     def __post_init__(self):
         if not re.match(
-                "[A-zА-я]{2,25}", self.name
+            "[A-zА-я]{2,25}", self.name
         ):  # наверное, если строка пришла какая-то не такая, то лучше
             # оставить поле пустым и пусть пользователь сам заполнит
             self.name = ""
@@ -38,7 +46,8 @@ class ProjectModel:
     Methods:
         __str__: Returns a string representation of the ProjectModel instance.
     """
-    id: int
+
+    id: Optional[int] = None
     name: Optional[str] = None
     description: Optional[str] = None
     link: Optional[str] = None
@@ -62,7 +71,8 @@ class AchievementModel:
     Methods:
         __str__: Returns a string representation of the AchievementModel instance.
     """
-    id: int
+
+    id: Optional[int] = None
     name: Optional[str] = None
     description: Optional[str] = None
     link: Optional[str] = None
@@ -88,7 +98,8 @@ class WorkExperienceModel:
     Methods:
         __str__: Returns a string representation of the WorkExperienceModel instance.
     """
-    id: int
+
+    id: Optional[int] = None
     job: Optional[str] = None
     work_place: Optional[str] = None
     description: Optional[str] = None
@@ -120,7 +131,8 @@ class EducationModel:
     Methods:
         __str__: Returns a string representation of the EducationModel instance.
     """
-    id: int
+
+    id: Optional[int] = None
     institution: Optional[str] = None
     major: Optional[str] = None
     degree: Optional[str] = None
@@ -176,8 +188,9 @@ class UserModel:
     Methods:
         __str__: Returns a string representation of the UserModel instance.
     """
-    login: str
-    password: str
+
+    login: Optional[str] = None
+    password: Optional[str] = None
     id: Optional[int] = None
     birth_date: Optional[str] = None
     first_name: Optional[str] = None

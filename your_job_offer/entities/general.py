@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from typing import Optional
 
-from entities.enums import LanguageLevelEnum
+from .enums import LanguageLevelEnum
 
 
 @dataclass_json
@@ -19,28 +19,32 @@ class CountryModel:
     Methods: __str__: Returns a string representation of the CountryModel instance, displaying the country's ID,
     name, and area_id.
     """
+
     id: int
     name: Optional[str] = None
     area_id: Optional[int] = None
 
     def __str__(self):
-        return f"Country(id={self.id}, name={self.name}, area_id={self.area_id})"
+        return (
+            f"Country(id={self.id}, name={self.name}, area_id={self.area_id})"
+        )
 
 
 @dataclass_json
 @dataclass
 class CityModel:
     """
-     Represents a city in the system.
+    Represents a city in the system.
 
-     Attributes:
-         id (int): The unique identifier of the city.
-         name (Optional[str]): The name of the city.
-         area_id (Optional[int]): The identifier of the area to which the city belongs.
+    Attributes:
+        id (int): The unique identifier of the city.
+        name (Optional[str]): The name of the city.
+        area_id (Optional[int]): The identifier of the area to which the city belongs.
 
-     Methods: __str__: Returns a string representation of the CityModel instance, displaying the city's ID, name,
-     and area_id.
+    Methods: __str__: Returns a string representation of the CityModel instance, displaying the city's ID, name,
+    and area_id.
     """
+
     id: int
     name: Optional[str] = None
     area_id: Optional[int] = None
@@ -62,6 +66,7 @@ class LanguageModel:
     Methods:
         __str__: Returns a string representation of the LanguageModel instance, displaying the language's ID and name.
     """
+
     id: int
     name: Optional[str] = None
     level: Optional[LanguageLevelEnum] = None
@@ -84,7 +89,8 @@ class SkillModel:
     Methods: __str__: Returns a string representation of the SkillModel instance, displaying the skill's ID, name,
     and description.
     """
-    id: int
+
+    id: Optional[int] = None
     name: Optional[str] = None
     description: Optional[str] = None
 

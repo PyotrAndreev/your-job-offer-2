@@ -60,3 +60,8 @@ class EducationLevelEnum(Enum):
     MASTER = "master"
     CANDIDATE = "candidate"
     DOCTOR = "doctor"
+
+
+class SourceEnum(Enum):
+    HH_RU = "hh.ru"
+    UNK = "unknown"
