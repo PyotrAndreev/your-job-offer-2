@@ -3,14 +3,21 @@ from sqlalchemy import (
     Integer,
     String,
     Date,
-    Boolean, ForeignKey,
+    Boolean,
+    ForeignKey,
 )
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 from sqlalchemy.orm import relationship
 
-from entities.enums import WorkTypeEnum, BusinessTripReadinessEnum, ScheduleEnum, EmploymentEnum, RelocationEnum, \
-    SourceEnum
-from repository.vacancies_repository.db_session import Base
+from your_job_offer.entities.enums import (
+    WorkTypeEnum,
+    BusinessTripReadinessEnum,
+    ScheduleEnum,
+    EmploymentEnum,
+    RelocationEnum,
+    SourceEnum,
+)
+from your_job_offer.repository.vacancies_repository.db_session import Base
 
 
 class Vacancy(Base):
@@ -58,8 +65,12 @@ class Vacancy(Base):
     source = Column(
         PgEnum(SourceEnum, name="source", create_type=True), nullable=True
     )
-    idVacancyFromSource = Column(String, nullable=True, name="id_vacancy_from_source")
-    user = relationship('User', secondary='user_vacancy_status', back_populates='vacancy')
+    idVacancyFromSource = Column(
+        String, nullable=True, name="id_vacancy_from_source"
+    )
+    user = relationship(
+        "User", secondary="user_vacancy_status", back_populates="vacancy"
+    )
 
 
 class UserVacancyStatus(Base):

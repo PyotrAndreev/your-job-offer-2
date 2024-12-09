@@ -1,4 +1,3 @@
-import logging
 from os import getenv
 import json
 
@@ -11,6 +10,9 @@ from your_job_offer.entities.tracking import (
     Stage,
     StageEnum,
 )
+from your_job_offer.logger import get_logger
+
+log = get_logger(__name__)
 
 
 class EmailParser:
@@ -27,18 +29,9 @@ class EmailParser:
         max_summary_tokens: int = 16384,
         model: str = "gpt-4o-mini",
     ):
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
-        handler = logging.FileHandler(
-            f"your_job_offer/logs/{__name__}.log", mode="w"
-        )
-        handler.setFormatter(
-            logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-        )
-        self.logger.addHandler(handler)
         openai_api_key = getenv("OPENAI_API_KEY")
         if openai_api_key is None:
-            self.logger.error("OPENAI_API_KEY не найден.")
+            log.error("OPENAI_API_KEY не найден.")
             raise KeyError(
                 "OPENAI_API_KEY не найден. \
                 Убедись, что запускал build.sh \
@@ -98,7 +91,7 @@ class EmailParser:
             raise RuntimeError(
                 "бро пришло слишком много писем, нам это не по-карману"
             )
-        self.logger.info(
+        log.info(
             f"Запрос отработан, на запросе {estimated_prompt_tokens}, \
             на ответе {tokens_answer_count} токенов, \
             всего на запрос затрачено \

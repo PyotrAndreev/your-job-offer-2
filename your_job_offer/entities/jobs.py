@@ -3,7 +3,14 @@ from datetime import date
 from enum import Enum
 from typing import Optional
 
-from .enums import WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum, EmploymentEnum, ScheduleEnum, SourceEnum
+from .enums import (
+    WorkTypeEnum,
+    BusinessTripReadinessEnum,
+    RelocationEnum,
+    EmploymentEnum,
+    ScheduleEnum,
+    SourceEnum,
+)
 from .general import *
 
 from dataclasses_json import dataclass_json
@@ -43,7 +50,8 @@ class VacancyModel:
     Methods:
         __str__: Returns a string representation of the VacancyModel instance.
     """
-    id: int
+
+    id: Optional[int] = None
     job: Optional[str] = None
     description: Optional[str] = None
     min_salary: Optional[int] = None

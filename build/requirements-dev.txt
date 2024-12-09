@@ -1,0 +1,8 @@
+pytest
+numpy
+scipy
+flake8
+mypy
+tqdm
+ipykernel
+ipywidgets

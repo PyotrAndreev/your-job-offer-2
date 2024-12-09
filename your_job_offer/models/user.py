@@ -8,9 +8,17 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 
-from entities.enums import GenderEnum, WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum, EmploymentEnum, \
-    ScheduleEnum, LanguageLevelEnum, EducationLevelEnum, SourceEnum
-from repository.vacancies_repository.db_session import Base
+from your_job_offer.entities.enums import (
+    GenderEnum,
+    WorkTypeEnum,
+    BusinessTripReadinessEnum,
+    RelocationEnum,
+    EmploymentEnum,
+    ScheduleEnum,
+    LanguageLevelEnum,
+    EducationLevelEnum,
+)
+from your_job_offer.repository.vacancies_repository.db_session import Base
 
 
 class Country(Base):
@@ -38,7 +46,7 @@ class Language(Base):
         nullable=True,
     )
     user = relationship(
-        "User", secondary='language_user', back_populates="language"
+        "User", secondary="language_user", back_populates="language"
     )
 
 
@@ -47,7 +55,7 @@ class Skill(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=True)
     description = Column(String(300), nullable=True)
-    user = relationship("User", secondary='skill_user', back_populates="skill")
+    user = relationship("User", secondary="skill_user", back_populates="skill")
 
 
 class Job(Base):
@@ -151,20 +159,29 @@ class User(Base):
         PgEnum(ScheduleEnum, name="schedule", create_type=True), nullable=True
     )
     educationLevel = Column(
-        PgEnum(EducationLevelEnum, name="education_level", create_type=True), nullable=True
+        PgEnum(EducationLevelEnum, name="education_level", create_type=True),
+        nullable=True,
     )
     hhResumeId = Column(String, name="hh_resume_id", nullable=True)
     innerEmail = Column(String, name="inner_email", nullable=True)
-    innerEmailPassword = Column(String, name="inner_email_password", nullable=True)
+    innerEmailPassword = Column(
+        String, name="inner_email_password", nullable=True
+    )
     project = relationship("Project", back_populates="user")
     achievement = relationship("Achievement", back_populates="user")
     workExperience = relationship("WorkExperience", back_populates="user")
     education = relationship("Education", back_populates="user")
-    skill = relationship('Skill', secondary='skill_user', back_populates='user')
-    language = relationship('Language', secondary='language_user', back_populates='user')
+    skill = relationship(
+        "Skill", secondary="skill_user", back_populates="user"
+    )
+    language = relationship(
+        "Language", secondary="language_user", back_populates="user"
+    )
     country = relationship("Country", back_populates="user")
     city = relationship("City", back_populates="user")
-    vacancy = relationship('Vacancy', secondary='user_vacancy_status', back_populates='user')
+    vacancy = relationship(
+        "Vacancy", secondary="user_vacancy_status", back_populates="user"
+    )
 
 
 class SkillUser(Base):

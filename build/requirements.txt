@@ -1,0 +1,12 @@
+openai
+flask
+tiktoken
+pandas
+sqlalchemy
+nltk
+pymorphy2
+requests
+dataclasses-json
+sentry-sdk
+beautifulsoup4
+lxml

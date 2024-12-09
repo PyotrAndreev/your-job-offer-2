@@ -1,7 +1,6 @@
 import re
 import json
 from os import getenv
-import logging
 from typing import Optional
 
 import pdftotext
@@ -11,6 +10,9 @@ from .tokenizer import num_tokens_from_string
 
 import your_job_offer.entities.user as user_models
 import your_job_offer.services.cv_parser.errors as errors
+from your_job_offer.logger import get_logger
+
+log = get_logger(__name__)
 
 
 class OpenaAIQueryBuilder:
@@ -119,8 +121,6 @@ class _ResumeParser:
         self.max_tokens = max_tokens
         self.model = model
 
-        self.logger = logging.getLogger(__name__)
-
     def parse(self, pdf_path: str) -> dict:
         """
         Делает запрос gpt в виде текста pdfки для извлечения информации
@@ -143,7 +143,7 @@ class _ResumeParser:
         tokens_answer_count = num_tokens_from_string(response, self.model)
         if tokens_answer_count == max_answer_tokens:
             self._too_big_file_error(estimated_prompt_tokens)
-        self.logger.info(
+        log.info(
             f"Запрос отработан, на запросе {estimated_prompt_tokens}, \
             на ответе {tokens_answer_count} токенов, \
             всего на запрос затрачено \
@@ -153,9 +153,7 @@ class _ResumeParser:
         return resume
 
     def _too_big_file_error(self, estimated_prompt_tokens: int) -> None:
-        self.logger.info(
-            f"Слишком большой файл, {estimated_prompt_tokens} токенов"
-        )
+        log.info(f"Слишком большой файл, {estimated_prompt_tokens} токенов")
         raise errors.TooBigFile
 
     def _calculate_cost(
@@ -172,18 +170,9 @@ class _ResumeParser:
 
 class ResumeParser:
     def __init__(self):
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
-        handler = logging.FileHandler(
-            f"your_job_offer/logs/{__name__}.log", mode="w"
-        )
-        handler.setFormatter(
-            logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-        )
-        self.logger.addHandler(handler)
         openai_api_key = getenv("OPENAI_API_KEY")
         if openai_api_key is None:
-            self.logger.error("OPENAI_API_KEY не найден.")
+            log.error("OPENAI_API_KEY не найден.")
             raise KeyError(
                 "OPENAI_API_KEY не найден. \
                 Убедись, что запускал build.sh \

@@ -2,7 +2,7 @@ from your_job_offer.entities.tracking import VacancyKey
 from sqlalchemy import select, or_
 from sqlalchemy.exc import NoResultFound
 
-import logger
+import your_job_offer.logger as logger
 from your_job_offer.entities.enums import (
     EmploymentEnum,
     ScheduleEnum,
