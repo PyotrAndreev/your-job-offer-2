@@ -1,3 +1,4 @@
+from entities.jobs import VacancyModel
 from entities.tracking import VacancyKey
 from sqlalchemy import select, or_
 from sqlalchemy.exc import NoResultFound
@@ -13,7 +14,6 @@ from entities.enums import (
 from models.user import User, Job
 from models.vacancy import Vacancy
 from repository.vacancies_repository.db_session import session
-from your_job_offer.entities.tracking import VacancyKey, VacancyModel
 
 log = logger.get_logger(__name__)
 

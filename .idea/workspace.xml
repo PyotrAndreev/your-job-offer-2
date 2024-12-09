@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="45eadac3-7266-46c4-a6f7-4fb1e31ce135" name="Default Changelist" comment="some fix db">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile.app" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile.app" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/your_job_offer/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/your_job_offer/.idea/dbnavigator.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/your_job_offer/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/your_job_offer/app.py" afterDir="false" />
+    <list default="true" id="45eadac3-7266-46c4-a6f7-4fb1e31ce135" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/your_job_offer/entities/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/your_job_offer/entities/enums.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/your_job_offer/repository/vacancies_repository/db_methods.py" beforeDir="false" afterPath="$PROJECT_DIR$/your_job_offer/repository/vacancies_repository/db_methods.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +38,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
