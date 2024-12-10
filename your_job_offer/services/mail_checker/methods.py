@@ -7,7 +7,7 @@ def get_email_messages(user: UserModel) -> list[EmailMessage]:
 
 
 def get_new_email(
-    filename="your_job_offer/services/mail_checker/mails.txt",
+    filename="secrets/mails.txt",
 ) -> tuple[str, str]:
     """
     Return new email and password from file
