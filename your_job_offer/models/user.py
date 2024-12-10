@@ -8,7 +8,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 
-from your_job_offer.entities.enums import (
+from  entities.enums import (
     GenderEnum,
     WorkTypeEnum,
     BusinessTripReadinessEnum,
@@ -18,7 +18,7 @@ from your_job_offer.entities.enums import (
     LanguageLevelEnum,
     EducationLevelEnum,
 )
-from your_job_offer.repository.vacancies_repository.db_session import Base
+from  repository.vacancies_repository.db_session import Base
 
 
 class Country(Base):
@@ -180,7 +180,7 @@ class User(Base):
     country = relationship("Country", back_populates="user")
     city = relationship("City", back_populates="user")
     vacancy = relationship(
-        "Vacancy", secondary="user_vacancy_status", back_populates="user"
+        "Vacancy",  secondary="user_vacancy_status", back_populates="user"
     )
 
 

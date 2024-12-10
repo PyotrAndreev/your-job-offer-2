@@ -1,6 +1,6 @@
 from os import getenv
 
-from your_job_offer.entities.user import *
+from  entities.user import *
 
 
 def get_user() -> UserModel:
