@@ -65,3 +65,14 @@ class EducationLevelEnum(Enum):
 class SourceEnum(Enum):
     HH_RU = "hh.ru"
     UNK = "unknown"
+
+
+class StageEnum(Enum):
+    CONSIDERATION = "consideration"
+    REJECT = "reject"
+    INVITE = "invite"  # это значит нужно заполнить какую-то информацию или записаться на собеседование
+    TESTING = "testing"
+    INTERVIEW = (
+        "interview"  # этап invite пройден, нужно записаться на собеседование
+    )
+

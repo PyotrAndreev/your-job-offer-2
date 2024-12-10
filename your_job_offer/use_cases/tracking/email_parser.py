@@ -1,16 +1,16 @@
 from os import getenv
 import json
 
-from your_job_offer.services.cv_parser.parser import OpenaAIQueryBuilder
-from your_job_offer.services.cv_parser.tokenizer import num_tokens_from_string
-from your_job_offer.entities.user import EmailMessage
-from your_job_offer.entities.tracking import (
+from  services.cv_parser.parser import OpenaAIQueryBuilder
+from  services.cv_parser.tokenizer import num_tokens_from_string
+from  entities.user import EmailMessage
+from  entities.tracking import (
     ParsedMessage,
     VacancyKey,
     Stage,
     StageEnum,
 )
-from your_job_offer.logger import get_logger
+from  logger import get_logger
 
 log = get_logger(__name__)
 

@@ -65,7 +65,7 @@ def getVacancies():
         return make_response("User not exists", 401)
     user = user_cases.getUser(user.login)
     vac = match_vacancies.get_match_vacancies(user=user)
-    return make_response(json.dumps([obj.to_json() for obj in vac]), 200)
+    return make_response(jsonify(vacancies=json.dumps([obj.to_json() for obj in vac])), 200)
 
 
 @app.route('/form', methods=['POST'])
