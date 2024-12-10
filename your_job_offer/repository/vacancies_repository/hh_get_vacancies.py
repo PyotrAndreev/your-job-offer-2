@@ -105,10 +105,6 @@ def get_vacancies_by_role(role: int):
                 job=item["name"],
                 area=item["area"]["name"],
             )
-            save_vacancy(vacancy)
             vacanciess.append(vacancy)
 
     return vacanciess
-
-
-get_vacancies()

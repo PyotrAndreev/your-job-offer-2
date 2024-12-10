@@ -114,6 +114,24 @@ def clean_messages(messages: list[EmailMessage]) -> list[EmailMessage]:
     return result
 
 
+def find_vacancy_number(message: EmailMessage) -> str:
+    """
+    Find vacancy id
+    """
+    s = message.body
+    start_index = s.find("vacancy/")
+    if start_index == -1:
+        return ""
+    start_index += len("vacancy/")
+    vacancy_number = ""
+    for char in s[start_index:]:
+        if char.isdigit():
+            vacancy_number += char
+        else:
+            break
+    return vacancy_number
+
+
 def make_normal_messages(
     parsed_messages: list[ParsedMessage | None],
     raw_messages: list[EmailMessage],
@@ -124,10 +142,13 @@ def make_normal_messages(
         )
     result: list[ParsedMessage] = []
     for parsed_message, raw_message in zip(parsed_messages, raw_messages):
-        if (
-            parsed_message is not None
-            and parsed_message.vacancy_key.employer != ""
+        parsed_message.vacancy_key.id_vacancy_from_source = (
+            find_vacancy_number(raw_message)
+        )
+        if parsed_message is not None and (
+            parsed_message.vacancy_key.employer != ""
             and parsed_message.vacancy_key.job != ""
+            or parsed_message.vacancy_key.id_vacancy_from_source != ""
         ):
             parsed_message.stage.message = raw_message.body
             parsed_message.stage.date = raw_message.date

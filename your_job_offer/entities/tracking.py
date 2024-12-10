@@ -17,7 +17,7 @@ class Date(pd.Timestamp):
 class StageEnum(Enum):
     CONSIDERATION = "consideration"
     REJECT = "reject"
-    INVITE = "invite"  # это значит нужно заполнить какую-то информацию или записаться на собеседование
+    INVITE = "invite"  # это значит нужно заполнить какую-то информацию
     TESTING = "testing"
     INTERVIEW = (
         "interview"  # этап invite пройден, нужно записаться на собеседование
@@ -42,7 +42,7 @@ class TrackUnit:  # я не знаю, как еще назвать)
 class VacancyKey:
     job: str
     employer: str
-    id: str = ""
+    id_vacancy_from_source: str = ""
 
 
 @dataclass

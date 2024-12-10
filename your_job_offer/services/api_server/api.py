@@ -12,7 +12,6 @@ from repository.vacancies_repository import db_methods
 from repository.vacancies_repository.db_methods import update_user
 
 from mappers.mapper import map_vacancy
-from repository.vacancies_repository.get_vacancies import get_vacancies
 
 from repository.tokens_repository.get_hh_token import get_hh_token
 from services.hh_api.apply_to_vacancy import apply_to_vacancy
@@ -25,12 +24,12 @@ app = Flask("app")
 log = logger.get_logger(__name__)
 
 
-@app.route('/ping')
+@app.route("/ping")
 def ping():
     return make_response("OK", 200)
 
 
-@app.route('/register', methods=['POST'])
+@app.route("/register", methods=["POST"])
 def registerUser():
     user = UserModel.from_dict(request.json)
 
@@ -44,7 +43,7 @@ def registerUser():
     return make_response(user.to_json(), 200)
 
 
-@app.route('/login', methods=['POST'])
+@app.route("/login", methods=["POST"])
 def loginUser():
     user = UserModel.from_dict(request.json)
     if not user_cases.ifExistUser(user.login):
@@ -58,7 +57,7 @@ def loginUser():
         return make_response("Wrong password", 401)
 
 
-@app.route('/get_vacancies', methods=['POST'])
+@app.route("/get_vacancies", methods=["POST"])
 def getVacancies():
     user = UserModel.from_dict(request.json)
     if not user_cases.ifExistUser(user.login):
@@ -68,7 +67,7 @@ def getVacancies():
     return make_response(json.dumps([obj.to_json() for obj in vac]), 200)
 
 
-@app.route('/form', methods=['POST'])
+@app.route("/form", methods=["POST"])
 def get_form():
     """
     Handles the POST request for the form submission. Validates the input data,
@@ -85,9 +84,16 @@ def get_form():
     """
     try:
         data = request.json
-        if not data or 'login' not in data or 'password' not in data:
-            return make_response(jsonify({"error": "Invalid request. 'login', 'password' fields are "
-                                                   "required."}), 400)
+        if not data or "login" not in data or "password" not in data:
+            return make_response(
+                jsonify(
+                    {
+                        "error": "Invalid request. 'login', 'password' fields are "
+                        "required."
+                    }
+                ),
+                400,
+            )
 
         user = UserModel.from_json(request.data)
         log.info(f"User: {user}")
@@ -98,7 +104,7 @@ def get_form():
         return make_response(jsonify({"error": str(e)}), 500)
 
 
-@app.route('/hh_auth', methods=['POST'])
+@app.route("/hh_auth", methods=["POST"])
 def hh_auth():
     """
     Handles the POST request for authenticating with hh.ru. It validates the input data and
@@ -115,15 +121,35 @@ def hh_auth():
     """
     try:
         data = request.json
-        if not data or 'access' not in data or 'refresh' not in data or 'login' not in data:
-            return make_response(jsonify({"error": "Invalid request. 'login', 'access' and 'refresh' fields are "
-                                                   "required."}), 400)
+        if (
+            not data
+            or "access" not in data
+            or "refresh" not in data
+            or "login" not in data
+        ):
+            return make_response(
+                jsonify(
+                    {
+                        "error": "Invalid request. 'login', 'access' and 'refresh' fields are "
+                        "required."
+                    }
+                ),
+                400,
+            )
 
-        access_token = data['access']
-        refresh_token = data['refresh']
+        access_token = data["access"]
+        refresh_token = data["refresh"]
         login = data["login"]
-        log.info(f"login={login} \nrefresh_token={refresh_token} \naccess_token={access_token}")
-        save_hh_token(HH_Token(login=login, access_token=access_token, refresh_token=refresh_token))
+        log.info(
+            f"login={login} \nrefresh_token={refresh_token} \naccess_token={access_token}"
+        )
+        save_hh_token(
+            HH_Token(
+                login=login,
+                access_token=access_token,
+                refresh_token=refresh_token,
+            )
+        )
         return make_response("OK", 200)
 
     except Exception as e:
@@ -131,37 +157,53 @@ def hh_auth():
         return make_response(jsonify({"error": str(e)}), 500)
 
 
-@app.route('/apply', methods=['POST'])
+@app.route("/apply", methods=["POST"])
 def apply():
     try:
         data = request.json
-        if not data or 'login' not in data or 'password' not in data or 'vacancy_id' not in data:
-            return make_response(jsonify({"error": "Invalid request. 'login', 'password' fields are "
-                                                   "required."}), 400)
+        if (
+            not data
+            or "login" not in data
+            or "password" not in data
+            or "vacancy_id" not in data
+        ):
+            return make_response(
+                jsonify(
+                    {
+                        "error": "Invalid request. 'login', 'password' fields are "
+                        "required."
+                    }
+                ),
+                400,
+            )
 
         login = data.get("login")
         user = getUser(login)
         hh_token = get_hh_token(login)
         vacancy_id = data.get("vacancy_id")
         message = data.get("message")
-        apply_to_vacancy(vacancy_id=vacancy_id, message=message, access_token=hh_token.access_token,
-                         resume_id=user.hh_resume_id)
+        apply_to_vacancy(
+            vacancy_id=vacancy_id,
+            message=message,
+            access_token=hh_token.access_token,
+            resume_id=user.hh_resume_id,
+        )
     except Exception as e:
         log.error(f"Ошибка подачи на вакансию на hh.ru: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
 
 
-@app.route('/test', methods=['POST'])
+@app.route("/test", methods=["POST"])
 def test():
     log.info(request.json)
-    login = request.json['login']
+    login = request.json["login"]
     log.info(f"login: {login}")
-    password = request.json['password']
+    password = request.json["password"]
     user = getUser(login)
     return make_response(user.to_json(), 200)
 
 
-@app.route('/some', methods=['GET'])
+@app.route("/some", methods=["GET"])
 def some():
     user = user_cases.getUser(login="admin")
     vacs = match_vacancies.get_match_vacancies(user)
