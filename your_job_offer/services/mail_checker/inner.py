@@ -4,7 +4,6 @@ import email
 from email.header import decode_header
 
 from your_job_offer.entities.user import EmailMessage
-from .handlers import *
 
 
 def get_email_message(msg) -> EmailMessage | None:
@@ -43,13 +42,13 @@ def get_messages(username: str, password_app: str) -> list[EmailMessage]:
     """
     получает все сообщения
 
-    :param username: почта с яндексовым доменом и подключенным IMAP
-    :param passwsord_app: пароль, созданные для приложения
+    :param username: почта доменом imap.firstmail.ltd и подключенным IMAP
+    :param passwsord_app: пароль
     """
-    YA_HOST = "imap.yandex.ru"
-    YA_PORT = 993
+    HOST = "imap.firstmail.ltd"
+    PORT = 993
 
-    mail = imaplib.IMAP4_SSL(host=YA_HOST, port=YA_PORT)
+    mail = imaplib.IMAP4_SSL(host=HOST, port=PORT)
     mail.login(username, password_app)
 
     # Выбор папки "Входящие"
