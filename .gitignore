@@ -117,4 +117,4 @@ app_logs/
 
 .env
 .idea/
-your_job_offer/services/mail_checker/mails.txt
+secrets/
