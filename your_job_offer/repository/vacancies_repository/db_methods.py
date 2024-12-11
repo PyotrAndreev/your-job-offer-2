@@ -1,8 +1,11 @@
+from typing import Optional
+
 from your_job_offer.entities.tracking import VacancyKey
 from sqlalchemy import select, or_
 from sqlalchemy.exc import NoResultFound
 
 import your_job_offer.logger as logger
+from your_job_offer.entities.user import UserModel
 from your_job_offer.entities.enums import (
     EmploymentEnum,
     ScheduleEnum,
@@ -344,10 +347,25 @@ def update_user(user: User):
 
 
 def get_vacancies_by_keys(
-    keys: list[VacancyKey],
-) -> list[VacancyModel | None]:  # TODO Даша TODO Настя
-    """
-    :return: список вакансий точно такого же размера, как и keys
-    """
-    # здесь типа запрос к бд
-    return [VacancyModel(job=key.job, employer=key.employer) for key in keys]
+    keys: list[VacancyKey], user: UserModel
+) -> list[Optional[VacancyModel]]:
+    vacancies = []
+    userVacancies = user.vacancy
+    print(userVacancies)
+    for key in keys:
+        l = []
+        if key.id is not None:
+            l = [
+                x for x in userVacancies if x.id_vacancy_from_source == key.id
+            ]
+        else:
+            l = [
+                x
+                for x in userVacancies
+                if x.job == key.job and x.employer == key.employer
+            ]
+            if len(l) > 0:
+                vacancies.append(l[0])
+            else:
+                vacancies.append(None)
+    return vacancies

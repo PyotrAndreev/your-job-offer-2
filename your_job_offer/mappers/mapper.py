@@ -284,3 +284,7 @@ def map_vacancy_db_to_vacancy_key(vacancy_db: Vacancy) -> VacancyKey:
         employer=vacancy_db.employer,
         id_vacancy_from_source=vacancy_db.idVacancyFromSource,
     )
+
+
+def map_status_entity_to_status_model(status: ):
+    pass

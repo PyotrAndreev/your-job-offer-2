@@ -71,28 +71,6 @@ def parse_messages(messages: list[EmailMessage]) -> list[ParsedMessage | None]:
     return parser.parse(messages)
 
 
-def separate_by_vacancy(
-    messages: list[ParsedMessage],
-) -> dict[VacancyKey, list[Stage]]:
-    """
-    Разделяет сообщения по ключу вакансии.
-
-    Эта функция принимает список объектов ParsedMessage и группирует их по
-    ключу вакансии, возвращая словарь, где ключом является
-    VacancyKey, а значением — список этапов (Stage), соответствующих
-    каждой вакансии.
-
-    :param messages: Список объектов ParsedMessage, которые необходимо
-                     сгруппировать по ключу вакансии.
-    :return: Словарь, где ключами являются VacancyKey, а значениями —
-             списки этапов, относящихся к каждой вакансии.
-    """
-    ans = defaultdict(list[Stage])
-    for message in messages:
-        ans[message.vacancy_key].append(message.stage)
-    return ans
-
-
 def clean_text(text):
     # Удаляем HTML-теги
     clean_html = BeautifulSoup(text, "lxml").text
