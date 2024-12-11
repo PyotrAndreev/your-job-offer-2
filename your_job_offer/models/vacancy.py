@@ -1,23 +1,17 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    Date,
-    Boolean,
-    ForeignKey,
-)
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 from sqlalchemy.orm import relationship
 
-from  entities.enums import (
+from entities.enums import (
     WorkTypeEnum,
     BusinessTripReadinessEnum,
     ScheduleEnum,
     EmploymentEnum,
     RelocationEnum,
-    SourceEnum, StageEnum,
+    SourceEnum,
+    StageEnum,
 )
-from  repository.vacancies_repository.db_session import Base
+from repository.vacancies_repository.db_session import Base
 
 
 class Vacancy(Base):
@@ -85,9 +79,7 @@ class Status(Base):
     deadline = Column(String, nullable=True, name="deadline")
     date = Column(String, nullable=True, name="date")
     message = Column(String, nullable=True, name="message")
-    vacancy = relationship(
-        "Vacancy", back_populates="status"
-    )
+    vacancy = relationship("Vacancy", back_populates="status")
 
 
 class UserVacancyStatus(Base):

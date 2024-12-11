@@ -20,7 +20,7 @@ class CountryModel:
     name, and area_id.
     """
 
-    id: int
+    id: Optional[int] = None
     name: Optional[str] = None
     area_id: Optional[int] = None
 
@@ -45,7 +45,7 @@ class CityModel:
     and area_id.
     """
 
-    id: int
+    id: Optional[int] = None
     name: Optional[str] = None
     area_id: Optional[int] = None
 
@@ -67,7 +67,7 @@ class LanguageModel:
         __str__: Returns a string representation of the LanguageModel instance, displaying the language's ID and name.
     """
 
-    id: int
+    id: Optional[int] = None
     name: Optional[str] = None
     level: Optional[LanguageLevelEnum] = None
 

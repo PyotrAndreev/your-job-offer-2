@@ -1,16 +1,16 @@
 import re
 import json
 from os import getenv
-from typing import Optional
+from typing import Optional, Any
 
 import pdftotext
 from openai import OpenAI
 
 from .tokenizer import num_tokens_from_string
 
-import  entities.user as user_models
-import  services.cv_parser.errors as errors
-from  logger import get_logger
+import entities.user as user_models
+import services.cv_parser.errors as errors
+from logger import get_logger
 
 log = get_logger(__name__)
 
@@ -24,7 +24,7 @@ class OpenaAIQueryBuilder:
             base_url="https://api.proxyapi.ru/openai/v1",
         )
 
-    def query(self, content: str, max_tokens: int = 1000) -> str | None:
+    def query(self, content: str, max_tokens: int = 1000) -> Optional[str]:
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[{"role": "user", "content": content}],
@@ -71,7 +71,7 @@ class _ResumeParser:
   "first_name": "",
   "last_name": "",
   "middle_name": "",
-  "gender": "",
+  "gender": один из вариантов "male" "female",
   "phone": возможно +, затем цифры без пробелов и скобок,
   "email": "",
   "country": "",
@@ -79,13 +79,14 @@ class _ResumeParser:
   "country": "",
   "cv": url,
   "description": "",
-  "work_type": "",
+  "work_type": один из вариантов "office" "remote" "hybrid" "field_work",
   "min_salary": "",
   "max_salary": "",
-  "business_trip_readiness": 0 or 1,
-  "work_hours": "",
-  "relocation": 0 or 1,
+  "business_trip_readiness": один из вариантов "ready" "sometimes" "never",
+  "relocation": один из вариантов "no_relocation" "relocation_possible" "relocation_desirable",
   "education": один из вариантов "secondary" "special_secondary" "unfinished_higher" "higher" "bachelor" "master" "candidate" "doctor",
+  "employment": один из вариантов "full" "part" "project" "volunteer" "probation",
+  "schedule": один из вариантов "fullDay" "shift" "flexible" "remote" "flyInFlyOut",
   "project_experience": [
     {
       "name": "",
@@ -114,12 +115,28 @@ class _ResumeParser:
       "name": "",
       "description": ""
     }
+  ],
+  "educations": [
+    {
+        "institution": "",
+        "major": "",
+        "degree": "",
+        "description": ""
+        "start_date": "",
+        "finish_date": ""
+    }
+  ],
+  "languages": [
+    {
+        "name": "",
+        "level": один из вариантов "a1" "a2" "b1" "b2" "c1" "c2" "l1",
+    }
   ]
 }
 
 Даты указывай в формате year-month-day
 Не добавляй никакого дополнительного текста перед или после JSON.
-"""  # TODO запрос
+"""
         self.query_builder = OpenaAIQueryBuilder(OPENAI_API_KEY)
         self.max_tokens = max_tokens
         self.model = model
@@ -188,16 +205,18 @@ class ResumeParser:
         return ResumeParser._dict_to_user(result_dict)
 
     @staticmethod
-    def _field_to_int(field: str) -> Optional[int]:
+    def _field_to_class(field: str, cls=str) -> Optional[Any]:
         if len(field) == 0:
             return None
-        return int(field)
+        try:
+            ans = cls(field)
+        except ValueError:
+            return None
+        return ans
 
     @staticmethod
-    def _field_to_str(field: str) -> Optional[str]:
-        if len(field) == 0:
-            return None
-        return field
+    def _field_to_int(field: str) -> Optional[int]:
+        return ResumeParser._field_to_class(field, int)
 
     @staticmethod
     def _dict_to_user(user: dict) -> user_models.UserModel:
@@ -213,37 +232,69 @@ class ResumeParser:
             user_models.AchievementModel(**achievement)
             for achievement in user["achievements"]
         ]
-        education_level = (
-            user_models.EducationLevelEnum(user["education"])
-            if user["education"] != ""
+        skills = [user_models.SkillModel(**skill) for skill in user["skills"]]
+        educations = [
+            user_models.EducationModel(**education)
+            for education in user["educations"]
+        ]
+        city = (
+            user_models.CityModel(name=user["city"])
+            if user["city"] != ""
             else None
         )
-        skills = [
-            user_models.SkillModel(**skill)
-            for skill in user["skills"]
+        country = (
+            user_models.CountryModel(name=user["country"])
+            if user["country"] != ""
+            else None
+        )
+        languages = [
+            user_models.LanguageModel(
+                language["name"],
+                ResumeParser._field_to_class(
+                    language["level"], user_models.LanguageLevelEnum
+                ),
+            )
+            for language in user["languages"]
         ]
-
         return user_models.UserModel(
-            birth_date=ResumeParser._field_to_str(user["birth_date"]),
-            first_name=user_models.Name(user["first_name"]),
-            last_name=user_models.Name(user["last_name"]),
-            middle_name=user_models.Name(user["middle_name"]),
-            gender=user["gender"],
-            phone=ResumeParser._field_to_str(user["phone"]),
-            email=ResumeParser._field_to_str(user["email"]),
-            city=user["city"],
-            country=user["country"],
-            cv=user["cv"],
-            description=user["description"],
-            work_type=user["work_type"],
-            education_level=education_level,
+            birth_date=ResumeParser._field_to_class(user["birth_date"]),
+            first_name=ResumeParser._field_to_class(user["first_name"]),
+            last_name=ResumeParser._field_to_class(user["last_name"]),
+            middle_name=ResumeParser._field_to_class(user["middle_name"]),
+            gender=ResumeParser._field_to_class(
+                user["gender"], user_models.GenderEnum
+            ),
+            phone=ResumeParser._field_to_class(user["phone"]),
+            email=ResumeParser._field_to_class(user["email"]),
+            city=city,
+            country=country,
+            cv=ResumeParser._field_to_class(user["cv"]),
+            description=ResumeParser._field_to_class(user["description"]),
+            work_type=ResumeParser._field_to_class(
+                user["work_type"], user_models.WorkTypeEnum
+            ),
             min_salary=ResumeParser._field_to_int(user["min_salary"]),
             max_salary=ResumeParser._field_to_int(user["max_salary"]),
-            business_trip_readiness=user["business_trip_readiness"],
-            work_hours=ResumeParser._field_to_int(user["work_hours"]),
-            relocation=user["relocation"],
+            business_trip_readiness=ResumeParser._field_to_class(
+                user["business_trip_readiness"],
+                user_models.BusinessTripReadinessEnum,
+            ),
+            relocation=ResumeParser._field_to_class(
+                user["relocation"], user_models.RelocationEnum
+            ),
+            employment=ResumeParser._field_to_class(
+                user["employment"], user_models.EmploymentEnum
+            ),
+            schedule=ResumeParser._field_to_class(
+                user["schedule"], user_models.ScheduleEnum
+            ),
+            education_level=ResumeParser._field_to_class(
+                user["education"], user_models.EducationLevelEnum
+            ),
             projects=projects,
-            skills=user["skills"],
-            work_experiences=work_experience,
             achievements=achievements,
+            work_experiences=work_experience,
+            educations=educations,
+            skills=skills,
+            languages=languages,
         )

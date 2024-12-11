@@ -2,16 +2,6 @@ from dataclasses import dataclass
 from enum import Enum
 
 from .jobs import VacancyModel
-import pandas as pd
-
-
-class Date(pd.Timestamp):
-    def __init__(self, date: str):
-        try:
-            pd.Timestamp(date)
-            super().__init__(date)
-        except Exception:
-            super().__init__()
 
 
 class StageEnum(Enum):
@@ -27,8 +17,8 @@ class StageEnum(Enum):
 @dataclass
 class Stage:
     stage_type: StageEnum
-    deadline: Date
-    date: Date = Date("")
+    deadline: str
+    date: str = ""
     message: str = ""
 
 

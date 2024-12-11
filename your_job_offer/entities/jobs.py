@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import date
 from enum import Enum
 from typing import Optional
 
@@ -62,8 +61,8 @@ class VacancyModel:
     phone: Optional[str] = None
     email: Optional[str] = None
     employer: Optional[str] = None
-    created_at: Optional[date] = None
-    updated_at: Optional[date] = None
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
     work_type: Optional[WorkTypeEnum] = None
     business_trip_readiness: Optional[BusinessTripReadinessEnum] = None
     work_hours: Optional[int] = None

@@ -1,4 +1,6 @@
-from .hh_get_vacancies import hh_get_vacancies
+from repository.vacancies_repository.hh_get_vacancies import (
+    get_vacancies as hh_get_vacancies,
+)
 
 
 def parse() -> None:

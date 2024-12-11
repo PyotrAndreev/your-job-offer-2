@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 import re
-from datetime import date
 from typing import Optional, List
 from dataclasses_json import dataclass_json
 
@@ -12,7 +11,6 @@ from .enums import (
     ScheduleEnum,
     GenderEnum,
     EducationLevelEnum,
-    SourceEnum,
 )
 from .general import SkillModel, LanguageModel, CityModel, CountryModel
 from .jobs import VacancyModel
@@ -92,8 +90,8 @@ class WorkExperienceModel:
         job (Optional[str]): The job name related to the work experience.
         work_place (Optional[str]): The company or organization where the user worked.
         description (Optional[str]): A brief description of the work performed.
-        start_date (Optional[date]): The date when the work experience started.
-        finish_date (Optional[date]): The date when the work experience ended.
+        start_date (Optional[str]): The date when the work experience started.
+        finish_date (Optional[str]): The date when the work experience ended.
 
     Methods:
         __str__: Returns a string representation of the WorkExperienceModel instance.
@@ -103,8 +101,8 @@ class WorkExperienceModel:
     job: Optional[str] = None
     work_place: Optional[str] = None
     description: Optional[str] = None
-    start_date: Optional[date] = None
-    finish_date: Optional[date] = None
+    start_date: Optional[str] = None
+    finish_date: Optional[str] = None
 
     def __str__(self):
         return (
@@ -125,8 +123,8 @@ class EducationModel:
         major (Optional[str]): The major or field of study.
         degree (Optional[str]): The degree obtained.
         description (Optional[str]): A brief description of the education.
-        start_date (Optional[date]): The start date of the education.
-        finish_date (Optional[date]): The finish date of the education.
+        start_date (Optional[str]): The start date of the education.
+        finish_date (Optional[str]): The finish date of the education.
 
     Methods:
         __str__: Returns a string representation of the EducationModel instance.
@@ -137,8 +135,8 @@ class EducationModel:
     major: Optional[str] = None
     degree: Optional[str] = None
     description: Optional[str] = None
-    start_date: Optional[date] = None
-    finish_date: Optional[date] = None
+    start_date: Optional[str] = None
+    finish_date: Optional[str] = None
 
     def __str__(self):
         return (
@@ -214,7 +212,6 @@ class UserModel:
     schedule: Optional[ScheduleEnum] = None
     hh_resume_id: Optional[str] = None
     education_level: Optional[EducationLevelEnum] = None
-    source: Optional[SourceEnum] = None
     inner_email: Optional[str] = None
     inner_email_password: Optional[str] = None
     projects: List[ProjectModel] = field(default_factory=list)
