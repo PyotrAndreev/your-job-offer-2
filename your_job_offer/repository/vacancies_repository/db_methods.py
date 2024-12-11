@@ -347,7 +347,7 @@ def get_vacancies_by_user(user: User):
 # from models import User, SkillUser, LanguageUser, Skill, Language, Project, Achievement, WorkExperience, Education
 #
 
-def update_user(session: Session, user: User):
+def update_user(user: User):
     """
     Update user data and related records in the database.
 
@@ -356,14 +356,20 @@ def update_user(session: Session, user: User):
     :return: Updated User object or None if the update failed.
     """
     try:
+        log.info("started update")
         # Update User fields
-        session.merge(user)
-
+        user_db = session.query(User).filter_by(login=user.login).one()
+        for filed in User.__table__.columns.keys():
+            new_value = getattr(user, filed, None)
+            if new_value is not None:
+                setattr(user_db, filed, new_value)
+        session.commit()
+        log.info("merge user")
         # Update many-to-many relationships (e.g., skills, languages)
         session.query(SkillUser).filter(SkillUser.userId == user.id).delete()
         for skill in user.skill:
             session.add(SkillUser(userId=user.id, skillId=skill.id))
-
+        log.info("updated skills")
         session.query(LanguageUser).filter(LanguageUser.userId == user.id).delete()
         for language in user.language:
             session.add(LanguageUser(userId=user.id, languageId=language.id))
@@ -406,20 +412,20 @@ def update_user(session: Session, user: User):
 
     except IntegrityError as e:
         session.rollback()
-        print(f"Database integrity error: {e}")
+        log.error(f"Database integrity error: {e}")
         return None
 
     except Exception as e:
         session.rollback()
-        print(f"An error occurred: {e}")
+        log.error(f"An error occurred: {e}")
         return None
 
 
-def get_vacancies_by_keys(
-        keys: list[VacancyKey],
-) -> list[VacancyModel | None]:  # TODO Даша TODO Настя
-    """
-    :return: список вакансий точно такого же размера, как и keys
-    """
-    # здесь типа запрос к бд
-    return [VacancyModel(job=key.job, employer=key.employer) for key in keys]
+#def get_vacancies_by_keys(
+#        keys: list[VacancyKey],
+#) -> list[VacancyModel | None]:  # TODO Даша TODO Настя
+#    """
+#    :return: список вакансий точно такого же размера, как и keys
+#    """
+#    # здесь типа запрос к бд
+#    return [VacancyModel(job=key.job, employer=key.employer) for key in keys]
