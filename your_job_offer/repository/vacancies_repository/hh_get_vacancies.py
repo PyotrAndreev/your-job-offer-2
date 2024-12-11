@@ -7,7 +7,7 @@ from your_job_offer.logger import get_logger
 from your_job_offer.entities.enums import EmploymentEnum, ScheduleEnum
 from your_job_offer.models.vacancy import Vacancy
 
-log = get_logger(__name__)
+log = get_logger("jobs_db_parsing")
 
 
 def get_vacancies():
@@ -59,7 +59,7 @@ def get_vacancies_by_role(role: int):
 
     res = (
         requests.get(
-            f"https://api.hh.ru/vacancies", params=params, headers=headers
+            "https://api.hh.ru/vacancies", params=params, headers=headers
         )
     ).json()
     if "pages" not in res:
@@ -78,7 +78,7 @@ def get_vacancies_by_role(role: int):
 
         res = (
             requests.get(
-                f"https://api.hh.ru/vacancies", params=params, headers=headers
+                "https://api.hh.ru/vacancies", params=params, headers=headers
             )
         ).json()
         if "items" not in res:

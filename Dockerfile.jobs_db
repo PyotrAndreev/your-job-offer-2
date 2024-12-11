@@ -6,11 +6,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY your_job_offer ./your_job_offer
 RUN pip install --no-cache-dir -e .
 
-RUN apt-get -y install cron
-COPY crontab.jobs_db /etc/cron.d/cron_schedule
-RUN chmod 0644 /etc/cron.d/cron_schedule
-RUN crontab /etc/cron.d/cron_schedule
-RUN ["python", "your_job_offer/jobs_db.py"]
-RUN ["/usr/local/bin/python", "/app/your_job_offer/repository/vacancies_repository/parsing.py" ]
-CMD ["/usr/local/bin/python", "/app/your_job_offer/repository/vacancies_repository/parsing.py" ]
-# CMD ["cron", "-f"]
+CMD ["python", "your_job_offer/jobs_db.py"]
+
