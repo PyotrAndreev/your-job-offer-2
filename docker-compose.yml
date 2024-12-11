@@ -16,7 +16,7 @@ services:
     ports:
       - "5430:5432"
 
-  create-jobs-db:
+  jobs-db:
     build:
       context: .
       dockerfile: Dockerfile.jobs_db
@@ -35,17 +35,26 @@ services:
     depends_on:
       - db-tokens
 
-#
-#  app:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile.app
-#    ports:
-#      - "8080:8080"
-#    volumes:
-#      - ./:/app
-#    depends_on:
-#      - db
-#      - create-jobs-db
-#      - create-tokens-db
+  # vacancy-status:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.vacancy_status
+  #   volumes:
+  #     - ./:/app
+  #   restart: on-failure
+  #   depends_on:
+  #     - db
 
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.app
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - ./:/app
+  #   depends_on:
+  #     - db
+  #     - jobs-db
+  #     - create-tokens-db
+  #     - vacancy-status

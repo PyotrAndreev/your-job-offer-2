@@ -3,7 +3,7 @@ import imaplib
 import email
 from email.header import decode_header
 
-from  entities.user import EmailMessage
+from your_job_offer.entities.user import EmailMessage
 
 
 def get_email_message(msg) -> EmailMessage | None:

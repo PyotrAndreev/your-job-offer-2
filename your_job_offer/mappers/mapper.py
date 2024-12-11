@@ -1,12 +1,26 @@
 import token
 
-from entities.hh_token import HHTokenModel
-from entities.jobs import VacancyModel
-from entities.user import *
-from models.hh_token import HH_Token
-from models.user import User, City, Country, Achievement, Project, WorkExperience, Education, Skill, Language
-from models.vacancy import Vacancy
-from repository.vacancies_repository.db_methods import get_job, get_job_id
+from your_job_offer.entities.hh_token import HHTokenModel
+from your_job_offer.entities.jobs import VacancyModel
+from your_job_offer.entities.tracking import VacancyKey
+from your_job_offer.entities.user import *
+from your_job_offer.models.hh_token import HH_Token
+from your_job_offer.models.user import (
+    User,
+    City,
+    Country,
+    Achievement,
+    Project,
+    WorkExperience,
+    Education,
+    Skill,
+    Language,
+)
+from your_job_offer.models.vacancy import Vacancy
+from your_job_offer.repository.vacancies_repository.db_methods import (
+    get_job,
+    get_job_id,
+)
 
 
 def map_user(user: User) -> UserModel:
@@ -22,9 +36,22 @@ def map_user(user: User) -> UserModel:
         gender=user.gender,
         phone=user.phone,
         email=user.email,
-        city=CityModel(id=user.city.id, name=user.city.name, area_id=user.city.areaId) if user.city else None,
-        country=CountryModel(id=user.country.id, name=user.country.name,
-                             area_id=user.country.areaId) if user.country else None,
+        city=(
+            CityModel(
+                id=user.city.id, name=user.city.name, area_id=user.city.areaId
+            )
+            if user.city
+            else None
+        ),
+        country=(
+            CountryModel(
+                id=user.country.id,
+                name=user.country.name,
+                area_id=user.country.areaId,
+            )
+            if user.country
+            else None
+        ),
         cv=user.cv,
         description=user.description,
         work_type=user.workType,
@@ -35,9 +62,18 @@ def map_user(user: User) -> UserModel:
         relocation=user.relocation,
         employment=user.employment,
         schedule=user.schedule,
-        projects=[ProjectModel(id=p.id, name=p.name, description=p.description, link=p.link) for p in user.project],
-        achievements=[AchievementModel(id=a.id, name=a.name, description=a.description, link=a.link) for a in
-                      user.achievement],
+        projects=[
+            ProjectModel(
+                id=p.id, name=p.name, description=p.description, link=p.link
+            )
+            for p in user.project
+        ],
+        achievements=[
+            AchievementModel(
+                id=a.id, name=a.name, description=a.description, link=a.link
+            )
+            for a in user.achievement
+        ],
         work_experiences=[
             WorkExperienceModel(
                 id=w.id,
@@ -65,9 +101,15 @@ def map_user(user: User) -> UserModel:
         inner_email=user.innerEmail,
         inner_email_password=user.innerEmailPassword,
         education_level=user.educationLevel,
-        skills=[SkillModel(id=s.id, name=s.name, description=s.description) for s in user.skill],
-        languages=[LanguageModel(id=l.id, name=l.name, level=l.level) for l in user.language],
-        vacancy=[map_vacancy(v) for v in user.vacancy]
+        skills=[
+            SkillModel(id=s.id, name=s.name, description=s.description)
+            for s in user.skill
+        ],
+        languages=[
+            LanguageModel(id=l.id, name=l.name, level=l.level)
+            for l in user.language
+        ],
+        vacancy=[map_vacancy(v) for v in user.vacancy],
     )
 
 
@@ -97,7 +139,7 @@ def map_vacancy(vacancy: Vacancy) -> VacancyModel:
         responsibility=vacancy.responsibility,
         area=vacancy.area,
         source=vacancy.source,
-        id_vacancy_from_source=vacancy.idVacancyFromSource
+        id_vacancy_from_source=vacancy.idVacancyFromSource,
     )
 
 
@@ -106,7 +148,7 @@ def map_hh_token(hh_token: HH_Token) -> HHTokenModel:
         id=hh_token.id,
         login=hh_token.login,
         access_token=hh_token.access_token,
-        refresh_token=hh_token.refresh_token
+        refresh_token=hh_token.refresh_token,
     )
 
 
@@ -115,7 +157,7 @@ def map_hh_token_model(hh_token: HHTokenModel) -> HH_Token:
         id=hh_token.id,
         login=hh_token.login,
         access_token=hh_token.access_token,
-        refresh_token=hh_token.refresh_token
+        refresh_token=hh_token.refresh_token,
     )
 
 
@@ -132,9 +174,22 @@ def map_userModel(user: UserModel) -> User:
         gender=user.gender,
         phone=user.phone,
         email=user.email,
-        city=City(id=user.city.id, name=user.city.name, areaId=user.city.area_id) if user.city else None,
-        country=Country(id=user.country.id, name=user.country.name,
-                        areaId=user.country.area_id) if user.country else None,
+        city=(
+            City(
+                id=user.city.id, name=user.city.name, areaId=user.city.area_id
+            )
+            if user.city
+            else None
+        ),
+        country=(
+            Country(
+                id=user.country.id,
+                name=user.country.name,
+                areaId=user.country.area_id,
+            )
+            if user.country
+            else None
+        ),
         cv=user.cv,
         description=user.description,
         workType=user.work_type,
@@ -148,9 +203,18 @@ def map_userModel(user: UserModel) -> User:
         hhResumeId=user.hh_resume_id,
         innerEmail=user.inner_email,
         innerEmailPassword=user.inner_email_password,
-        project=[Project(id=p.id, name=p.name, description=p.description, link=p.link) for p in user.projects],
-        achievement=[Achievement(id=a.id, name=a.name, description=a.description, link=a.link) for a in
-                     user.achievements],
+        project=[
+            Project(
+                id=p.id, name=p.name, description=p.description, link=p.link
+            )
+            for p in user.projects
+        ],
+        achievement=[
+            Achievement(
+                id=a.id, name=a.name, description=a.description, link=a.link
+            )
+            for a in user.achievements
+        ],
         workExperience=[
             WorkExperience(
                 id=w.id,
@@ -175,9 +239,12 @@ def map_userModel(user: UserModel) -> User:
             for e in user.educations
         ],
         educationLevel=user.education_level,
-        skill=[Skill(id=s.id, name=s.name, description=s.description) for s in user.skills],
+        skill=[
+            Skill(id=s.id, name=s.name, description=s.description)
+            for s in user.skills
+        ],
         language=[Language(id=l.id, name=l.name) for l in user.languages],
-        vacancy=[map_vacancy_model(v) for v in user.vacancy]
+        vacancy=[map_vacancy_model(v) for v in user.vacancy],
     )
 
 
@@ -207,5 +274,13 @@ def map_vacancy_model(vacancy: VacancyModel) -> Vacancy:
         responsibility=vacancy.responsibility,
         area=vacancy.area,
         source=vacancy.source,
-        idVacancyFromSource=vacancy.id_vacancy_from_source
+        idVacancyFromSource=vacancy.id_vacancy_from_source,
+    )
+
+
+def map_vacancy_db_to_vacancy_key(vacancy_db: Vacancy) -> VacancyKey:
+    return VacancyKey(
+        job=vacancy_db.job,
+        employer=vacancy_db.employer,
+        id_vacancy_from_source=vacancy_db.idVacancyFromSource,
     )

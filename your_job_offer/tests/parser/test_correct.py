@@ -1,6 +1,6 @@
 import pytest
-from  services.cv_parser.methods import parse
-import  services.cv_parser.errors as errors
+from your_job_offer.services.cv_parser.methods import parse
+import your_job_offer.services.cv_parser.errors as errors
 
 FILE_PATH = "your_job_offer/tests/parser/files/"
 

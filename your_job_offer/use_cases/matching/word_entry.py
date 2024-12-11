@@ -10,8 +10,8 @@ from nltk.tokenize import word_tokenize
 from nltk import download as nltk_download
 from pymorphy2 import MorphAnalyzer
 
-from entities.jobs import VacancyModel
-from entities.user import UserModel
+from your_job_offer.entities.jobs import VacancyModel
+from your_job_offer.entities.user import UserModel
 
 punctuation = punctuation.replace("+", "")  # чтобы не ликвидировать C++
 

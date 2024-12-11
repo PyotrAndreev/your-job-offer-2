@@ -6,8 +6,8 @@ import re
 import pymorphy2
 from bs4 import BeautifulSoup
 
-from  entities.user import EmailMessage
-from  entities.tracking import (
+from your_job_offer.entities.user import EmailMessage
+from your_job_offer.entities.tracking import (
     VacancyKey,
     Stage,
     ParsedMessage,

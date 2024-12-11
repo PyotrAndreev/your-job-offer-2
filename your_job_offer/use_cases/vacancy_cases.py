@@ -1,6 +1,6 @@
-from entities.jobs import VacancyModel
-from mappers import mapper
-from repository.vacancies_repository import db_methods
+from your_job_offer.entities.jobs import VacancyModel
+from your_job_offer.mappers import mapper
+from your_job_offer.repository.vacancies_repository import db_methods
 
 
 def getAllVacancyFromDb() -> [VacancyModel]:

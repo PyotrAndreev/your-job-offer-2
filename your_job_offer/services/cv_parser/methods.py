@@ -1,5 +1,5 @@
 from .parser import ResumeParser
-from  entities.user import UserModel
+from your_job_offer.entities.user import UserModel
 
 parser = ResumeParser()
 

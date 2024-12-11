@@ -5,9 +5,7 @@ RUN apt-get update \
     && apt-get -y install libpq-dev gcc \
     && pip install psycopg2 && pip install sqlalchemy
 
-COPY pyproject.toml ./
 COPY your_job_offer ./your_job_offer
-RUN pip install --no-cache-dir -e .
-CMD ["python", "your_job_offer/tokens_db.py"]
 
+CMD ["python", "your_job_offer/jobs_db.py"]
 

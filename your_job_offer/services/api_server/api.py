@@ -3,21 +3,28 @@ import json
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
-import logger
-from entities.user import UserModel
-from models.hh_token import HH_Token
-from models.user import User
-from repository.tokens_repository.db_methods import save_hh_token
-from repository.vacancies_repository import db_methods
-from repository.vacancies_repository.db_methods import update_user
+import your_job_offer.logger as logger
+from your_job_offer.entities.user import UserModel
 
-from mappers.mapper import map_vacancy
+from your_job_offer.models.hh_token import HH_Token
+from your_job_offer.models.user import User
+from your_job_offer.repository.tokens_repository.db_methods import (
+    save_hh_token,
+)
+from your_job_offer.repository.vacancies_repository import db_methods
+from your_job_offer.repository.vacancies_repository.db_methods import (
+    update_user,
+)
 
-from repository.tokens_repository.get_hh_token import get_hh_token
-from services.hh_api.apply_to_vacancy import apply_to_vacancy
-from use_cases import user_cases
-from use_cases.matching import match_vacancies
-from use_cases.user_cases import getUser
+from your_job_offer.mappers.mapper import map_vacancy
+
+from your_job_offer.repository.tokens_repository.get_hh_token import (
+    get_hh_token,
+)
+from your_job_offer.services.hh_api.apply_to_vacancy import apply_to_vacancy
+from your_job_offer.use_cases import user_cases
+from your_job_offer.use_cases.matching import match_vacancies
+from your_job_offer.use_cases.user_cases import getUser
 
 app = Flask("app")
 
@@ -64,7 +71,9 @@ def getVacancies():
         return make_response("User not exists", 401)
     user = user_cases.getUser(user.login)
     vac = match_vacancies.get_match_vacancies(user=user)
-    return make_response(jsonify(vacancies=json.dumps([obj.to_json() for obj in vac])), 200)
+    return make_response(
+        jsonify(vacancies=json.dumps([obj.to_json() for obj in vac])), 200
+    )
 
 
 @app.route("/form", methods=["POST"])

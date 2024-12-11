@@ -1,5 +1,5 @@
 import requests
-import logger
+import your_job_offer.logger as logger
 
 log = logger.get_logger(__name__)
 
@@ -10,9 +10,13 @@ def is_resume_creation_available(access_token: str) -> bool:
         "Authorization": f"Bearer {access_token}",
     }
 
-    res = requests.get("https://api.hh.ru/resumes/creation_availability", headers=headers)
+    res = requests.get(
+        "https://api.hh.ru/resumes/creation_availability", headers=headers
+    )
     if res.status_code != 200:
-        log.error(f"Error checking possibility of creation resume: {res.json()}")
+        log.error(
+            f"Error checking possibility of creation resume: {res.json()}"
+        )
     else:
         data = res.json()
         field = "is_creation_available"

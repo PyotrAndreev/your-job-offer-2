@@ -1,5 +1,5 @@
 import requests
-import logger
+import your_job_offer.logger as logger
 
 log = logger.get_logger(__name__)
 

@@ -1,10 +1,10 @@
-from  entities.user import UserModel
-from  entities.tracking import (
+from your_job_offer.entities.user import UserModel
+from your_job_offer.entities.tracking import (
     TrackUnit,
 )
 
-from  services.mail_checker.methods import get_email_messages
-from  repository.vacancies_repository.db_methods import (
+from your_job_offer.services.mail_checker.methods import get_email_messages
+from your_job_offer.repository.vacancies_repository.db_methods import (
     get_vacancies_by_keys,
 )
 

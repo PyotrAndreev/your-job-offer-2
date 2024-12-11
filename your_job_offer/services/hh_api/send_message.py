@@ -1,5 +1,5 @@
 import requests
-import logger
+import your_job_offer.logger as logger
 
 log = logger.get_logger(__name__)
 
@@ -19,16 +19,16 @@ def send_message(nid, mes, access_token: str):
         "Authorization": f"Bearer {access_token}",
     }
 
-    params = {
-        "locale": "RU",
-        "host": "hh.ru"
-    }
+    params = {"locale": "RU", "host": "hh.ru"}
 
-    data = {
-        "message": mes
-    }
+    data = {"message": mes}
 
-    res = requests.post(f"https://api.hh.ru/negotiations/{nid}/messages", headers=headers, params=params, data=data)
+    res = requests.post(
+        f"https://api.hh.ru/negotiations/{nid}/messages",
+        headers=headers,
+        params=params,
+        data=data,
+    )
 
     if res.status_code != 200:
         log.error(f"Error sending message: {res.json()}")
