@@ -314,40 +314,118 @@ def get_vacancies_by_user(user: User):
     return get_vacancies_with_statement(stmt)
 
 
+# def update_user(user: User):
+#     """
+#     Updates the information of an existing user in the database.
+#
+#     This function iterates over the columns of the User model (except 'id', 'login', and 'password')
+#     and updates the corresponding fields of the user with the new values.
+#
+#     Args:
+#         user (User): The updated user object.
+#
+#     """
+#     try:
+#         user_db = session.query(User).filter_by(login=user.login).one()
+#
+#         for field in User.__table__.columns.keys():
+#             if field not in ["id", "login", "password"]:
+#                 new_value = getattr(user, field, None)
+#                 if new_value is not None:
+#                     setattr(user_db, field, new_value)
+#
+#         session.commit()
+#         log.info(f"Пользователь с логином '{user.login}' успешно обновлен.")
+#     except NoResultFound:
+#         log.error(f"Пользователь с логином '{user.login}' не найден.")
+#     except Exception as e:
+#         log.error(f"Ошибка обновления: {e}")
+#         session.rollback()
+#
+# from sqlalchemy.orm import Session
+# from sqlalchemy.exc import IntegrityError
+# from models import User, SkillUser, LanguageUser, Skill, Language, Project, Achievement, WorkExperience, Education
+#
+
 def update_user(user: User):
     """
-    Updates the information of an existing user in the database.
+    Update user data and related records in the database.
 
-    This function iterates over the columns of the User model (except 'id', 'login', and 'password')
-    and updates the corresponding fields of the user with the new values.
-
-    Args:
-        user (User): The updated user object.
-
+    :param session: SQLAlchemy database session.
+    :param user: User object with updated fields and related data.
+    :return: Updated User object or None if the update failed.
     """
     try:
+        log.info("started update")
+        # Update User fields
         user_db = session.query(User).filter_by(login=user.login).one()
-
-        for field in User.__table__.columns.keys():
-            if field not in ["id", "login", "password"]:
-                new_value = getattr(user, field, None)
-                if new_value is not None:
-                    setattr(user_db, field, new_value)
-
+        for filed in User.__table__.columns.keys():
+            new_value = getattr(user, filed, None)
+            if new_value is not None:
+                setattr(user_db, filed, new_value)
         session.commit()
-        log.info(f"Пользователь с логином '{user.login}' успешно обновлен.")
-    except NoResultFound:
-        log.error(f"Пользователь с логином '{user.login}' не найден.")
-    except Exception as e:
-        log.error(f"Ошибка обновления: {e}")
+        log.info("merge user")
+        # Update many-to-many relationships (e.g., skills, languages)
+        session.query(SkillUser).filter(SkillUser.userId == user.id).delete()
+        for skill in user.skill:
+            session.add(SkillUser(userId=user.id, skillId=skill.id))
+        log.info("updated skills")
+        session.query(LanguageUser).filter(LanguageUser.userId == user.id).delete()
+        for language in user.language:
+            session.add(LanguageUser(userId=user.id, languageId=language.id))
+
+        # Update related one-to-many tables (e.g., projects, achievements, workExperience, education)
+        session.query(Project).filter(Project.userId == user.id).delete()
+        for project in user.project:
+            session.add(Project(userId=user.id, name=project.name, description=project.description, link=project.link))
+
+        session.query(Achievement).filter(Achievement.userId == user.id).delete()
+        for achievement in user.achievement:
+            session.add(Achievement(userId=user.id, name=achievement.name, description=achievement.description,
+                                    link=achievement.link))
+
+        session.query(WorkExperience).filter(WorkExperience.userId == user.id).delete()
+        for experience in user.workExperience:
+            session.add(WorkExperience(
+                userId=user.id,
+                workPlace=experience.workPlace,
+                description=experience.description,
+                startDate=experience.startDate,
+                finishDate=experience.finishDate
+            ))
+
+        session.query(Education).filter(Education.userId == user.id).delete()
+        for education in user.education:
+            session.add(Education(
+                userId=user.id,
+                institution=education.institution,
+                major=education.major,
+                degree=education.degree,
+                description=education.description,
+                startDate=education.startDate,
+                finishDate=education.finishDate
+            ))
+
+        # Commit changes
+        session.commit()
+        return user
+
+    except IntegrityError as e:
         session.rollback()
+        log.error(f"Database integrity error: {e}")
+        return None
+
+    except Exception as e:
+        session.rollback()
+        log.error(f"An error occurred: {e}")
+        return None
 
 
-def get_vacancies_by_keys(
-    keys: list[VacancyKey],
-) -> list[VacancyModel | None]:  # TODO Даша TODO Настя
-    """
-    :return: список вакансий точно такого же размера, как и keys
-    """
-    # здесь типа запрос к бд
-    return [VacancyModel(job=key.job, employer=key.employer) for key in keys]
+#def get_vacancies_by_keys(
+#        keys: list[VacancyKey],
+#) -> list[VacancyModel | None]:  # TODO Даша TODO Настя
+#    """
+#    :return: список вакансий точно такого же размера, как и keys
+#    """
+#    # здесь типа запрос к бд
+#    return [VacancyModel(job=key.job, employer=key.employer) for key in keys]

@@ -1,5 +1,5 @@
 import json
-
+import os
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -18,6 +18,7 @@ from services.hh_api.apply_to_vacancy import apply_to_vacancy
 from use_cases import user_cases
 from use_cases.matching import match_vacancies
 from use_cases.user_cases import getUser
+from services.cv_parser.methods import parse
 
 app = Flask("app")
 
@@ -209,3 +210,34 @@ def some():
     vacs = match_vacancies.get_match_vacancies(user)
     print(vacs)
     return make_response(vacs, 200)
+
+# Configure upload folder
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    """
+    Handles the file upload and saves it to the uploads folder.
+    """
+    if 'file' not in request.files:
+        log.info("no file pass in request")
+        return jsonify({'message': 'No file part in the request'}), 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        log.info("no file selected")
+        return jsonify({'message': 'No file selected'}), 400
+
+    if file:
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file.save(file_path)
+        user = parse(file_path)
+        
+        log.info(user.__str__)
+        log.info("file uploaded")
+        return jsonify({'message': 'File successfully uploaded'}), 200
+    log.info("file upload failed")
+    return jsonify({'message': 'File upload failed'}), 500
