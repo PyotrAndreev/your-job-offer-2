@@ -110,7 +110,10 @@ class _ResumeParser:
     }
   ],
   "skills": [
-    ""
+    {
+      "name": "",
+      "description": ""
+    }
   ]
 }
 
@@ -215,6 +218,10 @@ class ResumeParser:
             if user["education"] != ""
             else None
         )
+        skills = [
+            user_models.SkillModel(**skill)
+            for skill in user["skills"]
+        ]
 
         return user_models.UserModel(
             birth_date=ResumeParser._field_to_str(user["birth_date"]),

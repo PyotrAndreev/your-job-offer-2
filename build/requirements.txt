@@ -10,3 +10,4 @@ dataclasses-json
 sentry-sdk
 beautifulsoup4
 lxml
+pdftotext

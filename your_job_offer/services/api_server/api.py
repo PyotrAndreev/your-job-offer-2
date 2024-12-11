@@ -1,5 +1,5 @@
 import json
-
+import os
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -180,18 +180,22 @@ def upload_file():
     Handles the file upload and saves it to the uploads folder.
     """
     if 'file' not in request.files:
+        log.info("no file pass in request")
         return jsonify({'message': 'No file part in the request'}), 400
 
     file = request.files['file']
 
     if file.filename == '':
+        log.info("no file selected")
         return jsonify({'message': 'No file selected'}), 400
 
     if file:
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(file_path)
-        # user = parse("/home/dasha/your_job_offer")
-        # log.info(user.__str__)
+        user = parse(file_path)
+        
+        log.info(user.__str__)
+        log.info("file uploaded")
         return jsonify({'message': 'File successfully uploaded'}), 200
-
+    log.info("file upload failed")
     return jsonify({'message': 'File upload failed'}), 500
