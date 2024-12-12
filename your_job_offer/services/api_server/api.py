@@ -242,8 +242,8 @@ def upload_file():
         if file:
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(file_path)
-            # user = parse(file_path)
-            user = UserModel(login=login, password=password, first_name="Daria", phone="890", email="sdklal@dlsfj")
+            user = parse(file_path)
+            # user = UserModel(login=login, password=password, first_name="Daria", phone="890", email="sdklal@dlsfj")
             log.info(user.__str__)
             user.login = login
             user.password = password
