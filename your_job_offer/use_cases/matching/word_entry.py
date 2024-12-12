@@ -86,7 +86,7 @@ def _match_vacancies_by_word_entry(
     processor = TextPreprocessor()
     user_skills = list(
         map(
-            lambda skill: " ".join(processor.text_to_tokens(skill)),
+            lambda skill: " ".join(processor.text_to_tokens(skill.name)),
             user.skills,
         )
     )
@@ -106,6 +106,6 @@ def _match_vacancies_by_word_entry(
     ][: sum(counts_isin != 0)]
 
     if len(indexes) == 0:
-        return []
+        return vacancies
 
     return itemgetter(*indexes)(vacancies)

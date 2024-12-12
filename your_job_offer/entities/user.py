@@ -11,6 +11,7 @@ from .enums import (
     ScheduleEnum,
     GenderEnum,
     EducationLevelEnum,
+    LanguageLevelEnum,
 )
 from .general import SkillModel, LanguageModel, CityModel, CountryModel
 from .jobs import VacancyModel
