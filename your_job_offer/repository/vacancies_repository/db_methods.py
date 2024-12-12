@@ -347,14 +347,18 @@ def update_user(updated_user: UserModel):
     user.innerEmail = updated_user.inner_email
     user.innerEmailPassword = updated_user.inner_email_password
     user.project = list(Project(name=p.name, description=p.description, link=p.link) for p in
-                        updated_user.projects)
+                        updated_user.projects) if updated_user.projects else None
     user.achievement = list(Achievement(name=a.name, description=a.description, link=a.link) for a in
-                            updated_user.achievements)
-    user.workExperience = list(WorkExperience(description=w.description) for w in updated_user.work_experiences)
-    user.education = list(Education(description=e.description) for e in updated_user.educations)
-    user.skill = list(Skill(name=s.name, description=s.description) for s in updated_user.skills)
-    user.language = list(Language(name=lan.name) for lan in updated_user.languages)
-    user.vacancy = list(Vacancy(description=v.description) for v in updated_user.vacancy)
+                            updated_user.achievements) if updated_user.achievements else None
+    user.workExperience = list(WorkExperience(description=w.description) for w in
+                               updated_user.work_experiences) if updated_user.work_experiences else None
+    user.education = list(
+        Education(description=e.description) for e in updated_user.educations) if updated_user.educations else None
+    user.skill = list(
+        Skill(name=s.name, description=s.description) for s in updated_user.skills) if updated_user.skills else None
+    user.language = list(Language(name=lan.name) for lan in updated_user.languages) if updated_user.languages else None
+    user.vacancy = list(
+        Vacancy(description=v.description) for v in updated_user.vacancy) if updated_user.vacancy else None
     session.commit()
 
 
