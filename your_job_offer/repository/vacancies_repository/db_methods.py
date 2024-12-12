@@ -12,7 +12,7 @@ from entities.enums import (
     BusinessTripReadinessEnum,
     RelocationEnum,
 )
-from models.user import User, Job, City, Country, Project, Achievement, Skill
+from models.user import User, Job, City, Country, Project, Achievement, Skill, WorkExperience, Language, Education
 from models.vacancy import Vacancy
 from repository.vacancies_repository.db_session import session
 from entities.tracking import VacancyKey, VacancyModel
@@ -350,11 +350,11 @@ def update_user(updated_user: UserModel):
                     updated_user.projects]
     user.achievement = [Achievement(name=a.name, description=a.description, link=a.link) for a in
                         updated_user.achievements]
-    # user.workExperience = updated_user.work_experiences
-    # user.education = updated_user.educations
+    user.workExperience = [WorkExperience(description=w.description) for w in updated_user.work_experiences]
+    user.education = [Education(description=e.description) for e in updated_user.educations]
     user.skill = [Skill(name=s.name, description=s.description) for s in updated_user.skills]
-    # user.language = updated_user.languages
-    # user.vacancy = updated_user.vacancy
+    user.language = [Language(name=lan.name) for lan in updated_user.languages]
+    user.vacancy = [Vacancy(description=v.description) for v in updated_user.vacancy]
     session.commit()
 
 
