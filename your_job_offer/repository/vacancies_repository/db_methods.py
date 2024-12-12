@@ -346,15 +346,15 @@ def update_user(updated_user: UserModel):
     user.hhResumeId = updated_user.hh_resume_id
     user.innerEmail = updated_user.inner_email
     user.innerEmailPassword = updated_user.inner_email_password
-    user.project = [Project(name=p.name, description=p.description, link=p.link) for p in
-                    updated_user.projects]
-    user.achievement = [Achievement(name=a.name, description=a.description, link=a.link) for a in
-                        updated_user.achievements]
-    user.workExperience = [WorkExperience(description=w.description) for w in updated_user.work_experiences]
-    user.education = [Education(description=e.description) for e in updated_user.educations]
-    user.skill = [Skill(name=s.name, description=s.description) for s in updated_user.skills]
-    user.language = [Language(name=lan.name) for lan in updated_user.languages]
-    user.vacancy = [Vacancy(description=v.description) for v in updated_user.vacancy]
+    user.project = list(Project(name=p.name, description=p.description, link=p.link) for p in
+                        updated_user.projects)
+    user.achievement = list(Achievement(name=a.name, description=a.description, link=a.link) for a in
+                            updated_user.achievements)
+    user.workExperience = list(WorkExperience(description=w.description) for w in updated_user.work_experiences)
+    user.education = list(Education(description=e.description) for e in updated_user.educations)
+    user.skill = list(Skill(name=s.name, description=s.description) for s in updated_user.skills)
+    user.language = list(Language(name=lan.name) for lan in updated_user.languages)
+    user.vacancy = list(Vacancy(description=v.description) for v in updated_user.vacancy)
     session.commit()
 
 
