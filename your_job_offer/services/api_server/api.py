@@ -240,8 +240,9 @@ def upload_file():
             return jsonify({'message': 'No file selected'}), 400
 
         if file:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{login}.pdf")
             file.save(file_path)
+            log.info(file_path)
             user = parse(file_path)
             # user = UserModel(login=login, password=password, first_name="Daria", phone="890", email="sdklal@dlsfj")
             log.info(user.__str__)
@@ -253,5 +254,5 @@ def upload_file():
         return jsonify({'message': 'File upload failed'}), 500
 
     except Exception as e:
-        log.error(f"Ошибка загрузки резюме: {e}")
+        log.error(f"Ошибка загрузки резюме: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)
