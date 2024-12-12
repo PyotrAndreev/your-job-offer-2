@@ -208,6 +208,7 @@ def test():
 def add():
     user = UserModel(login="test", password="test")
     saveUser(user)
+    return make_response(user.to_json(), 200)
 
 
 @app.route("/some", methods=["GET"])
