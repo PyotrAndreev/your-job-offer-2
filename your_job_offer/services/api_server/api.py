@@ -17,7 +17,7 @@ from repository.tokens_repository.get_hh_token import get_hh_token
 from services.hh_api.apply_to_vacancy import apply_to_vacancy
 from use_cases import user_cases
 from use_cases.matching import match_vacancies
-from use_cases.user_cases import getUser
+from use_cases.user_cases import getUser, saveUser
 from services.cv_parser.methods import parse
 
 app = Flask("app")
@@ -202,6 +202,12 @@ def test():
     password = request.json["password"]
     user = getUser(login)
     return make_response(user.to_json(), 200)
+
+
+@app.route("/add", methods=["POST"])
+def add():
+    user = UserModel(login="test", password="test")
+    saveUser(user)
 
 
 @app.route("/some", methods=["GET"])
