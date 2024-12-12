@@ -319,50 +319,53 @@ def get_vacancies_by_user(user: User):
 
 
 def update_user(updated_user: UserModel):
-    user = get_user(updated_user.login)
-    user.birthDate = updated_user.birth_date
-    user.firstName = updated_user.first_name
-    user.lastName = updated_user.last_name
-    user.middleName = updated_user.middle_name
-    user.photo = updated_user.photo
-    user.gender = updated_user.gender
-    user.phone = updated_user.phone
-    user.email = updated_user.email
-    user.city = City(name=updated_user.city.name,
-                     areaId=updated_user.city.area_id) if updated_user.city else None
-    user.country = Country(name=updated_user.country.name,
-                           areaId=updated_user.country.area_id) if updated_user.country else None,
-    user.cv = updated_user.cv
-    user.description = updated_user.description
-    user.workType = updated_user.work_type
-    user.minSalary = updated_user.min_salary
-    user.maxSalary = updated_user.max_salary
-    user.businessTripReadiness = updated_user.business_trip_readiness
-    user.workHours = updated_user.work_hours
-    user.relocation = updated_user.relocation
-    user.employment = updated_user.employment
-    user.schedule = updated_user.schedule
-    user.educationLevel = updated_user.education_level
-    user.hhResumeId = updated_user.hh_resume_id
-    user.innerEmail = updated_user.inner_email
-    user.innerEmailPassword = updated_user.inner_email_password
-    user.project = list(Project(name=p.name, description=p.description, link=p.link) for p in
-                        updated_user.projects) if updated_user.projects else user.project
-    user.achievement = list(Achievement(name=a.name, description=a.description, link=a.link) for a in
-                            updated_user.achievements) if updated_user.achievements else user.achievement
-    user.workExperience = list(WorkExperience(description=w.description) for w in
-                               updated_user.work_experiences) if updated_user.work_experiences else user.workExperience
-    user.education = list(
-        Education(description=e.description) for e in
-        updated_user.educations) if updated_user.educations else user.education
-    user.skill = list(
-        Skill(name=s.name, description=s.description) for s in
-        updated_user.skills) if updated_user.skills else user.skill
-    user.language = list(
-        Language(name=lan.name) for lan in updated_user.languages) if updated_user.languages else user.language
-    user.vacancy = list(
-        Vacancy(description=v.description) for v in updated_user.vacancy) if updated_user.vacancy else user.vacancy
-    session.commit()
+    try:
+        user = get_user(updated_user.login)
+        user.birthDate = updated_user.birth_date
+        user.firstName = updated_user.first_name
+        user.lastName = updated_user.last_name
+        user.middleName = updated_user.middle_name
+        user.photo = updated_user.photo
+        user.gender = updated_user.gender
+        user.phone = updated_user.phone
+        user.email = updated_user.email
+        user.city = City(name=updated_user.city.name,
+                         areaId=updated_user.city.area_id) if updated_user.city else None
+        user.country = Country(name=updated_user.country.name,
+                               areaId=updated_user.country.area_id) if updated_user.country else None,
+        user.cv = updated_user.cv
+        user.description = updated_user.description
+        user.workType = updated_user.work_type
+        user.minSalary = updated_user.min_salary
+        user.maxSalary = updated_user.max_salary
+        user.businessTripReadiness = updated_user.business_trip_readiness
+        user.workHours = updated_user.work_hours
+        user.relocation = updated_user.relocation
+        user.employment = updated_user.employment
+        user.schedule = updated_user.schedule
+        user.educationLevel = updated_user.education_level
+        user.hhResumeId = updated_user.hh_resume_id
+        user.innerEmail = updated_user.inner_email
+        user.innerEmailPassword = updated_user.inner_email_password
+        user.project = list(Project(name=p.name, description=p.description, link=p.link) for p in
+                            updated_user.projects) if updated_user.projects else user.project
+        user.achievement = list(Achievement(name=a.name, description=a.description, link=a.link) for a in
+                                updated_user.achievements) if updated_user.achievements else user.achievement
+        user.workExperience = list(WorkExperience(description=w.description) for w in
+                                   updated_user.work_experiences) if updated_user.work_experiences else user.workExperience
+        user.education = list(
+            Education(description=e.description) for e in
+            updated_user.educations) if updated_user.educations else user.education
+        user.skill = list(
+            Skill(name=s.name, description=s.description) for s in
+            updated_user.skills) if updated_user.skills else user.skill
+        user.language = list(
+            Language(name=lan.name) for lan in updated_user.languages) if updated_user.languages else user.language
+        user.vacancy = list(
+            Vacancy(description=v.description) for v in updated_user.vacancy) if updated_user.vacancy else user.vacancy
+        session.commit()
+    except Exception as e:
+        log.error(f"Error: {e}", exc_info=True)
 
 
 def get_vacancies_by_keys(
