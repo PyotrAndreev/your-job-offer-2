@@ -228,45 +228,29 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/upload', methods=['POST'])
 def upload_file():
     try:
-        # data = request.json
-        # if 'file' not in request.files or not data or "login" not in data or "password" not in data:
-        #     return jsonify({'message': 'No file part in the request or no data in request'}), 400
-        #
-        # file = request.files['file']
-        # login = data.get('login')
-        # password = data.get('password')
-        #
-        # if file.filename == '':
-        #     return jsonify({'message': 'No file selected'}), 400
-        #
-        # if file:
-        #     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        #     file.save(file_path)
-        #     user = parse(file_path)
-        #     log.info(user.__str__)
-        #     user.login = login
-        #     user.password = password
-        #     update_user(user)
-        #     return jsonify(user.to_json()), 200
-        # log.error("file upload failed")
-        # return jsonify({'message': 'File upload failed'}), 500
+        data = request.json
+        if 'file' not in request.files or not data or "login" not in data or "password" not in data:
+            return jsonify({'message': 'No file part in the request or no data in request'}), 400
 
-        file_bytes = request.data
+        file = request.files['file']
+        login = data.form.get('login')
+        password = data.form.get('password')
 
-        if not file_bytes:
-            return jsonify({"error": "Empty request body"}), 400
+        if file.filename == '':
+            return jsonify({'message': 'No file selected'}), 400
 
-        file_name = request.headers.get('X-File-Name', 'uploaded_file.pdf')
-        file_path = os.path.join(UPLOAD_FOLDER, file_name)
-
-        with open(file_path, 'wb') as file:
-            file.write(file_bytes)
-        user = parse(file_path)
-        log.info(user.__str__)
-        user.login = "test"
-        user.password = "test"
-        update_user(user)
-        return jsonify(user.to_json()), 200
+        if file:
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file.save(file_path)
+            # user = parse(file_path)
+            user = UserModel(login=login, password=password, first_name="Daria", phone="890", email="sdklal@dlsfj")
+            log.info(user.__str__)
+            user.login = login
+            user.password = password
+            update_user(user)
+            return jsonify(user.to_json()), 200
+        log.error("file upload failed")
+        return jsonify({'message': 'File upload failed'}), 500
 
     except Exception as e:
         log.error(f"Ошибка загрузки резюме: {e}")
