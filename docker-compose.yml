@@ -16,25 +16,33 @@ services:
     ports:
       - "5430:5432"
 
+  base:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.base
+    image: base
+
   create-jobs-db:
     build:
       context: .
-      dockerfile: Dockerfile.jobs_db
+      dockerfile: deploy/Dockerfile.jobs_db
     volumes:
       - ./app_logs/:/app/app_logs
     restart: on-failure
     depends_on:
+      - base
       - db
     env_file:
       - secrets/.env
   create-tokens-db:
     build:
       context: .
-      dockerfile: Dockerfile.token_db
+      dockerfile: deploy/Dockerfile.token_db
     volumes:
       - ./app_logs/:/app/app_logs
     restart: on-failure
     depends_on:
+      - base
       - db-tokens 
     env_file:
       - secrets/.env
@@ -42,7 +50,7 @@ services:
   parse-jobs-db:
     build:
       context: .
-      dockerfile: Dockerfile.jobs_db_parsing
+      dockerfile: deploy/Dockerfile.jobs_db_parsing
     volumes:
       - ./app_logs/:/app/app_logs
     restart: on-failure
@@ -51,10 +59,10 @@ services:
     env_file:
       - secrets/.env
 
-  vacancy-status:
+  parse-vacancy-status:
     build:
       context: .
-      dockerfile: Dockerfile.vacancy_status_parsing
+      dockerfile: deploy/Dockerfile.vacancy_status_parsing
     volumes:
       - ./app_logs/:/app/app_logs
     restart: on-failure
@@ -63,18 +71,17 @@ services:
     env_file:
       - secrets/.env
 
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.app
-  #   ports:
-  #     - "8080:8080"
-  #   volumes:
-  #     - ./:/app
-  #   depends_on:
-  #     - db
-  #     - parse-jobs-db
-  #     - create-tokens-db
-  #     - vacancy-status
-  #   env_file:
-  #     - secrets/.env
+  app:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.app
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/app
+    depends_on:
+      - parse-jobs-db
+      - parse-vacancy-status
+      - create-tokens-db
+    env_file:
+      - secrets/.env

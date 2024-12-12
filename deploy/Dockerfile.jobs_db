@@ -1,0 +1,4 @@
+FROM base
+
+CMD ["python", "your_job_offer/jobs_db.py"]
+

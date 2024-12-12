@@ -3,12 +3,7 @@ WORKDIR /app
 RUN apt-get update && apt-get -y install libpq-dev build-essential libpoppler-cpp-dev pkg-config python3-dev
 COPY secrets/ ./secrets
 RUN mkdir -p app_logs
-COPY pyproject.toml build/requirements.txt ./
+COPY pyproject.toml deploy/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY your_job_offer/ ./your_job_offer
 RUN pip install --no-cache-dir -e .
-
-ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0
-EXPOSE 8080
-CMD ["python3","-u", "your_job_offer/app.py", "--host=0.0.0.0"]
