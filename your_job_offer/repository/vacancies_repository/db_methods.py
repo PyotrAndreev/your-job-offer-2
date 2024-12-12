@@ -1,6 +1,5 @@
 from typing import Optional
 
-
 from entities.tracking import VacancyKey
 from sqlalchemy import select, or_
 from sqlalchemy.exc import NoResultFound
@@ -13,7 +12,7 @@ from entities.enums import (
     BusinessTripReadinessEnum,
     RelocationEnum,
 )
-from models.user import User, Job
+from models.user import User, Job, City, Country, Project, Achievement, Skill
 from models.vacancy import Vacancy
 from repository.vacancies_repository.db_session import session
 from entities.tracking import VacancyKey, VacancyModel
@@ -329,8 +328,10 @@ def update_user(updated_user: UserModel):
     user.gender = updated_user.gender
     user.phone = updated_user.phone
     user.email = updated_user.email
-    user.city = updated_user.city
-    user.country = updated_user.country
+    user.city = City(id=updated_user.city.id, name=updated_user.city.name,
+                     areaId=updated_user.city.area_id) if updated_user.city else None
+    user.country = Country(id=updated_user.country.id, name=updated_user.country.name,
+                           areaId=updated_user.country.area_id) if updated_user.country else None,
     user.cv = updated_user.cv
     user.description = updated_user.description
     user.workType = updated_user.work_type
@@ -345,12 +346,14 @@ def update_user(updated_user: UserModel):
     user.hhResumeId = updated_user.hh_resume_id
     user.innerEmail = updated_user.inner_email
     user.innerEmailPassword = updated_user.inner_email_password
-    user.project = updated_user.projects
-    user.achievement = updated_user.achievements
-    user.workExperience = updated_user.work_experiences
-    user.education = updated_user.educations
-    user.skill = updated_user.skills
-    user.language = updated_user.languages
+    user.project = [Project(id=p.id, name=p.name, description=p.description, link=p.link) for p in
+                    updated_user.projects]
+    user.achievement = [Achievement(id=a.id, name=a.name, description=a.description, link=a.link) for a in
+                        updated_user.achievements]
+    # user.workExperience = updated_user.work_experiences
+    # user.education = updated_user.educations
+    user.skill = [Skill(id=s.id, name=s.name, description=s.description) for s in updated_user.skills]
+    # user.language = updated_user.languages
     user.vacancy = updated_user.vacancy
     session.commit()
 
