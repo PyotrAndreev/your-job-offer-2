@@ -328,9 +328,9 @@ def update_user(updated_user: UserModel):
     user.gender = updated_user.gender
     user.phone = updated_user.phone
     user.email = updated_user.email
-    user.city = City(id=updated_user.city.id, name=updated_user.city.name,
+    user.city = City(name=updated_user.city.name,
                      areaId=updated_user.city.area_id) if updated_user.city else None
-    user.country = Country(id=updated_user.country.id, name=updated_user.country.name,
+    user.country = Country(name=updated_user.country.name,
                            areaId=updated_user.country.area_id) if updated_user.country else None,
     user.cv = updated_user.cv
     user.description = updated_user.description
@@ -346,15 +346,15 @@ def update_user(updated_user: UserModel):
     user.hhResumeId = updated_user.hh_resume_id
     user.innerEmail = updated_user.inner_email
     user.innerEmailPassword = updated_user.inner_email_password
-    user.project = [Project(id=p.id, name=p.name, description=p.description, link=p.link) for p in
+    user.project = [Project(name=p.name, description=p.description, link=p.link) for p in
                     updated_user.projects]
-    user.achievement = [Achievement(id=a.id, name=a.name, description=a.description, link=a.link) for a in
+    user.achievement = [Achievement(name=a.name, description=a.description, link=a.link) for a in
                         updated_user.achievements]
     # user.workExperience = updated_user.work_experiences
     # user.education = updated_user.educations
-    user.skill = [Skill(id=s.id, name=s.name, description=s.description) for s in updated_user.skills]
+    user.skill = [Skill(name=s.name, description=s.description) for s in updated_user.skills]
     # user.language = updated_user.languages
-    user.vacancy = updated_user.vacancy
+    # user.vacancy = updated_user.vacancy
     session.commit()
 
 
