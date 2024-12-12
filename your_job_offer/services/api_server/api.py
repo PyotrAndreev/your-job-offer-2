@@ -220,17 +220,12 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    """
-    Handles the file upload and saves it to the uploads folder.
-    """
     if 'file' not in request.files:
-        log.info("no file pass in request")
         return jsonify({'message': 'No file part in the request'}), 400
 
     file = request.files['file']
 
     if file.filename == '':
-        log.info("no file selected")
         return jsonify({'message': 'No file selected'}), 400
 
     if file:
@@ -239,7 +234,6 @@ def upload_file():
         user = parse(file_path)
 
         log.info(user.__str__)
-        log.info("file uploaded")
         return jsonify({'message': 'File successfully uploaded'}), 200
-    log.info("file upload failed")
+    log.error("file upload failed")
     return jsonify({'message': 'File upload failed'}), 500

@@ -1,5 +1,6 @@
 from typing import Optional
 
+
 from entities.tracking import VacancyKey
 from sqlalchemy import select, or_
 from sqlalchemy.exc import NoResultFound
