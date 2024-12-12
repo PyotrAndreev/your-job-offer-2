@@ -49,5 +49,5 @@ def get_match_vacancies(user: UserModel) -> list[VacancyModel]:
     list_vac = []
     for item in vacancies:
         list_vac.append(mapper.map_vacancy(item))
-    list_vac = match_vacancies(list_vac, user)
-    return list_vac
+    # list_vac = match_vacancies(list_vac, user)
+    return list_vac[:10]
