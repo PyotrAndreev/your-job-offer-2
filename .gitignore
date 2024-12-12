@@ -116,5 +116,5 @@ app_logs/
 .tmp*
 
 .env
-.idea/
+#.idea/
 secrets/

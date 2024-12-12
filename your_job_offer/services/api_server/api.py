@@ -90,7 +90,7 @@ def get_form():
                 jsonify(
                     {
                         "error": "Invalid request. 'login', 'password' fields are "
-                        "required."
+                                 "required."
                     }
                 ),
                 400,
@@ -123,16 +123,16 @@ def hh_auth():
     try:
         data = request.json
         if (
-            not data
-            or "access" not in data
-            or "refresh" not in data
-            or "login" not in data
+                not data
+                or "access" not in data
+                or "refresh" not in data
+                or "login" not in data
         ):
             return make_response(
                 jsonify(
                     {
                         "error": "Invalid request. 'login', 'access' and 'refresh' fields are "
-                        "required."
+                                 "required."
                     }
                 ),
                 400,
@@ -163,16 +163,16 @@ def apply():
     try:
         data = request.json
         if (
-            not data
-            or "login" not in data
-            or "password" not in data
-            or "vacancy_id" not in data
+                not data
+                or "login" not in data
+                or "password" not in data
+                or "vacancy_id" not in data
         ):
             return make_response(
                 jsonify(
                     {
                         "error": "Invalid request. 'login', 'password' fields are "
-                        "required."
+                                 "required."
                     }
                 ),
                 400,
@@ -211,10 +211,12 @@ def some():
     print(vacs)
     return make_response(vacs, 200)
 
+
 # Configure upload folder
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -235,7 +237,7 @@ def upload_file():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(file_path)
         user = parse(file_path)
-        
+
         log.info(user.__str__)
         log.info("file uploaded")
         return jsonify({'message': 'File successfully uploaded'}), 200
