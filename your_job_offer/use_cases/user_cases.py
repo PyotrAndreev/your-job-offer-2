@@ -1,5 +1,4 @@
 from entities.user import UserModel
-from models.user import User
 from repository.vacancies_repository import db_methods
 from mappers import mapper
 
