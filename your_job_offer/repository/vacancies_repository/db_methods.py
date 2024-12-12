@@ -345,12 +345,12 @@ def update_user(updated_user: UserModel):
     user.hhResumeId = updated_user.hh_resume_id
     user.innerEmail = updated_user.inner_email
     user.innerEmailPassword = updated_user.inner_email_password
-    user.project = updated_user.project
-    user.achievement = updated_user.achievement
+    user.project = updated_user.projects
+    user.achievement = updated_user.achievements
     user.workExperience = updated_user.work_experiences
-    user.education = updated_user.education
-    user.skill = updated_user.skill
-    user.language = updated_user.language
+    user.education = updated_user.educations
+    user.skill = updated_user.skills
+    user.language = updated_user.languages
     user.vacancy = updated_user.vacancy
     session.commit()
 
