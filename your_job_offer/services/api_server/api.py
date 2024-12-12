@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import logger
+from entities.jobs import VacancyModel
 from entities.user import UserModel
 from models.hh_token import HH_Token
 from models.user import User
@@ -64,8 +65,9 @@ def getVacancies():
     if not user_cases.ifExistUser(user.login):
         return make_response("User not exists", 401)
     user = user_cases.getUser(user.login)
-    vac = match_vacancies.get_match_vacancies(user=user)
-    return make_response(jsonify(vacancies=json.dumps([obj.to_json() for obj in vac])), 200)
+    vac: list[VacancyModel] = match_vacancies.get_match_vacancies(user=user)
+
+    return make_response('{"vacancies":'+json.dumps([json.loads(v.to_json()) for v in vac])+'}', 200)
 
 
 @app.route("/form", methods=["POST"])
