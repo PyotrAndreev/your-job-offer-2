@@ -11,7 +11,7 @@ from .enums import (
     ScheduleEnum,
     GenderEnum,
     EducationLevelEnum,
-    LanguageLevelEnum,
+    LanguageLevelEnum, CitizenshipEnum,
 )
 from .general import SkillModel, LanguageModel, CityModel, CountryModel
 from .jobs import VacancyModel
@@ -211,6 +211,7 @@ class UserModel:
     relocation: Optional[RelocationEnum] = None
     employment: Optional[EmploymentEnum] = None
     schedule: Optional[ScheduleEnum] = None
+    citizenship: Optional[CitizenshipEnum] = None
     hh_resume_id: Optional[str] = None
     education_level: Optional[EducationLevelEnum] = None
     inner_email: Optional[str] = None

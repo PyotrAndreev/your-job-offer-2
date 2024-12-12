@@ -10,7 +10,7 @@ from entities.enums import (
     EmploymentEnum,
     ScheduleEnum,
     LanguageLevelEnum,
-    EducationLevelEnum,
+    EducationLevelEnum, CitizenshipEnum,
 )
 from repository.vacancies_repository.db_session import Base
 
@@ -151,6 +151,9 @@ class User(Base):
     )
     schedule = Column(
         PgEnum(ScheduleEnum, name="schedule", create_type=True), nullable=True
+    )
+    citizenship = Column(
+        PgEnum(CitizenshipEnum, name="citizenship", create_type=True), nullable=True
     )
     educationLevel = Column(
         PgEnum(EducationLevelEnum, name="education_level", create_type=True),

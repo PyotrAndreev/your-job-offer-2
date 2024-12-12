@@ -32,21 +32,27 @@ def save_vacancy(vacancy: Vacancy):
     """
     session.add(vacancy)
     session.commit()
+
+
 def save_country(country: Country):
     session.add(country)
     session.commit()
+
 
 def if_exist_city(name: str) -> bool:
     exist = session.execute(select(City).filter_by(name=name)).scalar()
     return True if exist else False
 
+
 def if_exist_country(name: str) -> bool:
     exist = session.execute(select(Country).filter_by(name=name)).scalar()
     return True if exist else False
 
+
 def save_city(city: City):
     session.add(city)
     session.commit()
+
 
 def get_all_vacancies() -> list[Vacancy]:
     """
@@ -369,6 +375,7 @@ def update_user(updated_user: UserModel):
         user.relocation = updated_user.relocation
         user.employment = updated_user.employment
         user.schedule = updated_user.schedule
+        user.citizenship = updated_user.citizenship
         user.educationLevel = updated_user.education_level
         user.hhResumeId = updated_user.hh_resume_id
         user.innerEmail = updated_user.inner_email

@@ -76,3 +76,7 @@ class StageEnum(Enum):
         "interview"  # этап invite пройден, нужно записаться на собеседование
     )
 
+
+class CitizenshipEnum(Enum):
+    rf = "rf"
+    another = "another"
