@@ -227,20 +227,29 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    if 'file' not in request.files:
-        return jsonify({'message': 'No file part in the request'}), 400
+    try:
+        data = request.json
+        if 'file' not in request.files or not data or "login" not in data or "password" not in data:
+            return jsonify({'message': 'No file part in the request or no data in request'}), 400
 
-    file = request.files['file']
+        file = request.files['file']
+        login = data.get('login')
+        password = data.get('password')
 
-    if file.filename == '':
-        return jsonify({'message': 'No file selected'}), 400
+        if file.filename == '':
+            return jsonify({'message': 'No file selected'}), 400
 
-    if file:
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(file_path)
-        user = parse(file_path)
-
-        log.info(user.__str__)
-        return jsonify({'message': 'File successfully uploaded'}), 200
-    log.error("file upload failed")
-    return jsonify({'message': 'File upload failed'}), 500
+        if file:
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file.save(file_path)
+            user = parse(file_path)
+            log.info(user.__str__)
+            user.login = login
+            user.password = password
+            update_user(user)
+            return jsonify(user.to_json()), 200
+        log.error("file upload failed")
+        return jsonify({'message': 'File upload failed'}), 500
+    except Exception as e:
+        log.error(f"Ошибка загрузки резюме: {e}")
+        return make_response(jsonify({"error": str(e)}), 500)
