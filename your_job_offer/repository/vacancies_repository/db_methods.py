@@ -32,7 +32,21 @@ def save_vacancy(vacancy: Vacancy):
     """
     session.add(vacancy)
     session.commit()
+def save_country(country: Country):
+    session.add(country)
+    session.commit()
 
+def if_exist_city(name: str) -> bool:
+    exist = session.execute(select(City).filter_by(name=name)).scalar()
+    return True if exist else False
+
+def if_exist_country(name: str) -> bool:
+    exist = session.execute(select(Country).filter_by(name=name)).scalar()
+    return True if exist else False
+
+def save_city(city: City):
+    session.add(city)
+    session.commit()
 
 def get_all_vacancies() -> list[Vacancy]:
     """
@@ -321,6 +335,18 @@ def get_vacancies_by_user(user: User):
 def update_user(updated_user: UserModel):
     try:
         user = get_user(updated_user.login)
+        if updated_user.city:
+            if not if_exist_city(updated_user.city.name):
+                save_city(City(name=updated_user.city.name, areaId=updated_user.city.area_id))
+            city = session.scalars(select(City).filter_by(name=updated_user.city.name)).first()
+            user.cityId = city.id
+
+        if updated_user.country:
+            if not if_exist_city(updated_user.country.name):
+                save_country(Country(name=updated_user.country.name, areaId=updated_user.country.area_id))
+            country = session.scalars(select(Country).filter_by(name=updated_user.country.name)).first()
+            user.countryId = country.id
+
         user.birthDate = updated_user.birth_date
         user.firstName = updated_user.first_name
         user.lastName = updated_user.last_name
