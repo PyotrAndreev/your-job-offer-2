@@ -1,5 +1,6 @@
 from os import getenv
 import json
+from typing import Optional
 
 from your_job_offer.services.cv_parser.parser import OpenaAIQueryBuilder
 from your_job_offer.services.cv_parser.tokenizer import num_tokens_from_string
@@ -10,7 +11,7 @@ from your_job_offer.entities.tracking import (
     Stage,
     StageEnum,
 )
-from logger import get_logger
+from your_job_offer.logger import get_logger
 
 log = get_logger(__name__)
 
@@ -65,8 +66,8 @@ class EmailParser:
 
     def parse(
         self, messages: list[EmailMessage]
-    ) -> list[ParsedMessage | None]:
-        result: list[ParsedMessage | None] = [None] * len(messages)
+    ) -> list[Optional[ParsedMessage]]:
+        result: list[Optional[ParsedMessage]] = [None] * len(messages)
         nones: list[int] = []
         prompt = self.prompt_questions
         for index, message in enumerate(messages):

@@ -1,1 +1,1 @@
-0 * * * * (cd /app && /usr/local/bin/python /app/your_job_offer/repository/vacancies_repository/parsing.py)
+* * * * * (cd /app && /usr/local/bin/python /app/your_job_offer/repository/vacancies_repository/parsing.py >> /app/app_logs/jobs_db_parsing.txt 2>&1)

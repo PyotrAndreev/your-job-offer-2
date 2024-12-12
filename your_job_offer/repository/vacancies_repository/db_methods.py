@@ -6,6 +6,7 @@ from sqlalchemy.exc import NoResultFound
 
 import your_job_offer.logger as logger
 from your_job_offer.entities.user import UserModel
+from your_job_offer.entities.tracking import StatusModel
 from your_job_offer.entities.enums import (
     EmploymentEnum,
     ScheduleEnum,
@@ -346,26 +347,14 @@ def update_user(user: User):
         session.rollback()
 
 
-def get_vacancies_by_keys(
-    keys: list[VacancyKey], user: UserModel
-) -> list[Optional[VacancyModel]]:
-    vacancies = []
-    userVacancies = user.vacancy
-    print(userVacancies)
-    for key in keys:
-        l = []
-        if key.id is not None:
-            l = [
-                x for x in userVacancies if x.id_vacancy_from_source == key.id
-            ]
-        else:
-            l = [
-                x
-                for x in userVacancies
-                if x.job == key.job and x.employer == key.employer
-            ]
-            if len(l) > 0:
-                vacancies.append(l[0])
-            else:
-                vacancies.append(None)
-    return vacancies
+from your_job_offer.utils.mock import get_user
+
+
+def get_all_users() -> list[User]:
+    users = session.execute(select(User)).scalars().all()
+    return users
+
+
+def get_vacancy_by_id(vacancy_id: int) -> Vacancy:
+    stmt = select(Vacancy).where(Vacancy.id == vacancy_id)
+    return get_vacancies_with_statement(stmt)

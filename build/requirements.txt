@@ -11,3 +11,4 @@ sentry-sdk
 beautifulsoup4
 lxml
 psycopg2
+pdftotext

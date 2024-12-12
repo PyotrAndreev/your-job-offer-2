@@ -8,7 +8,6 @@ from your_job_offer.repository.vacancies_repository.db_methods import (
     get_all_vacancies,
     save_vacancy,
 )
-from your_job_offer.logger import get_logger
 from your_job_offer.models.vacancy import Vacancy
 from your_job_offer.mappers.mapper import (
     map_vacancy_db_to_vacancy_key,

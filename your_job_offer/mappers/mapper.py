@@ -2,7 +2,7 @@ import token
 
 from your_job_offer.entities.hh_token import HHTokenModel
 from your_job_offer.entities.jobs import VacancyModel
-from your_job_offer.entities.tracking import VacancyKey
+from your_job_offer.entities.tracking import VacancyKey, StatusModel
 from your_job_offer.entities.user import *
 from your_job_offer.models.hh_token import HH_Token
 from your_job_offer.models.user import (
@@ -16,7 +16,7 @@ from your_job_offer.models.user import (
     Skill,
     Language,
 )
-from your_job_offer.models.vacancy import Vacancy
+from your_job_offer.models.vacancy import Vacancy, Status
 from your_job_offer.repository.vacancies_repository.db_methods import (
     get_job,
     get_job_id,
@@ -286,5 +286,6 @@ def map_vacancy_db_to_vacancy_key(vacancy_db: Vacancy) -> VacancyKey:
     )
 
 
-def map_status_entity_to_status_model(status: ):
+def map_status_model(status: StatusModel) -> Status:
+    # TODO Настя
     pass

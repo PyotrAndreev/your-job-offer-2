@@ -1,18 +1,25 @@
-from collections import defaultdict
 import string
 from dataclasses import replace
 import re
+from typing import Optional
 
 import pymorphy2
 from bs4 import BeautifulSoup
 
+from your_job_offer.logger import get_logger
 from your_job_offer.entities.user import EmailMessage
 from your_job_offer.entities.tracking import (
     VacancyKey,
-    Stage,
     ParsedMessage,
 )
+from your_job_offer.entities.user import UserModel
+from your_job_offer.entities.tracking import StatusModel
+from your_job_offer.use_cases.user_cases import get_vacancies_by_keys
+from your_job_offer.use_cases.vacancy_cases import update_status
+from your_job_offer.services.mail_checker.methods import get_email_messages
 from .email_parser import parser
+
+log = get_logger("vacancy_status_parsing")
 
 
 def preprocess_text(text):
@@ -67,7 +74,9 @@ def filter_from_spam(messages: list[EmailMessage]) -> list[EmailMessage]:
     return filtered
 
 
-def parse_messages(messages: list[EmailMessage]) -> list[ParsedMessage | None]:
+def parse_messages(
+    messages: list[EmailMessage],
+) -> list[Optional[ParsedMessage]]:
     return parser.parse(messages)
 
 
@@ -111,7 +120,7 @@ def find_vacancy_number(message: EmailMessage) -> str:
 
 
 def make_normal_messages(
-    parsed_messages: list[ParsedMessage | None],
+    parsed_messages: list[Optional[ParsedMessage]],
     raw_messages: list[EmailMessage],
 ) -> list[ParsedMessage]:
     if len(parsed_messages) != len(raw_messages):
@@ -130,5 +139,55 @@ def make_normal_messages(
         ):
             parsed_message.stage.message = raw_message.body
             parsed_message.stage.date = raw_message.date
-            result.append(parsed_message)
+            result.append(
+                ParsedMessage(
+                    vacancy_key=VacancyKey(
+                        job=parsed_message.vacancy_key.job,
+                        employer=parsed_message.vacancy_key.employer,
+                        id_vacancy_from_source=find_vacancy_number(
+                            raw_message
+                        ),
+                    )
+                ),
+                stage=parsed_message.stage,
+            )
     return result
+
+
+def get_all_statuses(user: UserModel) -> list[StatusModel]:
+    """
+    Возвращает все поданные userом заявки
+    """
+    raw_messages = get_email_messages(user)
+    raw_messages = filter_from_spam(raw_messages)
+    cleaned_messages = clean_messages(raw_messages)
+    parsed_messages = parse_messages(cleaned_messages)
+    normal_messages = make_normal_messages(parsed_messages, raw_messages)
+    vacancies = get_vacancies_by_keys(
+        list(
+            map(
+                lambda parsed_message: parsed_message.vacancy_key,
+                normal_messages,
+            )
+        ),
+        user,
+    )
+    ans: list[StatusModel] = []
+    for vacancy, parsed_message in zip(vacancies, normal_messages):
+        if vacancy is not None:
+            ans.append(
+                StatusModel(
+                    vacancy_id=vacancy.id,
+                    stage=parsed_message.stage.stage_type,
+                    deadline=parsed_message.stage.deadline,
+                    date=parsed_message.stage.date,
+                    message=parsed_message.stage.message,
+                )
+            )
+    return ans
+
+
+def parse_for_user(user: UserModel):
+    statuses = get_all_statuses(user)
+    for status in statuses:
+        update_status(status)
