@@ -329,10 +329,10 @@ def update_user(updated_user: UserModel):
         user.gender = updated_user.gender
         user.phone = updated_user.phone
         user.email = updated_user.email
-        user.city = City(name=updated_user.city.name,
-                         areaId=updated_user.city.area_id) if updated_user.city else None
-        user.country = Country(name=updated_user.country.name,
-                               areaId=updated_user.country.area_id) if updated_user.country else None,
+        # user.city = City(name=updated_user.city.name,
+        #                  areaId=updated_user.city.area_id) if updated_user.city else None
+        # user.country = Country(name=updated_user.country.name,
+        #                        areaId=updated_user.country.area_id) if updated_user.country else None,
         user.cv = updated_user.cv
         user.description = updated_user.description
         user.workType = updated_user.work_type
