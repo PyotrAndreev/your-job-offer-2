@@ -228,8 +228,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/upload', methods=['POST'])
 def upload_file():
     try:
-        data = request.json
-        if 'file' not in request.files or not data or "login" not in data or "password" not in data:
+        data = request
+        if 'file' not in request.files:
             return jsonify({'message': 'No file part in the request or no data in request'}), 400
 
         file = request.files['file']
