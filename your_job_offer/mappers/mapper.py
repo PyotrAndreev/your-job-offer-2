@@ -41,7 +41,7 @@ def map_user(user: User) -> UserModel:
         work_experiences=[
             WorkExperienceModel(
                 id=w.id,
-                job=get_job(w.jobId).name,
+                job=get_job(w.jobId).name if w.jobId else None,
                 work_place=w.workPlace,
                 description=w.description,
                 start_date=w.startDate,
@@ -154,7 +154,7 @@ def map_userModel(user: UserModel) -> User:
         workExperience=[
             WorkExperience(
                 id=w.id,
-                jobId=get_job_id(w.job),
+                jobId=get_job_id(w.job) if w.job else None,
                 workPlace=w.work_place,
                 description=w.description,
                 startDate=w.start_date,
