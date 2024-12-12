@@ -14,7 +14,7 @@ def saveUser(user: UserModel) -> UserModel:
 
 
 def updateUser(user: UserModel) -> UserModel:
-    return db_methods.update_user(mapper.map_userModel(user))
+    return db_methods.update_user(user)
 
 
 def ifExistUser(login: str) -> bool:

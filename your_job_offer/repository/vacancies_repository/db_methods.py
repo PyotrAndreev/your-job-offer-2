@@ -319,12 +319,12 @@ def get_vacancies_by_user(user: User):
     return get_vacancies_with_statement(stmt)
 
 
-def update_user(updated_user: User):
+def update_user(updated_user: UserModel):
     user = get_user(updated_user.login)
-    user.birthDate = updated_user.birthDate
-    user.firstName = updated_user.firstName
-    user.lastName = updated_user.lastName
-    user.middleName = updated_user.middleName
+    user.birthDate = updated_user.birth_date
+    user.firstName = updated_user.first_name
+    user.lastName = updated_user.last_name
+    user.middleName = updated_user.middle_name
     user.photo = updated_user.photo
     user.gender = updated_user.gender
     user.phone = updated_user.phone
@@ -333,21 +333,21 @@ def update_user(updated_user: User):
     user.country = updated_user.country
     user.cv = updated_user.cv
     user.description = updated_user.description
-    user.workType = updated_user.workType
-    user.minSalary = updated_user.minSalary
-    user.maxSalary = updated_user.maxSalary
-    user.businessTripReadiness = updated_user.businessTripReadiness
-    user.workHours = updated_user.workHours
+    user.workType = updated_user.work_type
+    user.minSalary = updated_user.min_salary
+    user.maxSalary = updated_user.max_salary
+    user.businessTripReadiness = updated_user.business_trip_readiness
+    user.workHours = updated_user.work_hours
     user.relocation = updated_user.relocation
     user.employment = updated_user.employment
     user.schedule = updated_user.schedule
-    user.educationLevel = updated_user.educationLevel
-    user.hhResumeId = updated_user.hhResumeId
-    user.innerEmail = updated_user.innerEmail
-    user.innerEmailPassword = updated_user.innerEmailPassword
+    user.educationLevel = updated_user.education_level
+    user.hhResumeId = updated_user.hh_resume_id
+    user.innerEmail = updated_user.inner_email
+    user.innerEmailPassword = updated_user.inner_email_password
     user.project = updated_user.project
     user.achievement = updated_user.achievement
-    user.workExperience = updated_user.workExperience
+    user.workExperience = updated_user.work_experiences
     user.education = updated_user.education
     user.skill = updated_user.skill
     user.language = updated_user.language
