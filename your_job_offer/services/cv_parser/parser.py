@@ -249,8 +249,8 @@ class ResumeParser:
         )
         languages = [
             user_models.LanguageModel(
-                language["name"],
-                ResumeParser._field_to_class(
+                name=language["name"],
+                level=ResumeParser._field_to_class(
                     language["level"], user_models.LanguageLevelEnum
                 ),
             )
