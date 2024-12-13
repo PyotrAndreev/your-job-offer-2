@@ -34,7 +34,7 @@ def json_serial(obj):
 
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
-    if isinstance(obj, type(GenderEnum)):
+    if isinstance(obj, enum.Enum):
         return obj.value
 
     raise TypeError ("Type %s not serializable" % type(obj))
