@@ -65,7 +65,7 @@ def map_user(user: User) -> UserModel:
         employment=user.employment,
         schedule=user.schedule,
         citizenship=user.citizenship,
-        professinal_role=ProfessionalRoleModel(id=professional_role.id, role_id=user.roleId,
+        professional_role=ProfessionalRoleModel(id=professional_role.id, role_id=user.roleId,
                                                name=professional_role.name) if professional_role else None,
         projects=[
             ProjectModel(
