@@ -30,13 +30,10 @@ from datetime import date, datetime
 import enum
 
 def json_serial(obj):
-    """JSON serializer for objects not serializable by default json code"""
-
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
     if isinstance(obj, enum.Enum):
         return obj.value
-
     raise TypeError ("Type %s not serializable" % type(obj))
 
 app = Flask("app")
@@ -61,7 +58,7 @@ def registerUser():
     user.password = hashed_password
     user = user_cases.saveUser(user)
     user.password = old_password
-    return make_response(user.to_json(), 200)
+    return make_response(user.to_json(default=json_serial), 200)
 
 
 @app.route("/login", methods=["POST"])
@@ -73,7 +70,7 @@ def loginUser():
     print(user)
     if check_password_hash(user_login.password, user.password):
         user_login.password = user.password
-        return make_response(user_login.to_json(default=str), 200)
+        return make_response(user_login.to_json(default=json_serial), 200)
     else:
         return make_response("Wrong password", 401)
 
@@ -88,7 +85,7 @@ def getVacancies():
 
     return make_response(
         '{"vacancies":'
-        + json.dumps([json.loads(v.to_json(default=str)) for v in vac])
+        + json.dumps([json.loads(v.to_json(default=json_serial)) for v in vac])
         + "}",
         200,
     )
@@ -235,7 +232,7 @@ def test():
 def add():
     user = UserModel(login="test", password="test")
     saveUser(user)
-    return make_response(user.to_json(default=str), 200)
+    return make_response(user.to_json(default=json_serial), 200)
 
 
 # Configure upload folder
