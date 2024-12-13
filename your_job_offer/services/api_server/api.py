@@ -214,6 +214,7 @@ def test():
     log.info(f"login: {login}")
     password = request.json["password"]
     user = getUser(login)
+    log.info(f"User: {user.__str__()}")
     return make_response(user.to_json(), 200)
 
 
