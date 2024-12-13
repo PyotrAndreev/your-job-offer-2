@@ -86,6 +86,10 @@ def save_user(user: User) -> User:
     session.commit()
     return user
 
+def save_role(role: ProfessionalRole):
+    session.add(role)
+    session.commit()
+
 
 def get_user(login: str) -> User:
     """
@@ -424,7 +428,7 @@ def update_user(updated_user: UserModel):
         )
         user.education = (
             list(
-                Education(description=e.description)
+                Education(description=e.description, institution=e.institution, finishDate=e.finish_date)
                 for e in updated_user.educations
             )
             if updated_user.educations
@@ -439,7 +443,7 @@ def update_user(updated_user: UserModel):
             else user.skill
         )
         user.language = (
-            list(Language(name=lan.name) for lan in updated_user.languages)
+            list(Language(name=lan.name, level=lan.level) for lan in updated_user.languages)
             if updated_user.languages
             else user.language
         )
