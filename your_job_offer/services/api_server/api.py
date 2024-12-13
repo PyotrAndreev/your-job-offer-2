@@ -48,7 +48,7 @@ def registerUser():
     user.password = hashed_password
     user = user_cases.saveUser(user)
     user.password = old_password
-    return make_response(user.to_json(), 200)
+    return make_response(user.to_json(default=str), 200)
 
 
 @app.route("/login", methods=["POST"])
@@ -60,7 +60,7 @@ def loginUser():
     print(user)
     if check_password_hash(user_login.password, user.password):
         user_login.password = user.password
-        return make_response(user_login.to_json(), 200)
+        return make_response(user_login.to_json(default=str), 200)
     else:
         return make_response("Wrong password", 401)
 
@@ -75,7 +75,7 @@ def getVacancies():
 
     return make_response(
         '{"vacancies":'
-        + json.dumps([json.loads(v.to_json()) for v in vac])
+        + json.dumps([json.loads(v.to_json(default=str)) for v in vac])
         + "}",
         200,
     )
@@ -222,15 +222,7 @@ def test():
 def add():
     user = UserModel(login="test", password="test")
     saveUser(user)
-    return make_response(user.to_json(), 200)
-
-
-@app.route("/some", methods=["GET"])
-def some():
-    user = user_cases.getUser(login="admin")
-    vacs = match_vacancies.get_match_vacancies(user)
-    print(vacs)
-    return make_response(vacs, 200)
+    return make_response(user.to_json(default=str), 200)
 
 
 # Configure upload folder
