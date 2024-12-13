@@ -23,6 +23,7 @@ from your_job_offer.use_cases import user_cases
 from your_job_offer.use_cases.matching import match_vacancies
 from your_job_offer.use_cases.user_cases import getUser, saveUser
 from your_job_offer.services.cv_parser.methods import parse
+from your_job_offer.repository.vacancies_repository.get_professional_roles import get_professional_roles
 
 
 app = Flask("app")
