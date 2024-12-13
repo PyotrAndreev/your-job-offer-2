@@ -114,7 +114,7 @@ def get_job_id(name: str) -> int:
     return job
 
 def get_professional_role(role_id: int) -> ProfessionalRole:
-    role = session.scalars(select(ProfessionalRole).filter_by(role_id=role_id)).first()
+    role = session.scalars(select(ProfessionalRole).filter_by(roleId=role_id)).first()
     return role
 
 
