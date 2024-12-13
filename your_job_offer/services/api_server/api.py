@@ -48,7 +48,7 @@ def registerUser():
     user.password = hashed_password
     user = user_cases.saveUser(user)
     user.password = old_password
-    return make_response(user.to_json(default=str), 200)
+    return make_response(user.to_json(), 200)
 
 
 @app.route("/login", methods=["POST"])
