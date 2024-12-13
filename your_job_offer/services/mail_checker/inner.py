@@ -1,12 +1,12 @@
-from dataclasses import replace
-import imaplib
+from typing import Optional
+
 import email
 from email.header import decode_header
 
-from  entities.user import EmailMessage
+from your_job_offer.entities.user import EmailMessage
 
 
-def get_email_message(msg) -> EmailMessage | None:
+def get_email_message(msg) -> Optional[EmailMessage]:
     subject, encoding = decode_header(msg["Subject"])[0]
     if isinstance(subject, bytes):
         subject = subject.decode(encoding if encoding else "utf-8")

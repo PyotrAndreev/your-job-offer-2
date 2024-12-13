@@ -1,7 +1,7 @@
-import logger
-from entities.hh_token import HHTokenModel
-from repository.tokens_repository import db_methods
-from services.hh_api.refresh_hh_token import refresh_hh_token
+import your_job_offer.logger as logger
+from your_job_offer.entities.hh_token import HHTokenModel
+from your_job_offer.repository.tokens_repository import db_methods
+from your_job_offer.services.hh_api.refresh_hh_token import refresh_hh_token
 
 log = logger.get_logger(__name__)
 

@@ -1,11 +1,13 @@
 import requests
 
-import logger
+import your_job_offer.logger as logger
 
 log = logger.get_logger(__name__)
 
 
-def apply_to_vacancy(vacancy_id: int, resume_id: str, message: str, access_token: str):
+def apply_to_vacancy(
+    vacancy_id: int, resume_id: str, message: str, access_token: str
+):
     """
     Submits an application to a specified job vacancy on hh.ru.
 
@@ -30,7 +32,9 @@ def apply_to_vacancy(vacancy_id: int, resume_id: str, message: str, access_token
         "message": message,
     }
 
-    res = requests.post(f"https://api.hh.ru/negotiations", data=data, headers=headers)
+    res = requests.post(
+        f"https://api.hh.ru/negotiations", data=data, headers=headers
+    )
 
     if res.status_code == 201:
         location_header = res.headers.get("Location")

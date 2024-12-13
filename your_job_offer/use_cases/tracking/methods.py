@@ -1,29 +1,26 @@
-from  entities.user import UserModel
-from  entities.tracking import (
-    TrackUnit,
+from your_job_offer.repository.vacancies_repository.db_methods import (
+    get_all_users,
 )
 
-from  services.mail_checker.methods import get_email_messages
-from  repository.vacancies_repository.db_methods import (
-    get_vacancies_by_keys,
-)
+from your_job_offer.use_cases.tracking.internal import parse_for_user, log
 
-from .internal import *
+from your_job_offer.use_cases.user_cases import saveUser
+from your_job_offer.utils.mock import get_user
+from your_job_offer.use_cases.vacancy_cases import getAllVacancyFromDb
 
 
-def get_all_stages(user: UserModel) -> list[TrackUnit]:
-    """
-    Возвращает все поданные userом заявки
-    """
-    raw_messages = get_email_messages(user)
-    raw_messages = filter_from_spam(raw_messages)
-    cleaned_messages = clean_messages(raw_messages)
-    parsed_messages = parse_messages(cleaned_messages)
-    normal_messages = make_normal_messages(parsed_messages, raw_messages)
-    separated_messages = separate_by_vacancy(normal_messages)
-    vacancies = get_vacancies_by_keys(list(separated_messages.keys()))
-    ans: list[TrackUnit] = []
-    for vacancy, stages in zip(vacancies, separated_messages.values()):
-        if vacancy is not None:
-            ans.append(TrackUnit(vacancy, stages))
-    return ans
+def parse():
+    users = get_all_users()
+    log.info(f"начинаю обновление статусов, юзеров {len(users)}")
+    for user in users:
+        parse_for_user(user)
+    log.info("закончил обновление статусов")
+
+
+if __name__ == "__main__":
+    # user = get_user()
+    # saveUser(user)
+    parse()
+    vacancies = getAllVacancyFromDb()
+    for vacancy in vacancies:
+        print(f"job={vacancy.job}, employer={vacancy.employer}")

@@ -5,7 +5,7 @@
 # )
 # from sqlalchemy.orm import relationship
 #
-# from services.vacancies_repository import Base
+# from your_job_offer.services.vacancies_repository import Base
 #
 #
 # class Country(Base):

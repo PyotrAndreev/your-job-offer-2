@@ -1,5 +1,5 @@
 import requests
-import logger
+import your_job_offer.logger as logger
 
 log = logger.get_logger(__name__)
 
@@ -19,13 +19,13 @@ def get_messages(nid: str, access_token: str) -> list[str]:
         "HH-User-Agent": "YourJobOffer (zaitseva.dr@phystech.edu)",
         "Authorization": f"Bearer {access_token}",
     }
-    params = {
-        "with_text_only": False,
-        "locale": "RU",
-        "host": "hh.ru"
-    }
+    params = {"with_text_only": False, "locale": "RU", "host": "hh.ru"}
 
-    res = requests.get(f"https://api.hh.ru/negotiations/{nid}/messages", headers=headers, params=params)
+    res = requests.get(
+        f"https://api.hh.ru/negotiations/{nid}/messages",
+        headers=headers,
+        params=params,
+    )
     responce = res.json()
 
     if res.status_code != 200:

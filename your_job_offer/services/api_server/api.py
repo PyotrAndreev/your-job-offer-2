@@ -3,22 +3,27 @@ import os
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
-import logger
-from entities.user import UserModel
-from models.hh_token import HH_Token
-from models.user import User
-from repository.tokens_repository.db_methods import save_hh_token
-from repository.vacancies_repository import db_methods
-from repository.vacancies_repository.db_methods import update_user
+import your_job_offer.logger as logger
+from your_job_offer.entities.user import UserModel
 
-from mappers.mapper import map_vacancy
+from your_job_offer.models.hh_token import HH_Token
+from your_job_offer.repository.tokens_repository.db_methods import (
+    save_hh_token,
+)
+from your_job_offer.repository.vacancies_repository import db_methods
+from your_job_offer.repository.vacancies_repository.db_methods import (
+    update_user,
+)
 
-from repository.tokens_repository.get_hh_token import get_hh_token
-from services.hh_api.apply_to_vacancy import apply_to_vacancy
-from use_cases import user_cases
-from use_cases.matching import match_vacancies
-from use_cases.user_cases import getUser, saveUser
-from services.cv_parser.methods import parse
+from your_job_offer.repository.tokens_repository.get_hh_token import (
+    get_hh_token,
+)
+from your_job_offer.services.hh_api.apply_to_vacancy import apply_to_vacancy
+from your_job_offer.use_cases import user_cases
+from your_job_offer.use_cases.matching import match_vacancies
+from your_job_offer.use_cases.user_cases import getUser, saveUser
+from your_job_offer.services.cv_parser.methods import parse
+
 
 app = Flask("app")
 
@@ -65,7 +70,9 @@ def getVacancies():
         return make_response("User not exists", 401)
     user = user_cases.getUser(user.login)
     vac = match_vacancies.get_match_vacancies(user=user)
-    return make_response(jsonify(vacancies=json.dumps([obj.to_json() for obj in vac])), 200)
+    return make_response(
+        jsonify(vacancies=json.dumps([obj.to_json() for obj in vac])), 200
+    )
 
 
 @app.route("/form", methods=["POST"])
@@ -90,7 +97,7 @@ def get_form():
                 jsonify(
                     {
                         "error": "Invalid request. 'login', 'password' fields are "
-                                 "required."
+                        "required."
                     }
                 ),
                 400,
@@ -123,16 +130,16 @@ def hh_auth():
     try:
         data = request.json
         if (
-                not data
-                or "access" not in data
-                or "refresh" not in data
-                or "login" not in data
+            not data
+            or "access" not in data
+            or "refresh" not in data
+            or "login" not in data
         ):
             return make_response(
                 jsonify(
                     {
                         "error": "Invalid request. 'login', 'access' and 'refresh' fields are "
-                                 "required."
+                        "required."
                     }
                 ),
                 400,
@@ -163,16 +170,16 @@ def apply():
     try:
         data = request.json
         if (
-                not data
-                or "login" not in data
-                or "password" not in data
-                or "vacancy_id" not in data
+            not data
+            or "login" not in data
+            or "password" not in data
+            or "vacancy_id" not in data
         ):
             return make_response(
                 jsonify(
                     {
                         "error": "Invalid request. 'login', 'password' fields are "
-                                 "required."
+                        "required."
                     }
                 ),
                 400,
@@ -220,27 +227,36 @@ def some():
 
 
 # Configure upload folder
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
-@app.route('/upload', methods=['POST'])
+@app.route("/upload", methods=["POST"])
 def upload_file():
     try:
         data = request
-        if 'file' not in request.files:
-            return jsonify({'message': 'No file part in the request or no data in request'}), 400
+        if "file" not in request.files:
+            return (
+                jsonify(
+                    {
+                        "message": "No file part in the request or no data in request"
+                    }
+                ),
+                400,
+            )
 
-        file = request.files['file']
-        login = data.form.get('login')
-        password = data.form.get('password')
+        file = request.files["file"]
+        login = data.form.get("login")
+        password = data.form.get("password")
 
-        if file.filename == '':
-            return jsonify({'message': 'No file selected'}), 400
+        if file.filename == "":
+            return jsonify({"message": "No file selected"}), 400
 
         if file:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file_path = os.path.join(
+                app.config["UPLOAD_FOLDER"], file.filename
+            )
             file.save(file_path)
             user = parse(file_path)
             # user = UserModel(login=login, password=password, first_name="Daria", phone="890", email="sdklal@dlsfj")
@@ -250,7 +266,7 @@ def upload_file():
             update_user(user)
             return jsonify(user.to_json()), 200
         log.error("file upload failed")
-        return jsonify({'message': 'File upload failed'}), 500
+        return jsonify({"message": "File upload failed"}), 500
 
     except Exception as e:
         log.error(f"Ошибка загрузки резюме: {e}")

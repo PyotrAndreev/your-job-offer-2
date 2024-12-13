@@ -8,9 +8,15 @@ from openai import OpenAI
 
 from .tokenizer import num_tokens_from_string
 
+<<<<<<< HEAD
 import entities.user as user_models
 import services.cv_parser.errors as errors
 from logger import get_logger
+=======
+import your_job_offer.entities.user as user_models
+import your_job_offer.services.cv_parser.errors as errors
+from your_job_offer.logger import get_logger
+>>>>>>> dev-jobs-parsing
 
 log = get_logger(__name__)
 
@@ -249,8 +255,8 @@ class ResumeParser:
         )
         languages = [
             user_models.LanguageModel(
-                language["name"],
-                ResumeParser._field_to_class(
+                name=language["name"],
+                level=ResumeParser._field_to_class(
                     language["level"], user_models.LanguageLevelEnum
                 ),
             )

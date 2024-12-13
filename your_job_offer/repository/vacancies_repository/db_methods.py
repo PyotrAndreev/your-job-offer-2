@@ -1,23 +1,32 @@
-from typing import Optional
-
-from entities.tracking import VacancyKey
+from your_job_offer.entities.tracking import VacancyKey
 from sqlalchemy import select, or_
 from sqlalchemy.exc import NoResultFound
 
-import logger as logger
-from entities.enums import (
+import your_job_offer.logger as logger
+from your_job_offer.entities.user import UserModel
+from your_job_offer.entities.enums import (
     EmploymentEnum,
     ScheduleEnum,
     WorkTypeEnum,
     BusinessTripReadinessEnum,
     RelocationEnum,
 )
-from models.user import User, Job, City, Country, Project, Achievement, Skill, WorkExperience, Language, Education
-from models.vacancy import Vacancy
-from repository.vacancies_repository.db_session import session
-from entities.tracking import VacancyKey, VacancyModel
+from your_job_offer.models.user import (
+    User,
+    Job,
+    City,
+    Country,
+    Project,
+    Achievement,
+    Skill,
+    WorkExperience,
+    Language,
+    Education,
+)
+from your_job_offer.models.vacancy import Vacancy
+from your_job_offer.repository.vacancies_repository.db_session import session
+from your_job_offer.entities.tracking import VacancyKey
 
-from entities.user import UserModel
 
 log = logger.get_logger(__name__)
 
@@ -347,43 +356,71 @@ def update_user(updated_user: UserModel):
         user.hhResumeId = updated_user.hh_resume_id
         user.innerEmail = updated_user.inner_email
         user.innerEmailPassword = updated_user.inner_email_password
-        user.project = list(Project(name=p.name, description=p.description, link=p.link) for p in
-                            updated_user.projects) if updated_user.projects else user.project
-        user.achievement = list(Achievement(name=a.name, description=a.description, link=a.link) for a in
-                                updated_user.achievements) if updated_user.achievements else user.achievement
-        user.workExperience = list(WorkExperience(description=w.description) for w in
-                                   updated_user.work_experiences) if updated_user.work_experiences else user.workExperience
-        user.education = list(
-            Education(description=e.description) for e in
-            updated_user.educations) if updated_user.educations else user.education
-        user.skill = list(
-            Skill(name=s.name, description=s.description) for s in
-            updated_user.skills) if updated_user.skills else user.skill
-        user.language = list(
-            Language(name=lan.name) for lan in updated_user.languages) if updated_user.languages else user.language
-        user.vacancy = list(
-            Vacancy(description=v.description) for v in updated_user.vacancy) if updated_user.vacancy else user.vacancy
+        user.project = (
+            list(
+                Project(name=p.name, description=p.description, link=p.link)
+                for p in updated_user.projects
+            )
+            if updated_user.projects
+            else user.project
+        )
+        user.achievement = (
+            list(
+                Achievement(
+                    name=a.name, description=a.description, link=a.link
+                )
+                for a in updated_user.achievements
+            )
+            if updated_user.achievements
+            else user.achievement
+        )
+        user.workExperience = (
+            list(
+                WorkExperience(description=w.description)
+                for w in updated_user.work_experiences
+            )
+            if updated_user.work_experiences
+            else user.workExperience
+        )
+        user.education = (
+            list(
+                Education(description=e.description)
+                for e in updated_user.educations
+            )
+            if updated_user.educations
+            else user.education
+        )
+        user.skill = (
+            list(
+                Skill(name=s.name, description=s.description)
+                for s in updated_user.skills
+            )
+            if updated_user.skills
+            else user.skill
+        )
+        user.language = (
+            list(Language(name=lan.name) for lan in updated_user.languages)
+            if updated_user.languages
+            else user.language
+        )
+        user.vacancy = (
+            list(
+                Vacancy(description=v.description)
+                for v in updated_user.vacancy
+            )
+            if updated_user.vacancy
+            else user.vacancy
+        )
         session.commit()
     except Exception as e:
         log.error(f"Error: {e}", exc_info=True)
 
 
-def get_vacancies_by_keys(
-        keys: list[VacancyKey], user: UserModel,
-) -> list[Optional[VacancyModel]]:
-    vacancies = []
-    userVacancies = user.vacancy
-    print(userVacancies)
-    for key in keys:
-        l = []
-        if key.id_vacancy_from_source is not None:
-            l = [x for x in userVacancies if x.id_vacancy_from_source == key.id_vacancy_from_source]
+def get_all_users() -> list[User]:
+    users = session.execute(select(User)).scalars().all()
+    return users
 
-        else:
-            l = [x for x in userVacancies if x.job == key.job and x.employer == key.employer]
-        if len(l) > 0:
-            vacancies.append(l[0])
-        else:
-            vacancies.append(None)
 
-    return vacancies
+def get_vacancy_by_id(vacancy_id: int) -> Vacancy:
+    stmt = select(Vacancy).where(Vacancy.id == vacancy_id)
+    return get_vacancies_with_statement(stmt)

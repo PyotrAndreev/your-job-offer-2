@@ -1,12 +1,13 @@
 from __future__ import annotations
 import time
 
-from repository.vacancies_repository.db_methods import save_vacancy
-
 import requests
 
-from entities.enums import EmploymentEnum, ScheduleEnum
-from models.vacancy import Vacancy
+from your_job_offer.logger import get_logger
+from your_job_offer.entities.enums import EmploymentEnum, ScheduleEnum
+from your_job_offer.models.vacancy import Vacancy
+
+log = get_logger("jobs_db_parsing")
 
 
 def get_vacancies():
@@ -58,15 +59,15 @@ def get_vacancies_by_role(role: int):
 
     res = (
         requests.get(
-            f"https://api.hh.ru/vacancies", params=params, headers=headers
+            "https://api.hh.ru/vacancies", params=params, headers=headers
         )
     ).json()
     if "pages" not in res:
-        print("pages", res)
+        log.info(f"pages not in {res}")
         return []
-    pages = res["pages"]
-    # pages = 1
-    print(role, pages)
+    # pages = res["pages"]
+    pages = 1
+    log.info(f"role={role}, pages={pages}")
     vacanciess = []
     for i in range(pages):
         params = {
@@ -77,11 +78,11 @@ def get_vacancies_by_role(role: int):
 
         res = (
             requests.get(
-                f"https://api.hh.ru/vacancies", params=params, headers=headers
+                "https://api.hh.ru/vacancies", params=params, headers=headers
             )
         ).json()
         if "items" not in res:
-            print(res)
+            log.info(f"item not in {res}")
             continue
         items = res["items"]
         for item in items:

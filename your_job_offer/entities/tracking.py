@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import Optional
 
 from .jobs import VacancyModel
 
@@ -23,9 +24,12 @@ class Stage:
 
 
 @dataclass
-class TrackUnit:  # я не знаю, как еще назвать)
-    vacancy: VacancyModel
-    stages: list[Stage]
+class StatusModel:
+    vacancy_id: str
+    stage: StageEnum
+    deadline: str
+    date: str
+    message: str
 
 
 @dataclass(frozen=True)

@@ -1,0 +1,1 @@
+0 * * * * (cd /app && /usr/local/bin/python /app/your_job_offer/use_cases/tracking/methods.py >> /app/app_logs/vacancy_status_parsing.txt)

@@ -2,7 +2,8 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 
-from entities.enums import (
+
+from your_job_offer.entities.enums import (
     GenderEnum,
     WorkTypeEnum,
     BusinessTripReadinessEnum,
@@ -12,7 +13,8 @@ from entities.enums import (
     LanguageLevelEnum,
     EducationLevelEnum,
 )
-from repository.vacancies_repository.db_session import Base
+
+from your_job_offer.repository.vacancies_repository.db_session import Base
 
 
 class Country(Base):
