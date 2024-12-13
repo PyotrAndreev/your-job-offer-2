@@ -25,7 +25,7 @@ from your_job_offer.repository.vacancies_repository.db_methods import (
 
 
 def map_user(user: User) -> UserModel:
-    professional_role = get_professional_role(user.roleId)
+    professional_role = get_professional_role(user.roleId) if user else None
     return UserModel(
         id=user.id,
         login=user.login,
@@ -119,7 +119,7 @@ def map_user(user: User) -> UserModel:
 
 
 def map_vacancy(vacancy: Vacancy) -> VacancyModel:
-    professional_role = get_professional_role(vacancy.professionalRoleId)
+    professional_role = get_professional_role(vacancy.professionalRoleId) if vacancy else None
     return VacancyModel(
         id=vacancy.id,
         job=vacancy.job,
