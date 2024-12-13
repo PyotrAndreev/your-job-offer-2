@@ -4,8 +4,8 @@ from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import your_job_offer.logger as logger
+from your_job_offer.entities.jobs import VacancyModel
 from your_job_offer.entities.user import UserModel
-
 from your_job_offer.models.hh_token import HH_Token
 from your_job_offer.repository.tokens_repository.db_methods import (
     save_hh_token,
@@ -69,9 +69,13 @@ def getVacancies():
     if not user_cases.ifExistUser(user.login):
         return make_response("User not exists", 401)
     user = user_cases.getUser(user.login)
-    vac = match_vacancies.get_match_vacancies(user=user)
+    vac: list[VacancyModel] = match_vacancies.get_match_vacancies(user=user)
+
     return make_response(
-        jsonify(vacancies=json.dumps([obj.to_json() for obj in vac])), 200
+        '{"vacancies":'
+        + json.dumps([json.loads(v.to_json()) for v in vac])
+        + "}",
+        200,
     )
 
 
@@ -255,9 +259,10 @@ def upload_file():
 
         if file:
             file_path = os.path.join(
-                app.config["UPLOAD_FOLDER"], file.filename
+                app.config["UPLOAD_FOLDER"], f"{login}.pdf"
             )
             file.save(file_path)
+            log.info(file_path)
             user = parse(file_path)
             # user = UserModel(login=login, password=password, first_name="Daria", phone="890", email="sdklal@dlsfj")
             log.info(user.__str__)
@@ -269,5 +274,5 @@ def upload_file():
         return jsonify({"message": "File upload failed"}), 500
 
     except Exception as e:
-        log.error(f"Ошибка загрузки резюме: {e}")
+        log.error(f"Ошибка загрузки резюме: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)

@@ -62,6 +62,7 @@ def map_user(user: User) -> UserModel:
         relocation=user.relocation,
         employment=user.employment,
         schedule=user.schedule,
+        citizenship=user.citizenship,
         projects=[
             ProjectModel(
                 id=p.id, name=p.name, description=p.description, link=p.link
@@ -200,6 +201,7 @@ def map_userModel(user: UserModel) -> User:
         relocation=user.relocation,
         employment=user.employment,
         schedule=user.schedule,
+        citizenship=user.citizenship,
         hhResumeId=user.hh_resume_id,
         innerEmail=user.inner_email,
         innerEmailPassword=user.inner_email_password,

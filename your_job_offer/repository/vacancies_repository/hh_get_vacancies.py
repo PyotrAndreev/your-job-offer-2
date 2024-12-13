@@ -96,7 +96,7 @@ def get_vacancies_by_role(role: int):
                 phone=None,
                 email=item["contacts"]["email"] if item["contacts"] else None,
                 employer=item["employer"]["name"],
-                createdAt=item["created_at"],
+                createdAt=None,
                 updatedAt=None,
                 employment=EmploymentEnum(item["employment"]["id"]),
                 schedule=ScheduleEnum(item["schedule"]["id"]),
