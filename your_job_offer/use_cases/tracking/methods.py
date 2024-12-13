@@ -12,8 +12,8 @@ from your_job_offer.use_cases.vacancy_cases import getAllVacancyFromDb
 def parse():
     users = get_all_users()
     log.info(f"начинаю обновление статусов, юзеров {len(users)}")
-    for user in users:
-        parse_for_user(user)
+    # for user in users:
+    #     parse_for_user(user)
     log.info("закончил обновление статусов")
 
 
@@ -21,6 +21,6 @@ if __name__ == "__main__":
     # user = get_user()
     # saveUser(user)
     parse()
-    vacancies = getAllVacancyFromDb()
-    for vacancy in vacancies:
-        print(f"job={vacancy.job}, employer={vacancy.employer}")
+    # vacancies = getAllVacancyFromDb()
+    # for vacancy in vacancies:
+    #     print(f"job={vacancy.job}, employer={vacancy.employer}")

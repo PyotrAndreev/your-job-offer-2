@@ -71,17 +71,17 @@ services:
     env_file:
       - secrets/.env
 
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: deploy/Dockerfile.app
-  #   ports:
-  #     - "8080:8080"
-  #   volumes:
-  #     - ./:/app
-  #   depends_on:
-  #     - parse-jobs-db
-  #     - parse-vacancy-status
-  #     - create-tokens-db
-  #   env_file:
-  #     - secrets/.env
+  app:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.app
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app_logs/:/app/app_logs
+    depends_on:
+      - parse-jobs-db
+      - parse-vacancy-status
+      - create-tokens-db
+    env_file:
+      - secrets/.env
