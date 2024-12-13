@@ -119,6 +119,7 @@ def map_user(user: User) -> UserModel:
 
 
 def map_vacancy(vacancy: Vacancy) -> VacancyModel:
+    professional_role = get_professional_role(vacancy.professionalRoleId)
     return VacancyModel(
         id=vacancy.id,
         job=vacancy.job,
@@ -145,6 +146,8 @@ def map_vacancy(vacancy: Vacancy) -> VacancyModel:
         area=vacancy.area,
         source=vacancy.source,
         id_vacancy_from_source=vacancy.idVacancyFromSource,
+        professional_role=ProfessionalRoleModel(id=professional_role.id, role_id=vacancy.professionalRoleId,
+                                                name=professional_role.name) if professional_role else None,
     )
 
 
@@ -282,6 +285,7 @@ def map_vacancy_model(vacancy: VacancyModel) -> Vacancy:
         area=vacancy.area,
         source=vacancy.source,
         idVacancyFromSource=vacancy.id_vacancy_from_source,
+        professionalRoleId=vacancy.professional_role.role_id if vacancy and vacancy.professional_role else None,
     )
 
 

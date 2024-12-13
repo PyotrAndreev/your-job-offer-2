@@ -113,6 +113,7 @@ def get_job_id(name: str) -> int:
     job = session.scalars(select(Job).filter_by(name=name)).first()
     return job
 
+
 def get_professional_role(role_id: int) -> ProfessionalRole:
     role = session.scalars(select(ProfessionalRole).filter_by(roleId=role_id)).first()
     return role
@@ -368,7 +369,6 @@ def update_user(updated_user: UserModel):
 
         if updated_user.professional_role:
             user.roleId = updated_user.professional_role.role_id
-            
         user.birthDate = updated_user.birth_date
         user.firstName = updated_user.first_name
         user.lastName = updated_user.last_name

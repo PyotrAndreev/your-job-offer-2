@@ -75,6 +75,7 @@ class VacancyModel:
     area: Optional[str] = None
     source: Optional[SourceEnum] = None
     id_vacancy_from_source: Optional[str] = None
+    professional_role: Optional[ProfessionalRoleModel] = None
 
     def __str__(self):
         return (

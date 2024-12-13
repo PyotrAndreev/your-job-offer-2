@@ -56,6 +56,7 @@ class Vacancy(Base):
     requirement = Column(String, nullable=True, name="requirement")
     responsibility = Column(String, nullable=True, name="responsibility")
     area = Column(String(200), nullable=True)
+    professionalRoleId = Column(Integer, nullable=True, name="proffesional_role_id")
     source = Column(
         PgEnum(SourceEnum, name="source", create_type=True), nullable=True
     )
