@@ -209,7 +209,7 @@ def map_userModel(user: UserModel) -> User:
         hhResumeId=user.hh_resume_id,
         innerEmail=user.inner_email,
         innerEmailPassword=user.inner_email_password,
-        roleId=user.professional_role.role_id if user.professional_role else None,
+        roleId=user.professional_role.role_id if user and user.professional_role else None,
         project=[
             Project(
                 id=p.id, name=p.name, description=p.description, link=p.link
