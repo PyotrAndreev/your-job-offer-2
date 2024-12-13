@@ -105,7 +105,7 @@ def get_vacancies_by_role(role: int):
                 responsibility=item["snippet"]["responsibility"],
                 job=item["name"],
                 area=item["area"]["name"],
-                roleId=item["professional_roles"][0]["id"]
+                professionalRoleId=item["professional_roles"][0]["id"]
             )
             vacanciess.append(vacancy)
 
