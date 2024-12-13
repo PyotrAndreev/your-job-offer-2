@@ -103,3 +103,7 @@ class ProfessionalRoleModel:
     id: Optional[int] = None
     role_id: Optional[int] = None
     name: Optional[str] = None
+
+    def __str__(self):
+        return f"ProfessionalRole(id={self.id}, name={self.name}, role_id={self.role_id})"
+

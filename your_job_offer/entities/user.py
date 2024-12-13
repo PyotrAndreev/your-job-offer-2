@@ -231,7 +231,7 @@ class UserModel:
             f"last_name={self.last_name}, gender={self.gender}, email={self.email}, city={self.city}, "
             f"country={self.country}, projects={self.projects}, achievements={self.achievements}, "
             f"work_experiences={self.work_experiences}, educations={self.educations}, "
-            f"skills={self.skills}, languages={self.languages})"
+            f"skills={self.skills}, languages={self.languages}), professional_role={self.professional_role}"
         )
 
 
