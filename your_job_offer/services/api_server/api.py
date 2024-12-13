@@ -215,7 +215,7 @@ def test():
     password = request.json["password"]
     user = getUser(login)
     log.info(f"User: {user.__str__()}")
-    return make_response(user.to_json(), 200)
+    return make_response(user.to_json(default=str), 200)
 
 
 @app.route("/add", methods=["POST"])
