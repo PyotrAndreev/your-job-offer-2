@@ -37,6 +37,15 @@ def create_new_resume(user: UserModel, access_token: str):
                 "value": user.email,
                 "preferred": True,
             },
+            {
+                "type": {
+                    "id": "phone",
+                    "name": "",
+                },
+                "value": {
+                    "formatted": user.phone,
+                },
+            },
         ],
         "skill_set": [f"{skill.name}: {skill.description}" for skill in user.skills]
         if user.skills

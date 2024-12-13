@@ -32,6 +32,13 @@ language_level_id_name = {
 
 education_level_id_name = {
     "bachelor": "Бакалавр",
+    "secondary": "Среднее",
+    "special_secondary": "Среднее специальное",
+    "unfinished_higher": "Неоконченное высшее",
+    "higher": "Высшее",
+    "master": "Магистр",
+    "candidate": "Кандидат наук",
+    "doctor": "Доктор наук",
 }
 
 languages = {

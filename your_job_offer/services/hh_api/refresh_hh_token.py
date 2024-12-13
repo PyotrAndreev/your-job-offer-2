@@ -32,7 +32,6 @@ def refresh_hh_token(hh_token: HHTokenModel):
     responce = res.json()
     if res.status_code != 200:
         log.error(f"Error refreshing hh token: {res.json()}")
-        # raise ValueError("Error refreshing hh token")
     else:
         log.info(f"Refreshed hh token: {res.json()}")
         hh_token.access_token = responce.get("access_token")

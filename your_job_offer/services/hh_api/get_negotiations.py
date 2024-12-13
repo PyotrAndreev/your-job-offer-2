@@ -23,7 +23,6 @@ def get_negotiations(access_token: str):
     responce = res.json()
     if res.status_code != 200:
         log.error(f"Error getting negotiations: {res.json()}")
-        # raise ValueError("Error getting negotiations")
     else:
         log.info("Got negotiations")
         return [item.get("id") for item in responce.get("items")]
