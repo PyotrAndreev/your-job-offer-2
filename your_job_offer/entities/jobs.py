@@ -2,14 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from .enums import (
-    WorkTypeEnum,
-    BusinessTripReadinessEnum,
-    RelocationEnum,
-    EmploymentEnum,
-    ScheduleEnum,
-    SourceEnum,
-)
+from .enums import WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum, EmploymentEnum, ScheduleEnum, SourceEnum
 from .general import *
 
 from dataclasses_json import dataclass_json
