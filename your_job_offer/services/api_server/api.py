@@ -25,6 +25,14 @@ from your_job_offer.use_cases.user_cases import getUser, saveUser
 from your_job_offer.services.cv_parser.methods import parse
 from your_job_offer.repository.vacancies_repository.get_professional_roles import get_professional_roles
 
+from datetime import date, datetime
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+    raise TypeError ("Type %s not serializable" % type(obj))
 
 app = Flask("app")
 
@@ -215,7 +223,7 @@ def test():
     password = request.json["password"]
     user = getUser(login)
     log.info(f"User: {user.__str__()}")
-    return make_response(user.to_json(), 200)
+    return make_response(user.to_json(default=json_serial), 200)
 
 
 @app.route("/add", methods=["POST"])
