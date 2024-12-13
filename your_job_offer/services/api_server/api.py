@@ -27,7 +27,7 @@ from your_job_offer.services.cv_parser.methods import parse
 from your_job_offer.repository.vacancies_repository.get_professional_roles import get_professional_roles
 
 from datetime import date, datetime
-from your_job_offer.entities.enums import GenderEnum
+import enum
 
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
