@@ -15,6 +15,7 @@ from your_job_offer.models.user import (
     User,
     Project,
     Achievement,
+    ProfessionalRole
 )
 from your_job_offer.repository.vacancies_repository.parsing import parse
 
