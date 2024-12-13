@@ -31,7 +31,7 @@ language_level_id_name = {
 }
 
 education_level_id_name = {
-    "": "",
+    "bachelor": "Бакалавр",
 }
 
 languages = {

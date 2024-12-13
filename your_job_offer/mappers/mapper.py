@@ -20,10 +20,12 @@ from your_job_offer.models.vacancy import Vacancy, Status
 from your_job_offer.repository.vacancies_repository.db_methods import (
     get_job,
     get_job_id,
+    get_professional_role,
 )
 
 
 def map_user(user: User) -> UserModel:
+    professional_role = get_professional_role(user.roleId)
     return UserModel(
         id=user.id,
         login=user.login,
@@ -63,8 +65,8 @@ def map_user(user: User) -> UserModel:
         employment=user.employment,
         schedule=user.schedule,
         citizenship=user.citizenship,
-        professinal_role=ProfessionalRoleModel(id=user.professionalRole.id, role_id=user.professionalRole.roleId,
-                                               name=user.professionalRole.name),
+        professinal_role=ProfessionalRoleModel(id=professional_role.id, role_id=user.roleId,
+                                               name=professional_role.name) if professional_role else None,
         projects=[
             ProjectModel(
                 id=p.id, name=p.name, description=p.description, link=p.link
@@ -207,6 +209,7 @@ def map_userModel(user: UserModel) -> User:
         hhResumeId=user.hh_resume_id,
         innerEmail=user.inner_email,
         innerEmailPassword=user.inner_email_password,
+        roleId=user.professional_role.role_id,
         project=[
             Project(
                 id=p.id, name=p.name, description=p.description, link=p.link

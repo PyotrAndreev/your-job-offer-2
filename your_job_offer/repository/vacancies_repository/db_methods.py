@@ -113,6 +113,10 @@ def get_job_id(name: str) -> int:
     job = session.scalars(select(Job).filter_by(name=name)).first()
     return job
 
+def get_professional_role(role_id: int) -> ProfessionalRole:
+    role = session.scalars(select(ProfessionalRole).filter_by(role_id=role_id)).first()
+    return role
+
 
 def if_exist_user(login: str) -> bool:
     """

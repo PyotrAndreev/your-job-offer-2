@@ -216,7 +216,7 @@ class UserModel:
     education_level: Optional[EducationLevelEnum] = None
     inner_email: Optional[str] = None
     inner_email_password: Optional[str] = None
-    professional_role: Optinal[ProfessionalRoleModel] = None
+    professional_role: Optional[ProfessionalRoleModel] = None
     projects: List[ProjectModel] = field(default_factory=list)
     achievements: List[AchievementModel] = field(default_factory=list)
     work_experiences: List[WorkExperienceModel] = field(default_factory=list)
