@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 from sqlalchemy.orm import relationship
 
@@ -27,8 +27,8 @@ class Vacancy(Base):
     phone = Column(String(50), nullable=True)
     email = Column(String(50), nullable=True)
     employer = Column(String(200), nullable=True)
-    createdAt = Column(Date, nullable=True, name="created_at")
-    updatedAt = Column(Date, nullable=True, name="updated_at")
+    createdAt = Column(String(50), nullable=True, name="created_at")
+    updatedAt = Column(String(50), nullable=True, name="updated_at")
     workType = Column(
         PgEnum(WorkTypeEnum, name="work_type", create_type=True), nullable=True
     )

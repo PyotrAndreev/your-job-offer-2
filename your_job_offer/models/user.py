@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 
@@ -88,8 +88,8 @@ class WorkExperience(Base):
     jobId = Column(Integer, nullable=True)
     workPlace = Column(String(200), nullable=True, name="work_place")
     description = Column(String(300), nullable=True)
-    startDate = Column(Date, nullable=True, name="start_date")
-    finishDate = Column(Date, nullable=True, name="finish_date")
+    startDate = Column(String(50), nullable=True, name="start_date")
+    finishDate = Column(String(50), nullable=True, name="finish_date")
     user = relationship("User", back_populates="workExperience")
 
 
@@ -101,8 +101,8 @@ class Education(Base):
     major = Column(String(50), nullable=True)
     degree = Column(String(50), nullable=True)
     description = Column(String(300), nullable=True)
-    startDate = Column(Date, nullable=True, name="start_date")
-    finishDate = Column(Date, nullable=True, name="finish_date")
+    startDate = Column(String(50), nullable=True, name="start_date")
+    finishDate = Column(String(50), nullable=True, name="finish_date")
     user = relationship("User", back_populates="education")
 
 class ProfessionalRole(Base):
