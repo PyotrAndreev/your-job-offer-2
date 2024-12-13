@@ -24,4 +24,5 @@ def get_user() -> UserModel:
     user.inner_email = getenv("EMAIL")
     user.inner_email_password = getenv("EMAIL_PASSWORD")
     user.vacancy = get_all_vacancy_models()
+    user.login = "afarovruslan"
     return user

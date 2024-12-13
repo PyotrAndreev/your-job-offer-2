@@ -189,5 +189,6 @@ def get_all_statuses(user: UserModel) -> list[StatusModel]:
 
 def parse_for_user(user: UserModel):
     statuses = get_all_statuses(user)
+    log.info(f"для user={user.login} найдено {len(status)} статусов")
     for status in statuses:
         update_status(status)
