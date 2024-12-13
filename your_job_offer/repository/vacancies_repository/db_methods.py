@@ -366,6 +366,9 @@ def update_user(updated_user: UserModel):
             country = session.scalars(select(Country).filter_by(name=updated_user.country.name)).first()
             user.countryId = country.id
 
+        if updated_user.professional_role:
+            user.roleId = updated_user.professional_role.role_id
+            
         user.birthDate = updated_user.birth_date
         user.firstName = updated_user.first_name
         user.lastName = updated_user.last_name
@@ -389,8 +392,6 @@ def update_user(updated_user: UserModel):
         user.employment = updated_user.employment
         user.schedule = updated_user.schedule
         user.citizenship = updated_user.citizenship
-        user.professionalRole = ProfessionalRole(roleId=updated_user.professional_role.role_id,
-                                                 name=updated_user.professional_role.name)
         user.educationLevel = updated_user.education_level
         user.hhResumeId = updated_user.hh_resume_id
         user.innerEmail = updated_user.inner_email
