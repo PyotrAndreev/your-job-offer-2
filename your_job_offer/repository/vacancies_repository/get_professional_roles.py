@@ -1,5 +1,6 @@
 from your_job_offer.repository.vacancies_repository.utils import professional_roles
 from your_job_offer.repository.vacancies_repository.db_methods import save_role
+from your_job_offer.models.user import ProfessionalRole
 import your_job_offer.logger as logger
 
 log = logger.get_logger(__name__)
