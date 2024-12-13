@@ -3,6 +3,7 @@ import os
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from sqlalchemy import Enum
 import your_job_offer.logger as logger
 from your_job_offer.entities.jobs import VacancyModel
 from your_job_offer.entities.user import UserModel
@@ -32,6 +33,9 @@ def json_serial(obj):
 
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
+    if isinstance(obj, Enum):
+        return obj.value
+
     raise TypeError ("Type %s not serializable" % type(obj))
 
 app = Flask("app")
