@@ -38,149 +38,128 @@ def create_new_resume(user: UserModel, access_token: str):
                 "preferred": True,
             },
         ],
-        "skill_set": (
-            [f"{skill.name}: {skill.description}" for skill in user.skills]
-            if user.skills
-            else None
-        ),
-        "experience": [
-            {
-                "company": exp.work_place,
-                "position": exp.job,
-                "description": exp.description,
-                "start": (
-                    exp.start_date.isoformat() if exp.start_date else None
-                ),
-                "end": (
-                    exp.finish_date.isoformat() if exp.finish_date else None
-                ),
-            }
-            for exp in user.work_experiences
-        ],
+        "skill_set": [f"{skill.name}: {skill.description}" for skill in user.skills]
+        if user.skills
+        else None,
+        # "experience": [
+        #     {
+        #         "company": exp.work_place,
+        #         "position": exp.job,
+        #         "description": exp.description,
+        #         "start": (
+        #             exp.start_date.isoformat() if exp.start_date else None
+        #         ),
+        #         "end": (
+        #             exp.finish_date.isoformat() if exp.finish_date else None
+        #         ),
+        #     }
+        #     for exp in user.work_experiences
+        # ],
         "education": {
             "level": {
-                "id": user.education_level,
-                "name": education_level_id_name.get(user.education_level),
+                "id": user.education_level.value,
+                "name": education_level_id_name.get(user.education_level.value),
             },
             "primary": [
                 {
-                    "name": edu.institution,
-                    "year": edu.finish_date.year if edu.finish_date else None,
+                    "name": edu.institution if edu.institution else "MIPT",
+                    "year": edu.finish_date.year if edu.finish_date else "2026",
                 }
                 for edu in user.educations
             ],
         },
+        # "language": [
+        #     {
+        #         "id": languages.get(lang.name),
+        #         "name": lang.name,
+        #         "level": {
+        #             "id": lang.level,
+        #             "name": language_level_id_name.get(lang.level),
+        #         },
+        #     }
+        #     for lang in user.languages
+        # ],
         "language": [
             {
-                "id": languages.get(lang.name),
-                "name": lang.name,
+                "id": "rus",
+                "name": "Русский",
                 "level": {
-                    "id": lang.level,
-                    "name": language_level_id_name.get(lang.level),
-                },
+                    "id": "l1",
+                    "name": "Родной"
+                }
             }
-            for lang in user.languages
         ],
-        "salary": (
+        "salary":
             {
                 "amount": user.min_salary,
                 "currency": "RUR",
             }
             if user.min_salary
             else None
-        ),
-        "relocation": (
+        ,
+        "relocation":
             {
-                "type": (
+                "type":
                     {
-                        "id": (
-                            user.relocation.value if user.relocation else None
-                        ),
-                        "name": (
-                            relocation_id_name.get(user.relocation.value)
-                            if user.relocation
-                            else None
-                        ),
-                    }
-                    if user.relocation
-                    else None
-                ),
+                        "id": user.relocation.value,
+                        "name": relocation_id_name.get(user.relocation.value),
+                    },
             }
-            if user.relocation
-            else None
-        ),
-        "business_trip_readiness": (
-            {
-                (
-                    user.business_trip_readiness.value
-                    if user.business_trip_readiness
-                    else None
-                ),
+        if user.relocation else None,
+        "business_trip_readiness": {
+                    "id": user.business_trip_readiness.value
             }
-            if user.employment
-            else None
-        ),
-        "employments": (
-            [
+        if user.employment else None,
+        "employments": [
                 {
-                    "id": user.employment.value if user.employment else None,
-                    "name": (
-                        employment_id_name.get(user.employment.value)
-                        if user.employment
-                        else None
-                    ),
+                    "id": user.employment.value,
+                    "name": employment_id_name.get(user.employment.value),
                 },
             ]
-            if user.employment
-            else None
-        ),
-        "schedules": (
+        if user.employment else None,
+        "schedules":
             [
                 {
-                    "id": user.schedule.value if user.schedule else None,
-                    "name": (
-                        schedule_id_name.get(user.schedule.value)
-                        if user.schedule
-                        else None
-                    ),
+                    "id": user.schedule.value,
+                    "name": schedule_id_name.get(user.schedule.value)
                 },
             ]
-            if user.schedule
-            else None
-        ),
-        "professional_roles": [
-            156,
-            160,
-            10,
-            12,
-            150,
-            25,
-            165,
-            34,
-            36,
-            73,
-            155,
-            96,
-            164,
-            104,
-            157,
-            107,
-            112,
-            113,
-            148,
-            114,
-            116,
-            121,
-            124,
-            125,
-            126,
-        ],
+        if user.schedule else None,
+        # "professional_roles": [
+        #     156,
+        #     160,
+        #     10,
+        #     12,
+        #     150,
+        #     25,
+        #     165,
+        #     34,
+        #     36,
+        #     73,
+        #     155,
+        #     96,
+        #     164,
+        #     104,
+        #     157,
+        #     107,
+        #     112,
+        #     113,
+        #     148,
+        #     114,
+        #     116,
+        #     121,
+        #     124,
+        #     125,
+        #     126,
+        # ],
     }
 
     data = {k: v for k, v in data.items() if v is not None}
+    print(data)
 
-    res = requests.get("https://api.hh.ru/resumes", headers=headers, data=data)
+    res = requests.post("https://api.hh.ru/resumes", headers=headers, json=data)
     if res.status_code != 201:
+        log.error(res.status_code)
         log.error(f"Error adding resume: {res.json()}")
     else:
         log.info(f"Resume added")

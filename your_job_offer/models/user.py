@@ -105,6 +105,12 @@ class Education(Base):
     finishDate = Column(Date, nullable=True, name="finish_date")
     user = relationship("User", back_populates="education")
 
+class ProfessionalRole(Base):
+    __tablename__ = "professional_role"
+    id = Column(Integer, primary_key=True)
+    roleId = Column(Integer, nullable=True, name="role_id")
+    name = Column(String(200), nullable=True, name="name")
+
 
 class User(Base):
     __tablename__ = "user"
@@ -166,6 +172,8 @@ class User(Base):
     innerEmailPassword = Column(
         String, name="inner_email_password", nullable=True
     )
+    roleId = Column(Integer, nullable=True)
+    workPlace = Column(String(200), nullable=True, name="work_place")
     project = relationship("Project", back_populates="user")
     achievement = relationship("Achievement", back_populates="user")
     workExperience = relationship("WorkExperience", back_populates="user")

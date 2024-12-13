@@ -96,3 +96,10 @@ class SkillModel:
 
     def __str__(self):
         return f"Skill(id={self.id}, name={self.name}, description={self.description})"
+
+@dataclass_json
+@dataclass
+class ProfessionalRoleModel:
+    id: Optional[int] = None
+    role_id: Optional[int] = None
+    name: Optional[str] = None

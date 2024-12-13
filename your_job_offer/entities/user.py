@@ -13,7 +13,7 @@ from .enums import (
     EducationLevelEnum,
     LanguageLevelEnum, CitizenshipEnum,
 )
-from .general import SkillModel, LanguageModel, CityModel, CountryModel
+from .general import SkillModel, LanguageModel, CityModel, CountryModel, ProfessionalRoleModel
 from .jobs import VacancyModel
 
 
@@ -216,6 +216,7 @@ class UserModel:
     education_level: Optional[EducationLevelEnum] = None
     inner_email: Optional[str] = None
     inner_email_password: Optional[str] = None
+    professional_role: Optinal[ProfessionalRoleModel] = None
     projects: List[ProjectModel] = field(default_factory=list)
     achievements: List[AchievementModel] = field(default_factory=list)
     work_experiences: List[WorkExperienceModel] = field(default_factory=list)

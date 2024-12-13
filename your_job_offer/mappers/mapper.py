@@ -63,6 +63,8 @@ def map_user(user: User) -> UserModel:
         employment=user.employment,
         schedule=user.schedule,
         citizenship=user.citizenship,
+        professinal_role=ProfessionalRoleModel(id=user.professionalRole.id, role_id=user.professionalRole.roleId,
+                                               name=user.professionalRole.name),
         projects=[
             ProjectModel(
                 id=p.id, name=p.name, description=p.description, link=p.link

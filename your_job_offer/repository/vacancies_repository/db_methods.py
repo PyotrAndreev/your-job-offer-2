@@ -22,11 +22,11 @@ from your_job_offer.models.user import (
     WorkExperience,
     Language,
     Education,
+    ProfessionalRole
 )
 from your_job_offer.models.vacancy import Vacancy
 from your_job_offer.repository.vacancies_repository.db_session import session
 from your_job_offer.entities.tracking import VacancyKey
-
 
 log = logger.get_logger(__name__)
 
@@ -385,6 +385,8 @@ def update_user(updated_user: UserModel):
         user.employment = updated_user.employment
         user.schedule = updated_user.schedule
         user.citizenship = updated_user.citizenship
+        user.professionalRole = ProfessionalRole(roleId=updated_user.professional_role.role_id,
+                                                 name=updated_user.professional_role.name)
         user.educationLevel = updated_user.education_level
         user.hhResumeId = updated_user.hh_resume_id
         user.innerEmail = updated_user.inner_email
