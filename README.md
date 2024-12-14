@@ -6,7 +6,7 @@
 ### Бэкенд
 Для сборки и развертывания у вас должен быть установлен docker вам нужно  определить 2 файла
 - ```secrets/.env ``` - файл с переменными окружения, для работы парсинга cv нужно определить [```OPENAI_API_KEY```](https://proxyapi.ru/)
-- ```mails.txt``` - файл с почтами вида login:password на домене imap.firstmail.ltd
+- ```secrets/mails.txt``` - файл с почтами вида login:password на домене imap.firstmail.ltd
 
 Запуск:
 ```
