@@ -75,28 +75,32 @@ from sqlalchemy import select
 # # Сохраняем пользователя в базу данных
 # session.add(user)
 # session.commit()  # Фиксируем изменения
-user = get_user()
+if __name__ == "__main__":
+    user = get_user()
 
-user = session.execute(select(User)).scalars().all()[0]
-print(*[vacancy.job for vacancy in user.vacancy])
+    # user = session.execute(select(User)).scalars().all()[0]
+    # print(*[vacancy.job for vacancy in user.vacancy])
 
-for user in get_all_users():
-    vacancies = user.vacancy
-    for vacancy in user.vacancy:
-        vacancy_ = db_methods.get_vacancy_by_id(vacancy.id)
-        vacancy_.status.append(Status(statusField=StatusEnum.REJECT))
+    for user in get_all_users():
+        vacancies = user.vacancy
+        for vacancy in user.vacancy:
+            vacancy_ = db_methods.get_vacancy_by_id(vacancy.id)
+            vacancy_.status.append(Status(statusField=StatusEnum.REJECT))
+            # print("Успешно добавлено")
+    session.commit()
 
-# vacancy = db_methods.get_vacancy_by_id(vacancy_id)
-# statuses = [
-#     Status(message="1", statusField=StatusEnum("consideration")),
-#     Status(message="2", statusField=StatusEnum.REJECT),
-# ]
-# for status in statuses:
-#     vacancy.status.append(Status(statusField=StatusEnum.REJECT))
-# session.commit()
+    # for user in get_all_users():
+    #     a
 
-# vacancy = session.get(Vacancy, vacancy_id)
-# for status in vacancy.status:
-#     print(status.message, status.statusField)
+    # vacancy = db_methods.get_vacancy_by_id(vacancy_id)
+    # statuses = [
+    #     Status(message="1", statusField=StatusEnum("consideration")),
+    #     Status(message="2", statusField=StatusEnum.REJECT),
+    # ]
+    # for status in statuses:
+    #     vacancy.status.append(Status(statusField=StatusEnum.REJECT))
+    # session.commit()
 
-# посмотреть mapperы
+    # vacancy = session.get(Vacancy, vacancy_id)
+    # for status in vacancy.status:
+    #     print(status.message, status.statusField)
