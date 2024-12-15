@@ -17,7 +17,7 @@ from your_job_offer.models.user import (
     Language,
 )
 from your_job_offer.models.vacancy import Vacancy, Status
-from your_job_offer.repository.vacancies_repository.db_methods import get_job, get_job_id, get_professional_role
+from your_job_offer.repository.vacancies_repository.db_get_methods import get_job, get_job_id, get_professional_role
 
 
 def map_user(user: User) -> UserModel:
