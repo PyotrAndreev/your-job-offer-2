@@ -219,7 +219,7 @@ def apply():
                 400,
             )
         log.info(data)
-        user_data = data.get("user")
+        user_data = json.dumps(data.get("user"))
         log.info(f"User.get: {user_data}")
         user = UserModel.from_json(user_data)
         log.info(f"User: {user}")
