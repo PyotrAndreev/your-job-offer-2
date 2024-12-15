@@ -19,6 +19,6 @@ def update_statuses(vacancy_ids: list[int], statuses: list[StatusModel]):
         vacancy = db_methods.get_vacancy_by_id(vacancy_id)
         status.status = StatusEnum.REJECT
         # vacancy.status.append(mapper.map_status_model(status))
-        print(StatusEnum.__members__)
+        # print(StatusEnum.__members__)
         vacancy.status.append(Status(statusField=StatusEnum.REJECT))
     db_methods.session.commit()

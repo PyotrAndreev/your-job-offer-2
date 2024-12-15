@@ -72,9 +72,7 @@ class StatusEnum(Enum):
     REJECT = "reject"
     INVITE = "invite"  # это значит нужно заполнить какую-то информацию или записаться на собеседование
     TESTING = "testing"
-    INTERVIEW = (
-        "interview"  # этап invite пройден, нужно записаться на собеседование
-    )
+    INTERVIEW = "interview"  # этап invite пройден, нужно записаться на собеседование
 
 
 class CitizenshipEnum(Enum):
