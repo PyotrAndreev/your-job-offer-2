@@ -451,7 +451,7 @@ def update_user(updated_user: UserModel):
         )
         user.vacancy = (
             list(
-                Vacancy(description=v.description)
+                map_vacancy_model(v)
                 for v in updated_user.vacancy
             )
             if updated_user.vacancy
