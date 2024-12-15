@@ -8,8 +8,9 @@ from your_job_offer.utils.mock import get_user
 from your_job_offer.use_cases.vacancy_cases import getAllVacancyFromDb
 from your_job_offer.repository.vacancies_repository import db_methods
 
-# from your_job_offer.models.vacancy import Status
-# from time import sleep
+from your_job_offer.models.vacancy import Status
+from time import sleep
+
 # from your_job_offer.entities.tracking import StatusModel, StatusEnum
 
 
@@ -41,10 +42,7 @@ from your_job_offer.repository.vacancies_repository import db_methods
 #     # for vacancy in vacancies:
 #     #     log.info(f"job={vacancy.job}, employer={vacancy.employer}")
 
-from your_job_offer.repository.vacancies_repository.db_session import session
 from your_job_offer.models.vacancy import Vacancy, Status, StatusEnum
-from your_job_offer.models.user import User
-from sqlalchemy import select
 
 # from your_job_offer.repository.vacancies_repository.parsing import parse
 
@@ -81,7 +79,7 @@ def parse():
         for vacancy in user.vacancy:
             vacancy_ = db_methods.get_vacancy_by_id(vacancy.id)
             vacancy_.status.append(Status(statusField=StatusEnum.REJECT))
-    session.commit()
+    db_methods.session.commit()
 
 
 if __name__ == "__main__":
