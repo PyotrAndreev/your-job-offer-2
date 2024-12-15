@@ -27,6 +27,7 @@ from your_job_offer.models.user import (
 from your_job_offer.models.vacancy import Vacancy, Status
 from your_job_offer.repository.vacancies_repository.db_session import session
 from your_job_offer.entities.tracking import VacancyKey
+from your_job_offer.mappers.mapper import map_vacancy_model
 
 log = logger.get_logger(__name__)
 
