@@ -1,13 +1,13 @@
-# from your_job_offer.use_cases.user_cases import (
-#     get_all_users,
-# )
+from your_job_offer.use_cases.user_cases import get_all_users
 
 # from your_job_offer.use_cases.tracking.internal import parse_for_user, log
 
 # from your_job_offer.use_cases.user_cases import saveUser, updateUser
-# from your_job_offer.utils.mock import get_user
+from your_job_offer.utils.mock import get_user
+
 # from your_job_offer.use_cases.vacancy_cases import getAllVacancyFromDb
-# from your_job_offer.repository.vacancies_repository import db_methods
+from your_job_offer.repository.vacancies_repository import db_methods
+
 # from your_job_offer.models.vacancy import Status
 # from time import sleep
 # from your_job_offer.entities.tracking import StatusModel, StatusEnum
@@ -61,46 +61,42 @@ from sqlalchemy import select
 # parse()
 
 # Проверяем ID вакансий, если нужно (опционально)
-vacancies = session.execute(select(Vacancy)).scalars().all()
-while len(vacancies) < 50:
-    vacancies = session.execute(select(Vacancy)).scalars().all()
-vacancy_1 = vacancies[0]
+# vacancies = session.execute(select(Vacancy)).scalars().all()
+# while len(vacancies) < 50:
+#     vacancies = session.execute(select(Vacancy)).scalars().all()
+# vacancy_1 = vacancies[0]
 
-# Создаём пользователя
-user = User(login="ruslan", password="123")
+# # Создаём пользователя
+# user = User(login="ruslan", password="123")
 
-# Добавляем связь между пользователем и вакансиями (1 и 3)
-user.vacancy = vacancies
+# # Добавляем связь между пользователем и вакансиями (1 и 3)
+# user.vacancy = vacancies
 
-# Сохраняем пользователя в базу данных
-session.add(user)
-session.commit()  # Фиксируем изменения
+# # Сохраняем пользователя в базу данных
+# session.add(user)
+# session.commit()  # Фиксируем изменения
+user = get_user()
 
 user = session.execute(select(User)).scalars().all()[0]
 print(*[vacancy.job for vacancy in user.vacancy])
 
+for user in get_all_users():
+    vacancies = user.vacancy
+    for vacancy in user.vacancy:
+        vacancy_ = db_methods.get_vacancy_by_id(vacancy.id)
+        vacancy_.status.append(Status(statusField=StatusEnum.REJECT))
 
-# user = session.query(User).filter_by(login="ruslan").first()
-# vacancy = session.query(Vacancy).filter_by(description="3").first()
-# user.vacancy.append(vacancy)
+# vacancy = db_methods.get_vacancy_by_id(vacancy_id)
+# statuses = [
+#     Status(message="1", statusField=StatusEnum("consideration")),
+#     Status(message="2", statusField=StatusEnum.REJECT),
+# ]
+# for status in statuses:
+#     vacancy.status.append(Status(statusField=StatusEnum.REJECT))
 # session.commit()
 
-user = session.execute(select(User)).scalars().all()[0]
-print(*[vacancy.description for vacancy in user.vacancy])
-
-vacancy_id = vacancy_1.id
-
-vacancy = session.get(Vacancy, vacancy_id)
-statuses = [
-    Status(message="1", statusField=StatusEnum("consideration")),
-    Status(message="2", statusField=StatusEnum.REJECT),
-]
-for status in statuses:
-    vacancy.status.append(Status(statusField=StatusEnum.REJECT))
-session.commit()
-
-vacancy = session.get(Vacancy, vacancy_id)
-for status in vacancy.status:
-    print(status.message, status.statusField)
+# vacancy = session.get(Vacancy, vacancy_id)
+# for status in vacancy.status:
+#     print(status.message, status.statusField)
 
 # посмотреть mapperы
