@@ -221,13 +221,11 @@ def apply():
             )
         log.info(data)
         user_data = json.dumps(data.get("user"))
-        log.info(f"User.get: {user_data}")
         user = UserModel.from_json(user_data)
         log.info(f"User: {user}")
 
         vacancy = json.dumps(data.get("vacancy"))
-        log.info(f"Vacancy.get: {vacancy}")
-        user = VacancyModel.from_json(vacancy)
+        vacancy = VacancyModel.from_json(vacancy)
         log.info(f"Vacancy: {vacancy}")
 
         hh_token = get_hh_token(user.login)
