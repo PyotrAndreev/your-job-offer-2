@@ -1,35 +1,16 @@
 from dataclasses import dataclass
-from enum import Enum
 from typing import Optional
 
-from .jobs import VacancyModel
-
-
-class StageEnum(Enum):
-    CONSIDERATION = "consideration"
-    REJECT = "reject"
-    INVITE = "invite"  # это значит нужно заполнить какую-то информацию
-    TESTING = "testing"
-    INTERVIEW = (
-        "interview"  # этап invite пройден, нужно записаться на собеседование
-    )
-
-
-@dataclass
-class Stage:
-    stage_type: StageEnum
-    deadline: str
-    date: str = ""
-    message: str = ""
+from .enums import StatusEnum
 
 
 @dataclass
 class StatusModel:
-    vacancy_id: str
-    stage: StageEnum
-    deadline: str
-    date: str
-    message: str
+    id: Optional[int] = None
+    status: Optional[StatusEnum] = None
+    deadline: Optional[str] = None
+    date: Optional[str] = None
+    message: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -42,4 +23,4 @@ class VacancyKey:
 @dataclass
 class ParsedMessage:
     vacancy_key: VacancyKey
-    stage: Stage
+    status: StatusModel

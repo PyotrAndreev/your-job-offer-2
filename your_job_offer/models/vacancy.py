@@ -9,7 +9,7 @@ from your_job_offer.entities.enums import (
     EmploymentEnum,
     RelocationEnum,
     SourceEnum,
-    StageEnum,
+    StatusEnum,
 )
 from your_job_offer.repository.vacancies_repository.db_session import Base
 
@@ -56,7 +56,9 @@ class Vacancy(Base):
     requirement = Column(String, nullable=True, name="requirement")
     responsibility = Column(String, nullable=True, name="responsibility")
     area = Column(String(200), nullable=True)
-    professionalRoleId = Column(Integer, nullable=True, name="proffesional_role_id")
+    professionalRoleId = Column(
+        Integer, nullable=True, name="proffesional_role_id"
+    )
     source = Column(
         PgEnum(SourceEnum, name="source", create_type=True), nullable=True
     )
@@ -64,27 +66,37 @@ class Vacancy(Base):
         String, nullable=True, name="id_vacancy_from_source"
     )
     user = relationship(
-        "User", secondary="user_vacancy_status", back_populates="vacancy"
+        "User", secondary="user_vacancy", back_populates="vacancy"
     )
-    status = relationship("Status", back_populates="vacancy")
+    status = relationship(
+        "Status", secondary="vacancy_status", back_populates="vacancy"
+    )
+
+
+class UserVacancy(Base):
+    __tablename__ = "user_vacancy"
+    id = Column(Integer, primary_key=True)
+    userId = Column(Integer, ForeignKey("user.id"))
+    vacancyId = Column(Integer, ForeignKey("vacancy.id"))
 
 
 class Status(Base):
     __tablename__ = "status"
     id = Column(Integer, primary_key=True)
-    vacancyId = Column(Integer, ForeignKey("vacancy.id"))
-    stage = Column(
-        PgEnum(StageEnum, name="stage", create_type=True),
+    statusField = Column(
+        PgEnum(StatusEnum, name="status_field", create_type=True),
         nullable=True,
     )
     deadline = Column(String, nullable=True, name="deadline")
     date = Column(String, nullable=True, name="date")
     message = Column(String, nullable=True, name="message")
-    vacancy = relationship("Vacancy", back_populates="status")
+    vacancy = relationship(
+        "Vacancy", secondary="vacancy_status", back_populates="status"
+    )
 
 
-class UserVacancyStatus(Base):
-    __tablename__ = "user_vacancy_status"
+class VacancyStatus(Base):
+    __tablename__ = "vacancy_status"
     id = Column(Integer, primary_key=True)
-    userId = Column(Integer, ForeignKey("user.id"))
     vacancyId = Column(Integer, ForeignKey("vacancy.id"))
+    statusId = Column(Integer, ForeignKey("status.id"))

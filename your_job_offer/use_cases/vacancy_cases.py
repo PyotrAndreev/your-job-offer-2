@@ -12,7 +12,7 @@ def getAllVacancyFromDb() -> list[VacancyModel]:
     return vacanciesModels
 
 
-def update_status(status: StatusModel):
-    vacancy = db_methods.get_vacancy_by_id(status.vacancy_id)
-    vacancy.status.append(mapper.map_status_model(status))
-    db_methods.session.commit()
+def update_statuses(vacancy_ids: list[int], statuses: list[StatusModel]):
+    return db_methods.update_statuses(
+        vacancy_ids, list(map(mapper.map_status_model, statuses))
+    )

@@ -11,7 +11,8 @@ from your_job_offer.entities.enums import (
     EmploymentEnum,
     ScheduleEnum,
     LanguageLevelEnum,
-    EducationLevelEnum, CitizenshipEnum,
+    EducationLevelEnum,
+    CitizenshipEnum,
 )
 
 from your_job_offer.repository.vacancies_repository.db_session import Base
@@ -105,6 +106,7 @@ class Education(Base):
     finishDate = Column(String(50), nullable=True, name="finish_date")
     user = relationship("User", back_populates="education")
 
+
 class ProfessionalRole(Base):
     __tablename__ = "professional_role"
     id = Column(Integer, primary_key=True)
@@ -161,7 +163,8 @@ class User(Base):
         PgEnum(ScheduleEnum, name="schedule", create_type=True), nullable=True
     )
     citizenship = Column(
-        PgEnum(CitizenshipEnum, name="citizenship", create_type=True), nullable=True
+        PgEnum(CitizenshipEnum, name="citizenship", create_type=True),
+        nullable=True,
     )
     educationLevel = Column(
         PgEnum(EducationLevelEnum, name="education_level", create_type=True),
@@ -187,7 +190,7 @@ class User(Base):
     country = relationship("Country", back_populates="user")
     city = relationship("City", back_populates="user")
     vacancy = relationship(
-        "Vacancy", secondary="user_vacancy_status", back_populates="user"
+        "Vacancy", secondary="user_vacancy", back_populates="user"
     )
 
 

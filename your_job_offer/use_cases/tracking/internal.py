@@ -14,8 +14,11 @@ from your_job_offer.entities.tracking import (
 )
 from your_job_offer.entities.user import UserModel
 from your_job_offer.entities.tracking import StatusModel
-from your_job_offer.use_cases.user_cases import get_vacancies_by_keys
-from your_job_offer.use_cases.vacancy_cases import update_status
+from your_job_offer.use_cases.user_cases import (
+    get_vacancies_by_keys,
+    get_all_statuses_messages,
+)
+from your_job_offer.use_cases.vacancy_cases import update_statuses
 from your_job_offer.services.mail_checker.methods import get_email_messages
 from .email_parser import parser
 
@@ -101,14 +104,14 @@ def clean_messages(messages: list[EmailMessage]) -> list[EmailMessage]:
     return result
 
 
-def find_vacancy_number(message: EmailMessage) -> str:
+def find_vacancy_number(message: EmailMessage) -> Optional[str]:
     """
     Find vacancy id
     """
     s = message.body
     start_index = s.find("vacancy/")
     if start_index == -1:
-        return ""
+        return None
     start_index += len("vacancy/")
     vacancy_number = ""
     for char in s[start_index:]:
@@ -129,16 +132,13 @@ def make_normal_messages(
         )
     result: list[ParsedMessage] = []
     for parsed_message, raw_message in zip(parsed_messages, raw_messages):
-        parsed_message.vacancy_key.id_vacancy_from_source = (
-            find_vacancy_number(raw_message)
-        )
         if parsed_message is not None and (
             parsed_message.vacancy_key.employer != ""
             and parsed_message.vacancy_key.job != ""
             or parsed_message.vacancy_key.id_vacancy_from_source != ""
         ):
-            parsed_message.stage.message = raw_message.body
-            parsed_message.stage.date = raw_message.date
+            parsed_message.status.message = raw_message.body
+            parsed_message.status.date = raw_message.date
             result.append(
                 ParsedMessage(
                     vacancy_key=VacancyKey(
@@ -147,48 +147,62 @@ def make_normal_messages(
                         id_vacancy_from_source=find_vacancy_number(
                             raw_message
                         ),
-                    )
-                ),
-                stage=parsed_message.stage,
+                    ),
+                    status=parsed_message.status,
+                )
             )
     return result
 
 
-def get_all_statuses(user: UserModel) -> list[StatusModel]:
+def leave_only_new(
+    user: UserModel, messages: list[EmailMessage]
+) -> list[EmailMessage]:
+    ans: list[EmailMessage] = []
+    all_statuses = get_all_statuses_messages(user)
+    for message in messages:
+        if message.body not in all_statuses:
+            ans.append(message)
+    return ans
+
+
+def get_parsed_messages(user: UserModel) -> list[ParsedMessage]:
     """
     Возвращает все поданные userом заявки
     """
     raw_messages = get_email_messages(user)
     raw_messages = filter_from_spam(raw_messages)
+    raw_messages = leave_only_new(user, raw_messages)
     cleaned_messages = clean_messages(raw_messages)
     parsed_messages = parse_messages(cleaned_messages)
     normal_messages = make_normal_messages(parsed_messages, raw_messages)
+    return normal_messages
+
+
+def parse_for_user(user: UserModel):
+    parsed_messages = get_parsed_messages(user)
     vacancies = get_vacancies_by_keys(
         list(
             map(
                 lambda parsed_message: parsed_message.vacancy_key,
-                normal_messages,
+                parsed_messages,
             )
         ),
         user,
     )
-    ans: list[StatusModel] = []
-    for vacancy, parsed_message in zip(vacancies, normal_messages):
+    statuses: list[StatusModel] = []
+    vacancy_ids = []
+    for vacancy, parsed_message in zip(vacancies, parsed_messages):
         if vacancy is not None:
-            ans.append(
+            statuses.append(
                 StatusModel(
-                    vacancy_id=vacancy.id,
-                    stage=parsed_message.stage.stage_type,
-                    deadline=parsed_message.stage.deadline,
-                    date=parsed_message.stage.date,
-                    message=parsed_message.stage.message,
+                    status=parsed_message.status.status,
+                    deadline=parsed_message.status.deadline,
+                    date=parsed_message.status.date,
+                    message=parsed_message.status.message,
                 )
             )
-    return ans
-
-
-def parse_for_user(user: UserModel):
-    statuses = get_all_statuses(user)
-    log.info(f"для user={user.login} найдено {len(status)} статусов")
-    for status in statuses:
-        update_status(status)
+            vacancy_ids.append(vacancy.id)
+    log.info(
+        f"user {user.login} подавался на {len(user.vacancy)} вакансий, найдено {len(statuses)} новых статусов"
+    )
+    update_statuses(vacancy_ids, statuses)

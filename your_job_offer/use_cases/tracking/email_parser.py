@@ -8,8 +8,8 @@ from your_job_offer.entities.user import EmailMessage
 from your_job_offer.entities.tracking import (
     ParsedMessage,
     VacancyKey,
-    Stage,
-    StageEnum,
+    StatusModel,
+    StatusEnum,
 )
 from your_job_offer.logger import get_logger
 
@@ -52,15 +52,14 @@ class EmailParser:
     {
         "job": "",
         "employer": "",
-        "stage": строка, одно из 4 "consideration", "reject", "invite"(это значит нужно заполнить какую-то информацию или записаться на собеседование), "testing", "interview"(этап invite пройден, нужно записаться на собеседование)
+        "status": строка, одно из 4 "consideration", "reject", "invite"(это значит нужно заполнить какую-то информацию или записаться на собеседование), "testing", "interview"(этап invite пройден, нужно записаться на собеседование)
         "deadline": время, до которого нужно что-то сделать,
     }
     ]
 }
 
-Сообщения начинаются с <message> и заканчиваются на <message>
 Не надо ничего переводить, если сообщения и данные на английском - пусть остаются на английском
-Если же хотя бы одного "job" или "employer" нет, то в списке этот элемент сделай ""(но ни в ком случае не пропускай его! в ответном json должно оказаться ровно столько же элементов, сколько было сообщений во входе). Даты указывай в формате year-month-day
+Если же хотя бы одного "job" или "employer" нет, то в списке этот элемент сделай пустой строкой(но ни в ком случае не пропускай его! в ответном json должно оказаться ровно столько же элементов, сколько было сообщений во входе). Даты указывай в формате year-month-day
 Не добавляй никакого дополнительного текста перед или после JSON.\n
 """
 
@@ -77,7 +76,9 @@ class EmailParser:
             ):
                 nones.append(index)
             else:
-                prompt += "<message>" + message.body + "<message>\n"
+                prompt += (
+                    f"Сообщение {1 + index - len(nones)}: {message.body}\n"
+                )
         estimated_prompt_tokens = num_tokens_from_string(prompt, self.model)
         max_answer_tokens = self.max_summary_tokens - estimated_prompt_tokens
         if max_answer_tokens < 0:
@@ -107,7 +108,7 @@ class EmailParser:
             elif not (
                 info["job"] == ""
                 or info["employer"] == ""
-                or info["stage"] == ""
+                or info["status"] == ""
             ):
                 result[i] = self._info_to_parsed_message(info)
         return result
@@ -116,8 +117,9 @@ class EmailParser:
     def _info_to_parsed_message(info: dict[str, str]):
         return ParsedMessage(
             VacancyKey(job=info["job"], employer=info["employer"]),
-            Stage(
-                stage_type=StageEnum(info["stage"]), deadline=info["deadline"]
+            StatusModel(
+                status=StatusEnum(info["status"]),
+                deadline=info["deadline"],
             ),
         )
 
