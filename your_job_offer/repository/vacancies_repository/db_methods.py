@@ -342,6 +342,8 @@ def get_vacancies_by_user(user: User):
             Vacancy.businessTripReadiness == user.businessTripReadiness,
         ),
         or_(user.schedule is None, Vacancy.schedule == user.schedule),
+        or_(user.roleId is None, Vacancy.professionalRoleId == user.roleId),
+        Vacancy.hasTest == False
     )
     if user.workHours is not None:
         stmt = stmt.where(

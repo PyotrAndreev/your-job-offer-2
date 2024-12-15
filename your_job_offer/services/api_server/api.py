@@ -129,6 +129,7 @@ def get_form():
         is_published = publish_resume(resume_id=resume_id, access_token=hh_token.access_token)
         if not is_published:
             return make_response(jsonify({"error": "bad form"}), 404)
+        user.hh_resume_id = resume_id
         user_cases.updateUser(user)
         return make_response("OK", 200)
     except Exception as e:

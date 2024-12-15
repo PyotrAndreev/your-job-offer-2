@@ -103,15 +103,15 @@ def create_new_resume(user: UserModel, access_token: str):
             if user.min_salary
             else None
         ,
-        "relocation":
-            {
-                "type":
-                    {
-                        "id": user.relocation.value,
-                        "name": relocation_id_name.get(user.relocation.value),
-                    },
-            }
-            if user.relocation else None,
+        # "relocation":
+        #     {
+        #         "type":
+        #             {
+        #                 "id": user.relocation.value,
+        #                 "name": relocation_id_name.get(user.relocation.value),
+        #             },
+        #     }
+        #     if user.relocation else None,
         # "business_trip_readiness": {
         #     "id": user.business_trip_readiness.value
         # }
