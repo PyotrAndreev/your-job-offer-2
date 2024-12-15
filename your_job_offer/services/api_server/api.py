@@ -229,7 +229,7 @@ def apply():
         log.info(f"Vacancy: {vacancy}")
 
         hh_token = get_hh_token(user.login)
-        vacancy_id = vacancy.idVacancyFromSource
+        vacancy_id = vacancy.id_vacancy_from_source
         nid = apply_to_vacancy(
             vacancy_id=vacancy_id,
             access_token=hh_token.access_token,
