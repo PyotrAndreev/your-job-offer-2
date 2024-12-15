@@ -203,6 +203,7 @@ def hh_auth():
 def apply():
     try:
         data = request.json
+        log.info(data)
         if (
                 not data
                 or "user" not in data
@@ -217,7 +218,7 @@ def apply():
                 ),
                 400,
             )
-
+        log.info(data)
         user = data.get("user")
         log.info(f"User.get: {user}")
         user = UserModel.from_json(user.to_json)
