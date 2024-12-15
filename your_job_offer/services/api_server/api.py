@@ -224,20 +224,22 @@ def apply():
         user = UserModel.from_json(user_data)
         log.info(f"User: {user}")
 
-        # vacancy = data.get("vacancy")
-        # log.info(f"Vacancy.get: {vacancy}")
-        # user = VacancyModel.from_json(str(vacancy))
-        # log.info(f"Vacancy: {vacancy}")
+        vacancy = json.dumps(data.get("vacancy"))
+        log.info(f"Vacancy.get: {vacancy}")
+        user = VacancyModel.from_json(vacancy)
+        log.info(f"Vacancy: {vacancy}")
 
-        # hh_token = get_hh_token(user.login)
-        # vacancy_id = vacancy.idVacancyFromSource
-        # nid = apply_to_vacancy(
-        #     vacancy_id=vacancy_id,
-        #     access_token=hh_token.access_token,
-        #     resume_id=user.hh_resume_id,
-        # )
-        # if nid == None:
-        #     return make_response(jsonify({"error": "can not apply"}), 404)
+        hh_token = get_hh_token(user.login)
+        vacancy_id = vacancy.idVacancyFromSource
+        nid = apply_to_vacancy(
+            vacancy_id=vacancy_id,
+            access_token=hh_token.access_token,
+            resume_id=user.hh_resume_id,
+        )
+        if nid == None:
+            return make_response(jsonify({"error": "can not apply"}), 404)
+        user.vacancy.append(vacancy)
+        update_user(user)
         return make_response("OK", 200)
     except Exception as e:
         log.error(f"Ошибка подачи на вакансию на hh.ru: {e}")
