@@ -1,7 +1,6 @@
 FROM base
 
-# COPY deploy/crontab.vacancy_status /etc/cron.d/cron_schedule
-# RUN chmod 0644 /etc/cron.d/cron_schedule
-# RUN crontab /etc/cron.d/cron_schedule
-# CMD ["cron", "-f"]
-CMD [ "python", "your_job_offer/use_cases/tracking/methods.py" ]
+COPY deploy/crontab.vacancy_status /etc/cron.d/cron_schedule
+RUN chmod 0644 /etc/cron.d/cron_schedule
+RUN crontab /etc/cron.d/cron_schedule
+CMD ["cron", "-f"]

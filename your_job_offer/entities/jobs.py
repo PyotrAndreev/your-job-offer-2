@@ -1,9 +1,16 @@
-from dataclasses import dataclass
-from enum import Enum
+from dataclasses import dataclass, field
 from typing import Optional
 
-from .enums import WorkTypeEnum, BusinessTripReadinessEnum, RelocationEnum, EmploymentEnum, ScheduleEnum, SourceEnum
+from .enums import (
+    WorkTypeEnum,
+    BusinessTripReadinessEnum,
+    RelocationEnum,
+    EmploymentEnum,
+    ScheduleEnum,
+    SourceEnum,
+)
 from .general import *
+from .tracking import StatusModel
 
 from dataclasses_json import dataclass_json
 
@@ -69,6 +76,7 @@ class VacancyModel:
     source: Optional[SourceEnum] = None
     id_vacancy_from_source: Optional[str] = None
     professional_role: Optional[ProfessionalRoleModel] = None
+    status: list[StatusModel] = field(default_factory=list)
 
     def __str__(self):
         return (

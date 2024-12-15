@@ -164,6 +164,7 @@ def map_vacancy(vacancy: Vacancy) -> VacancyModel:
             if professional_role
             else None
         ),
+        status=[map_status(status) for status in vacancy.status],
     )
 
 
@@ -310,6 +311,7 @@ def map_vacancy_model(vacancy: VacancyModel) -> Vacancy:
             if vacancy and vacancy.professional_role
             else None
         ),
+        status=[map_status_model(status) for status in vacancy.status],
     )
 
 
@@ -325,6 +327,16 @@ def map_status_model(status: StatusModel) -> Status:
     return Status(
         id=status.id,
         statusField=status.status,
+        deadline=status.deadline,
+        date=status.date,
+        message=status.message,
+    )
+
+
+def map_status(status: Status) -> StatusModel:
+    return StatusModel(
+        id=status.id,
+        status=status.statusField,
         deadline=status.deadline,
         date=status.date,
         message=status.message,

@@ -1,18 +1,7 @@
 from dataclasses import dataclass
-from enum import Enum
 from typing import Optional
 
-from .jobs import VacancyModel
-
-
-class StatusEnum(Enum):
-    CONSIDERATION = "consideration"
-    REJECT = "reject"
-    INVITE = "invite"  # это значит нужно заполнить какую-то информацию
-    TESTING = "testing"
-    INTERVIEW = (
-        "interview"  # этап invite пройден, нужно записаться на собеседование
-    )
+from .enums import StatusEnum
 
 
 @dataclass
