@@ -25,7 +25,8 @@ from your_job_offer.use_cases.matching import match_vacancies
 from your_job_offer.use_cases.user_cases import getUser, saveUser
 from your_job_offer.services.cv_parser.methods import parse
 from your_job_offer.repository.vacancies_repository.get_professional_roles import get_professional_roles
-
+from your_job_offer.services.hh_api.create_new_resume import create_new_resume
+from your_job_offer.services.hh_api.publish_resume import publish_resume
 from datetime import date, datetime
 import enum
 
@@ -121,6 +122,13 @@ def get_form():
 
         user = UserModel.from_json(request.data)
         log.info(f"User: {user}")
+        hh_token = get_hh_token(user.login)
+        resume_id = create_new_resume(user=user, access_token=hh_token.access_token)
+        if resume_id==None:
+            return make_response(jsonify({"error": "bad form"}), 404)
+        is_published = publish_resume(resume_id=resume_id, access_token=hh_token.access_token)
+        if not is_published:
+            return make_response(jsonify({"error": "bad form"}), 404)
         user_cases.updateUser(user)
         return make_response("OK", 200)
     except Exception as e:
@@ -187,31 +195,39 @@ def apply():
         data = request.json
         if (
             not data
-            or "login" not in data
-            or "password" not in data
-            or "vacancy_id" not in data
+            or "user" not in data
+            or "vacancy" not in data
         ):
             return make_response(
                 jsonify(
                     {
-                        "error": "Invalid request. 'login', 'password' fields are "
+                        "error": "Invalid request. 'user', 'vacancy' fields are "
                         "required."
                     }
                 ),
                 400,
             )
 
-        login = data.get("login")
-        user = getUser(login)
-        hh_token = get_hh_token(login)
-        vacancy_id = data.get("vacancy_id")
-        message = data.get("message")
-        apply_to_vacancy(
+        user = data.get("user")
+        log.info(f"User.get: {user}")
+        user = UserModel.from_json(user)
+        log.info(f"User: {user}")
+
+        vacancy = data.get("vacancy")
+        log.info(f"Vacancy.get: {vacancy}")
+        user = VacancyModel.from_json(vacancy)
+        log.info(f"Vacancy: {vacancy}")
+
+        hh_token = get_hh_token(user.login)
+        vacancy_id = vacancy.idVacancyFromSource
+        nid = apply_to_vacancy(
             vacancy_id=vacancy_id,
-            message=message,
             access_token=hh_token.access_token,
             resume_id=user.hh_resume_id,
         )
+        if nid == None:
+            return make_response(jsonify({"error": "can not apply"}), 404)
+        return make_response("OK", 200)
     except Exception as e:
         log.error(f"Ошибка подачи на вакансию на hh.ru: {e}")
         return make_response(jsonify({"error": str(e)}), 500)

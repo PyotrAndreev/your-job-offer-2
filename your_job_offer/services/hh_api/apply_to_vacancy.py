@@ -6,7 +6,7 @@ log = logger.get_logger(__name__)
 
 
 def apply_to_vacancy(
-    vacancy_id: int, resume_id: str, message: str, access_token: str
+    vacancy_id: str, resume_id: str, access_token: str, message: str = ""
 ):
     """
     Submits an application to a specified job vacancy on hh.ru.
@@ -23,14 +23,19 @@ def apply_to_vacancy(
     headers = {
         "HH-User-Agent": "YourJobOffer (zaitseva.dr@phystech.edu)",
         "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json",
     }
 
-    data = {
-        "resume_id": resume_id,
-        "vacancy_id": vacancy_id,
-        "message": message,
-    }
+    if message != "":
+        data = {
+            "resume_id": resume_id,
+            "vacancy_id": vacancy_id,
+            "message": message,
+        }
+    else:
+        data = {
+            "resume_id": resume_id,
+            "vacancy_id": vacancy_id,
+        }
 
     res = requests.post(
         f"https://api.hh.ru/negotiations", data=data, headers=headers
@@ -48,6 +53,9 @@ def apply_to_vacancy(
     elif res.status_code == 303:
         loc = "Location"
         log.error(f"Вакансия с подачей не на hh.ru: {res.headers.get(loc)}")
-    else:
-        log.error(f"Ошибка при подаче на вакансию: {res.json()}")
         return None
+    else:
+        if res.json()["errors"][0]["value"] == "test_required":
+            log.error("Нужно пройти тестовое задание")
+        log.error(f"Ошибка при подаче на вакансию: {res.json()}")
+        return "Нужно пройти тестовое задание"
