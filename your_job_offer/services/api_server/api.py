@@ -83,7 +83,7 @@ def getVacancies():
     user = UserModel.from_dict(request.json)
     if not user_cases.ifExistUser(user.login):
         return make_response("User not exists", 401)
-        vac: list[VacancyModel] = match_vacancies.get_match_vacancies(user=user)
+    vac: list[VacancyModel] = match_vacancies.get_match_vacancies(user=user)
     return make_response('{"vacancies":'
                          + json.dumps([json.loads(v.to_json(default=json_serial)) for v in vac]) + "}",
                          200, )
@@ -94,7 +94,7 @@ def getStatuses():
     user = UserModel.from_dict(request.json)
     if not user_cases.ifExistUser(user.login):
         return make_response("User not exists", 401)
-        user = user_cases.getUser(user.login)
+    user = user_cases.getUser(user.login)
     return make_response(
         '{"vacancies":' + json.dumps([json.loads(v.to_json(default=json_serial)) for v in user.vacancy])
         + "}", 200,
