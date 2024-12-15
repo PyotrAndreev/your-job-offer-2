@@ -4,15 +4,9 @@ from your_job_offer.repository.vacancies_repository.hh_get_vacancies import (
     get_vacancies as hh_get_vacancies,
     log,
 )
-from your_job_offer.repository.vacancies_repository.db_methods import (
-    get_all_vacancies,
-    save_vacancy,
-)
+from your_job_offer.repository.vacancies_repository.db_methods import get_all_vacancies, save_vacancy
 from your_job_offer.models.vacancy import Vacancy
-from your_job_offer.mappers.mapper import (
-    map_vacancy_db_to_vacancy_key,
-    VacancyKey,
-)
+from your_job_offer.mappers.mapper import map_vacancy_db_to_vacancy_key, VacancyKey
 
 
 def vacancies_to_dict(
