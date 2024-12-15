@@ -24,7 +24,7 @@ from your_job_offer.models.user import (
     Education,
     ProfessionalRole,
 )
-from your_job_offer.models.vacancy import Vacancy
+from your_job_offer.models.vacancy import Vacancy, Status
 from your_job_offer.repository.vacancies_repository.db_session import session
 from your_job_offer.entities.tracking import VacancyKey
 
@@ -491,3 +491,16 @@ def get_all_users() -> list[User]:
 
 def get_vacancy_by_id(vacancy_id: int) -> Vacancy:
     return session.get(Vacancy, vacancy_id)
+
+
+def update_statuses(vacancy_ids: list[int], statuses: list[Status]):
+    for vacancy_id, status in zip(vacancy_ids, statuses):
+        vacancy = get_vacancy_by_id(vacancy_id)
+        if (
+            session.query(Status)
+            .filter_by(message=status.message)
+            .one_or_none()
+            is None
+        ):
+            vacancy.status.append(status)
+    session.commit()

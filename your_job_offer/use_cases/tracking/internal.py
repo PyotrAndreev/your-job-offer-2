@@ -14,7 +14,10 @@ from your_job_offer.entities.tracking import (
 )
 from your_job_offer.entities.user import UserModel
 from your_job_offer.entities.tracking import StatusModel
-from your_job_offer.use_cases.user_cases import get_vacancies_by_keys
+from your_job_offer.use_cases.user_cases import (
+    get_vacancies_by_keys,
+    get_all_statuses_messages,
+)
 from your_job_offer.use_cases.vacancy_cases import update_statuses
 from your_job_offer.services.mail_checker.methods import get_email_messages
 from .email_parser import parser
@@ -151,12 +154,24 @@ def make_normal_messages(
     return result
 
 
+def leave_only_new(
+    user: UserModel, messages: list[EmailMessage]
+) -> list[EmailMessage]:
+    ans: list[EmailMessage] = []
+    all_statuses = get_all_statuses_messages(user)
+    for message in messages:
+        if message.body not in all_statuses:
+            ans.append(message)
+    return ans
+
+
 def get_parsed_messages(user: UserModel) -> list[ParsedMessage]:
     """
     Возвращает все поданные userом заявки
     """
     raw_messages = get_email_messages(user)
     raw_messages = filter_from_spam(raw_messages)
+    raw_messages = leave_only_new(user, raw_messages)
     cleaned_messages = clean_messages(raw_messages)
     parsed_messages = parse_messages(cleaned_messages)
     normal_messages = make_normal_messages(parsed_messages, raw_messages)
@@ -174,14 +189,6 @@ def parse_for_user(user: UserModel):
         ),
         user,
     )
-    for messge, vacancy in zip(parsed_messages, vacancies):
-        log.info(messge.vacancy_key)
-        if vacancy is None:
-            log.info(None)
-        else:
-            log.info(
-                f"id={vacancy.id}, job={vacancy.job}, employer={vacancy.employer}"
-            )
     statuses: list[StatusModel] = []
     vacancy_ids = []
     for vacancy, parsed_message in zip(vacancies, parsed_messages):
@@ -195,13 +202,7 @@ def parse_for_user(user: UserModel):
                 )
             )
             vacancy_ids.append(vacancy.id)
-    # for status in statuses:
-    #     log.info(status.vacancy_id)
-    #     log.info(status.status)
-    #     log.info(status.date)
-    #     log.info(status.deadline)
-    #     log.info(status.message[: min(100, len(status.message))])
     log.info(
-        f"user {user.login} подавался на {len(user.vacancy)} вакансий, найдено {len(statuses)} статусов"
+        f"user {user.login} подавался на {len(user.vacancy)} вакансий, найдено {len(statuses)} новых статусов"
     )
     update_statuses(vacancy_ids, statuses)

@@ -118,3 +118,4 @@ app_logs/
 .env
 .idea/
 secrets/
+restart.bash

@@ -1,7 +1,8 @@
 from typing import Optional
 
 from your_job_offer.entities.user import UserModel
-from your_job_offer.entities.tracking import VacancyKey, VacancyModel
+from your_job_offer.entities.tracking import VacancyKey
+from your_job_offer.entities.jobs import VacancyModel
 from your_job_offer.repository.vacancies_repository import db_methods
 from your_job_offer.mappers import mapper
 
@@ -29,6 +30,14 @@ def get_all_users() -> list[UserModel]:
     for user in db_methods.get_all_users():
         user_models.append(mapper.map_user(user))
     return user_models
+
+
+def get_all_statuses_messages(user: UserModel) -> list[str]:
+    ans: list[str] = []
+    for vacancy in user.vacancy:
+        for status in vacancy.status:
+            ans.append(status.message)
+    return ans
 
 
 def get_vacancies_by_keys(
