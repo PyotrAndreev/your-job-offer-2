@@ -1,4 +1,5 @@
 from typing import Optional
+import imaplib
 
 import email
 from email.header import decode_header

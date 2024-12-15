@@ -50,8 +50,8 @@ def get_vacancies_by_keys(
                 for vacancy in userVacancies
                 if vacancy.job == key.job and vacancy.employer == key.employer
             ]
-            if len(appropriate_vacancies) > 0:
-                vacancies.append(appropriate_vacancies[0])
-            else:
-                vacancies.append(None)
+        if len(appropriate_vacancies) > 0:
+            vacancies.append(appropriate_vacancies[0])
+        else:
+            vacancies.append(None)
     return vacancies

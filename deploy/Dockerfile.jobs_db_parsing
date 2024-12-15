@@ -1,6 +1,5 @@
 FROM base
 
-RUN apt-get -y install cron
 COPY deploy/crontab.jobs_db /etc/cron.d/cron_schedule
 RUN chmod 0644 /etc/cron.d/cron_schedule
 RUN crontab /etc/cron.d/cron_schedule

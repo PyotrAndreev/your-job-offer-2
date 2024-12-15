@@ -22,7 +22,7 @@ from your_job_offer.models.user import (
     WorkExperience,
     Language,
     Education,
-    ProfessionalRole
+    ProfessionalRole,
 )
 from your_job_offer.models.vacancy import Vacancy
 from your_job_offer.repository.vacancies_repository.db_session import session
@@ -86,6 +86,7 @@ def save_user(user: User) -> User:
     session.commit()
     return user
 
+
 def save_role(role: ProfessionalRole):
     session.add(role)
     session.commit()
@@ -119,7 +120,9 @@ def get_job_id(name: str) -> int:
 
 
 def get_professional_role(role_id: int) -> ProfessionalRole:
-    role = session.scalars(select(ProfessionalRole).filter_by(roleId=role_id)).first()
+    role = session.scalars(
+        select(ProfessionalRole).filter_by(roleId=role_id)
+    ).first()
     return role
 
 
@@ -361,14 +364,28 @@ def update_user(updated_user: UserModel):
         user = get_user(updated_user.login)
         if updated_user.city:
             if not if_exist_city(updated_user.city.name):
-                save_city(City(name=updated_user.city.name, areaId=updated_user.city.area_id))
-            city = session.scalars(select(City).filter_by(name=updated_user.city.name)).first()
+                save_city(
+                    City(
+                        name=updated_user.city.name,
+                        areaId=updated_user.city.area_id,
+                    )
+                )
+            city = session.scalars(
+                select(City).filter_by(name=updated_user.city.name)
+            ).first()
             user.cityId = city.id
 
         if updated_user.country:
             if not if_exist_city(updated_user.country.name):
-                save_country(Country(name=updated_user.country.name, areaId=updated_user.country.area_id))
-            country = session.scalars(select(Country).filter_by(name=updated_user.country.name)).first()
+                save_country(
+                    Country(
+                        name=updated_user.country.name,
+                        areaId=updated_user.country.area_id,
+                    )
+                )
+            country = session.scalars(
+                select(Country).filter_by(name=updated_user.country.name)
+            ).first()
             user.countryId = country.id
 
         if updated_user.professional_role:
@@ -428,7 +445,11 @@ def update_user(updated_user: UserModel):
         )
         user.education = (
             list(
-                Education(description=e.description, institution=e.institution, finishDate=e.finish_date)
+                Education(
+                    description=e.description,
+                    institution=e.institution,
+                    finishDate=e.finish_date,
+                )
                 for e in updated_user.educations
             )
             if updated_user.educations
@@ -443,7 +464,10 @@ def update_user(updated_user: UserModel):
             else user.skill
         )
         user.language = (
-            list(Language(name=lan.name, level=lan.level) for lan in updated_user.languages)
+            list(
+                Language(name=lan.name, level=lan.level)
+                for lan in updated_user.languages
+            )
             if updated_user.languages
             else user.language
         )
@@ -466,5 +490,4 @@ def get_all_users() -> list[User]:
 
 
 def get_vacancy_by_id(vacancy_id: int) -> Vacancy:
-    stmt = select(Vacancy).where(Vacancy.id == vacancy_id)
-    return get_vacancies_with_statement(stmt)
+    return session.get(Vacancy, vacancy_id)

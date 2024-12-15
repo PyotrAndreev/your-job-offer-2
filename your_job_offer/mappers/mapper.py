@@ -65,8 +65,15 @@ def map_user(user: User) -> UserModel:
         employment=user.employment,
         schedule=user.schedule,
         citizenship=user.citizenship,
-        professional_role=ProfessionalRoleModel(id=professional_role.id, role_id=user.roleId,
-                                               name=professional_role.name) if professional_role else None,
+        professional_role=(
+            ProfessionalRoleModel(
+                id=professional_role.id,
+                role_id=user.roleId,
+                name=professional_role.name,
+            )
+            if professional_role
+            else None
+        ),
         projects=[
             ProjectModel(
                 id=p.id, name=p.name, description=p.description, link=p.link
@@ -119,7 +126,9 @@ def map_user(user: User) -> UserModel:
 
 
 def map_vacancy(vacancy: Vacancy) -> VacancyModel:
-    professional_role = get_professional_role(vacancy.professionalRoleId) if vacancy else None
+    professional_role = (
+        get_professional_role(vacancy.professionalRoleId) if vacancy else None
+    )
     return VacancyModel(
         id=vacancy.id,
         job=vacancy.job,
@@ -146,8 +155,15 @@ def map_vacancy(vacancy: Vacancy) -> VacancyModel:
         area=vacancy.area,
         source=vacancy.source,
         id_vacancy_from_source=vacancy.idVacancyFromSource,
-        professional_role=ProfessionalRoleModel(id=professional_role.id, role_id=vacancy.professionalRoleId,
-                                                name=professional_role.name) if professional_role else None,
+        professional_role=(
+            ProfessionalRoleModel(
+                id=professional_role.id,
+                role_id=vacancy.professionalRoleId,
+                name=professional_role.name,
+            )
+            if professional_role
+            else None
+        ),
     )
 
 
@@ -212,7 +228,11 @@ def map_userModel(user: UserModel) -> User:
         hhResumeId=user.hh_resume_id,
         innerEmail=user.inner_email,
         innerEmailPassword=user.inner_email_password,
-        roleId=user.professional_role.role_id if user and user.professional_role else None,
+        roleId=(
+            user.professional_role.role_id
+            if user and user.professional_role
+            else None
+        ),
         project=[
             Project(
                 id=p.id, name=p.name, description=p.description, link=p.link
@@ -285,7 +305,11 @@ def map_vacancy_model(vacancy: VacancyModel) -> Vacancy:
         area=vacancy.area,
         source=vacancy.source,
         idVacancyFromSource=vacancy.id_vacancy_from_source,
-        professionalRoleId=vacancy.professional_role.role_id if vacancy and vacancy.professional_role else None,
+        professionalRoleId=(
+            vacancy.professional_role.role_id
+            if vacancy and vacancy.professional_role
+            else None
+        ),
     )
 
 
@@ -298,5 +322,10 @@ def map_vacancy_db_to_vacancy_key(vacancy_db: Vacancy) -> VacancyKey:
 
 
 def map_status_model(status: StatusModel) -> Status:
-    # TODO Настя
-    pass
+    return Status(
+        id=status.id,
+        statusField=status.status,
+        deadline=status.deadline,
+        date=status.date,
+        message=status.message,
+    )

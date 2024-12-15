@@ -5,7 +5,7 @@ from typing import Optional
 from .jobs import VacancyModel
 
 
-class StageEnum(Enum):
+class StatusEnum(Enum):
     CONSIDERATION = "consideration"
     REJECT = "reject"
     INVITE = "invite"  # это значит нужно заполнить какую-то информацию
@@ -16,20 +16,12 @@ class StageEnum(Enum):
 
 
 @dataclass
-class Stage:
-    stage_type: StageEnum
-    deadline: str
-    date: str = ""
-    message: str = ""
-
-
-@dataclass
 class StatusModel:
-    vacancy_id: str
-    stage: StageEnum
-    deadline: str
-    date: str
-    message: str
+    id: Optional[int] = None
+    status: Optional[StatusEnum] = None
+    deadline: Optional[str] = None
+    date: Optional[str] = None
+    message: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -42,4 +34,4 @@ class VacancyKey:
 @dataclass
 class ParsedMessage:
     vacancy_key: VacancyKey
-    stage: Stage
+    status: StatusModel

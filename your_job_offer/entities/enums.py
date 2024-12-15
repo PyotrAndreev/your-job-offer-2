@@ -67,7 +67,7 @@ class SourceEnum(Enum):
     UNK = "unknown"
 
 
-class StageEnum(Enum):
+class StatusEnum(Enum):
     CONSIDERATION = "consideration"
     REJECT = "reject"
     INVITE = "invite"  # это значит нужно заполнить какую-то информацию или записаться на собеседование

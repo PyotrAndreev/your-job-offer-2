@@ -1,4 +1,4 @@
-from .inner import get_messages
+from .internal import get_messages
 from your_job_offer.entities.user import UserModel, EmailMessage
 
 
