@@ -15,5 +15,13 @@ def publish_resume(resume_id: str, access_token: str):
     )
     if res.status_code != 204:
         log.error(f"Error publishing resumes: {res.json()}")
+        res = requests.get(
+            f"https://api.hh.ru/resumes/{resume_id}/", headers=headers
+        )
+        progress = "progress"
+        mandatory = "mandatory"
+        log.error(f"Needed: {res.json()[progress][mandatory]}")
+        return False
     else:
         log.info(f"Publish resume: {resume_id}")
+        return True

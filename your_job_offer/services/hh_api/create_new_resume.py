@@ -27,7 +27,14 @@ def create_new_resume(user: UserModel, access_token: str):
         "gender": {
             "id": user.gender.value if user.gender else None,
         },
-        "area": user.city.area_id if user.city else None,
+        "area": {
+            "id": user.city.area_id,
+        } if user.city else None,
+        "citizenship": [
+            {
+                "id": user.country.area_id if user.country and user.country.area_id else 113,
+            },
+        ],
         "contact": [
             {
                 "type": {
@@ -39,11 +46,11 @@ def create_new_resume(user: UserModel, access_token: str):
             },
             {
                 "type": {
-                    "id": "phone",
-                    "name": "",
+                    "id": "cell",
+                    "name": "Мобильный телефон",
                 },
                 "value": {
-                    "formatted": user.phone,
+                    "formatted": 79806253660,
                 },
             },
         ],
@@ -72,31 +79,21 @@ def create_new_resume(user: UserModel, access_token: str):
             "primary": [
                 {
                     "name": edu.institution if edu.institution else "MIPT",
-                    "year": edu.finish_date.year if edu.finish_date else "2026",
+                    "year": edu.finish_date[:4] if edu.finish_date else "2026",
                 }
                 for edu in user.educations
             ],
         },
-        # "language": [
-        #     {
-        #         "id": languages.get(lang.name),
-        #         "name": lang.name,
-        #         "level": {
-        #             "id": lang.level,
-        #             "name": language_level_id_name.get(lang.level),
-        #         },
-        #     }
-        #     for lang in user.languages
-        # ],
         "language": [
             {
-                "id": "rus",
-                "name": "Русский",
+                "id": languages.get(lang.name),
+                "name": lang.name,
                 "level": {
-                    "id": "l1",
-                    "name": "Родной"
-                }
+                    "id": lang.level.value,
+                    "name": language_level_id_name.get(lang.level.value),
+                },
             }
+            for lang in user.languages
         ],
         "salary":
             {
@@ -106,61 +103,40 @@ def create_new_resume(user: UserModel, access_token: str):
             if user.min_salary
             else None
         ,
-        "relocation":
+        # "relocation":
+        #     {
+        #         "type":
+        #             {
+        #                 "id": user.relocation.value,
+        #                 "name": relocation_id_name.get(user.relocation.value),
+        #             },
+        #     }
+        #     if user.relocation else None,
+        # "business_trip_readiness": {
+        #     "id": user.business_trip_readiness.value
+        # }
+        # if user.business_trip_readiness else None,
+        # "employments": [
+        #     {
+        #         "id": user.employment.value,
+        #         "name": employment_id_name.get(user.employment.value),
+        #     },
+        # ]
+        # if user.employment else None,
+        # "schedules":
+        #     [
+        #         {
+        #             "id": user.schedule.value,
+        #             "name": schedule_id_name.get(user.schedule.value)
+        #         },
+        #     ]
+        #     if user.schedule else None,
+        "professional_roles": [
             {
-                "type":
-                    {
-                        "id": user.relocation.value,
-                        "name": relocation_id_name.get(user.relocation.value),
-                    },
-            }
-        if user.relocation else None,
-        "business_trip_readiness": {
-                    "id": user.business_trip_readiness.value
-            }
-        if user.employment else None,
-        "employments": [
-                {
-                    "id": user.employment.value,
-                    "name": employment_id_name.get(user.employment.value),
-                },
-            ]
-        if user.employment else None,
-        "schedules":
-            [
-                {
-                    "id": user.schedule.value,
-                    "name": schedule_id_name.get(user.schedule.value)
-                },
-            ]
-        if user.schedule else None,
-        # "professional_roles": [
-        #     156,
-        #     160,
-        #     10,
-        #     12,
-        #     150,
-        #     25,
-        #     165,
-        #     34,
-        #     36,
-        #     73,
-        #     155,
-        #     96,
-        #     164,
-        #     104,
-        #     157,
-        #     107,
-        #     112,
-        #     113,
-        #     148,
-        #     114,
-        #     116,
-        #     121,
-        #     124,
-        #     125,
-        #     126,
-        # ],
+                "id": user.professional_role.role_id,
+            } if user.professional_role else {"id": 156},
+        ],
+        "title": user.professional_role.name if user.professional_role else None,
     }
 
     data = {k: v for k, v in data.items() if v is not None}
@@ -170,6 +146,7 @@ def create_new_resume(user: UserModel, access_token: str):
     if res.status_code != 201:
         log.error(res.status_code)
         log.error(f"Error adding resume: {res.json()}")
+        return None
     else:
         log.info(f"Resume added")
         location_header = res.headers.get("Location")
@@ -179,3 +156,4 @@ def create_new_resume(user: UserModel, access_token: str):
             return resume_id
         else:
             log.error("Не удалось получить ID резюме из заголовков ответа.")
+            return None

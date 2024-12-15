@@ -345,6 +345,8 @@ def get_vacancies_by_user(user: User):
             Vacancy.businessTripReadiness == user.businessTripReadiness,
         ),
         or_(user.schedule is None, Vacancy.schedule == user.schedule),
+        or_(user.roleId is None, Vacancy.professionalRoleId == user.roleId),
+        Vacancy.hasTest == False
     )
     if user.workHours is not None:
         stmt = stmt.where(
@@ -473,7 +475,7 @@ def update_user(updated_user: UserModel):
         )
         user.vacancy = (
             list(
-                Vacancy(description=v.description)
+                map_vacancy_model(v)
                 for v in updated_user.vacancy
             )
             if updated_user.vacancy

@@ -25,16 +25,19 @@ from your_job_offer.use_cases.matching import match_vacancies
 from your_job_offer.use_cases.user_cases import getUser, saveUser
 from your_job_offer.services.cv_parser.methods import parse
 from your_job_offer.repository.vacancies_repository.get_professional_roles import get_professional_roles
-
+from your_job_offer.services.hh_api.create_new_resume import create_new_resume
+from your_job_offer.services.hh_api.publish_resume import publish_resume
 from datetime import date, datetime
 import enum
+
 
 def json_serial(obj):
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
     if isinstance(obj, enum.Enum):
         return obj.value
-    raise TypeError ("Type %s not serializable" % type(obj))
+    raise TypeError("Type %s not serializable" % type(obj))
+
 
 app = Flask("app")
 
@@ -80,14 +83,21 @@ def getVacancies():
     user = UserModel.from_dict(request.json)
     if not user_cases.ifExistUser(user.login):
         return make_response("User not exists", 401)
-    user = user_cases.getUser(user.login)
     vac: list[VacancyModel] = match_vacancies.get_match_vacancies(user=user)
+    return make_response('{"vacancies":'
+                         + json.dumps([json.loads(v.to_json(default=json_serial)) for v in vac]) + "}",
+                         200, )
 
+
+@app.route("/get_status", methods=["POST"])
+def getStatuses():
+    user = UserModel.from_dict(request.json)
+    if not user_cases.ifExistUser(user.login):
+        return make_response("User not exists", 401)
+    user = user_cases.getUser(user.login)
     return make_response(
-        '{"vacancies":'
-        + json.dumps([json.loads(v.to_json(default=json_serial)) for v in vac])
-        + "}",
-        200,
+        '{"vacancies":' + json.dumps([json.loads(v.to_json(default=json_serial)) for v in user.vacancy])
+        + "}", 200,
     )
 
 
@@ -113,7 +123,7 @@ def get_form():
                 jsonify(
                     {
                         "error": "Invalid request. 'login', 'password' fields are "
-                        "required."
+                                 "required."
                     }
                 ),
                 400,
@@ -121,6 +131,14 @@ def get_form():
 
         user = UserModel.from_json(request.data)
         log.info(f"User: {user}")
+        hh_token = get_hh_token(user.login)
+        resume_id = create_new_resume(user=user, access_token=hh_token.access_token)
+        if resume_id == None:
+            return make_response(jsonify({"error": "bad form"}), 404)
+        is_published = publish_resume(resume_id=resume_id, access_token=hh_token.access_token)
+        if not is_published:
+            return make_response(jsonify({"error": "bad form"}), 404)
+        user.hh_resume_id = resume_id
         user_cases.updateUser(user)
         return make_response("OK", 200)
     except Exception as e:
@@ -146,16 +164,16 @@ def hh_auth():
     try:
         data = request.json
         if (
-            not data
-            or "access" not in data
-            or "refresh" not in data
-            or "login" not in data
+                not data
+                or "access" not in data
+                or "refresh" not in data
+                or "login" not in data
         ):
             return make_response(
                 jsonify(
                     {
                         "error": "Invalid request. 'login', 'access' and 'refresh' fields are "
-                        "required."
+                                 "required."
                     }
                 ),
                 400,
@@ -186,32 +204,40 @@ def apply():
     try:
         data = request.json
         if (
-            not data
-            or "login" not in data
-            or "password" not in data
-            or "vacancy_id" not in data
+                not data
+                or "user" not in data
+                or "vacancy" not in data
         ):
             return make_response(
                 jsonify(
                     {
-                        "error": "Invalid request. 'login', 'password' fields are "
-                        "required."
+                        "error": "Invalid request. 'user', 'vacancy' fields are "
+                                 "required."
                     }
                 ),
                 400,
             )
 
-        login = data.get("login")
-        user = getUser(login)
-        hh_token = get_hh_token(login)
-        vacancy_id = data.get("vacancy_id")
-        message = data.get("message")
-        apply_to_vacancy(
+        user = data.get("user")
+        log.info(f"User.get: {user}")
+        user = UserModel.from_json(user)
+        log.info(f"User: {user}")
+
+        vacancy = data.get("vacancy")
+        log.info(f"Vacancy.get: {vacancy}")
+        user = VacancyModel.from_json(vacancy)
+        log.info(f"Vacancy: {vacancy}")
+
+        hh_token = get_hh_token(user.login)
+        vacancy_id = vacancy.idVacancyFromSource
+        nid = apply_to_vacancy(
             vacancy_id=vacancy_id,
-            message=message,
             access_token=hh_token.access_token,
             resume_id=user.hh_resume_id,
         )
+        if nid == None:
+            return make_response(jsonify({"error": "can not apply"}), 404)
+        return make_response("OK", 200)
     except Exception as e:
         log.error(f"Ошибка подачи на вакансию на hh.ru: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
