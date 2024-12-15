@@ -27,6 +27,7 @@ from your_job_offer.services.cv_parser.methods import parse
 from your_job_offer.repository.vacancies_repository.get_professional_roles import get_professional_roles
 from your_job_offer.services.hh_api.create_new_resume import create_new_resume
 from your_job_offer.services.hh_api.publish_resume import publish_resume
+from your_job_offer.services.hh_api.update_resume import update_resume
 from datetime import date, datetime
 import enum
 
@@ -309,4 +310,33 @@ def upload_file():
 
     except Exception as e:
         log.error(f"Ошибка загрузки резюме: {e}", exc_info=True)
+        return make_response(jsonify({"error": str(e)}), 500)
+
+
+@app.route("/form/update", methods=["POST"])
+def update_form():
+    try:
+        data = request.json
+        if not data or "login" not in data or "password" not in data:
+            return make_response(
+                jsonify(
+                    {
+                        "error": "Invalid request. 'login', 'password' fields are "
+                                 "required."
+                    }
+                ),
+                400,
+            )
+
+        user = UserModel.from_json(request.data)
+        log.info(f"User: {user}")
+        hh_token = get_hh_token(user.login)
+        update_resume(user, hh_token.access_token)
+        # is_published = publish_resume(resume_id=resume_id, access_token=hh_token.access_token)
+        # if not is_published:
+        #     return make_response(jsonify({"error": "bad form"}), 404)
+        user_cases.updateUser(user)
+        return make_response("OK", 200)
+    except Exception as e:
+        log.error(f"Ошибка сохранения данных из формы: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
