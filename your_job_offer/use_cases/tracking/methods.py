@@ -1,11 +1,11 @@
 from your_job_offer.use_cases.user_cases import get_all_users
 
-# from your_job_offer.use_cases.tracking.internal import parse_for_user, log
+from your_job_offer.use_cases.tracking.internal import parse_for_user, log
 
-# from your_job_offer.use_cases.user_cases import saveUser, updateUser
+from your_job_offer.use_cases.user_cases import saveUser, updateUser
 from your_job_offer.utils.mock import get_user
 
-# from your_job_offer.use_cases.vacancy_cases import getAllVacancyFromDb
+from your_job_offer.use_cases.vacancy_cases import getAllVacancyFromDb
 from your_job_offer.repository.vacancies_repository import db_methods
 
 # from your_job_offer.models.vacancy import Status
@@ -72,25 +72,31 @@ from sqlalchemy import select
 # # Добавляем связь между пользователем и вакансиями (1 и 3)
 # user.vacancy = vacancies
 
+
 # # Сохраняем пользователя в базу данных
 # session.add(user)
 # session.commit()  # Фиксируем изменения
+def parse():
+    for user in get_all_users():
+        for vacancy in user.vacancy:
+            vacancy_ = db_methods.get_vacancy_by_id(vacancy.id)
+            vacancy_.status.append(Status(statusField=StatusEnum.REJECT))
+    session.commit()
+
+
 if __name__ == "__main__":
     user = get_user()
 
     # user = session.execute(select(User)).scalars().all()[0]
     # print(*[vacancy.job for vacancy in user.vacancy])
 
-    for user in get_all_users():
-        vacancies = user.vacancy
-        for vacancy in user.vacancy:
-            vacancy_ = db_methods.get_vacancy_by_id(vacancy.id)
-            vacancy_.status.append(Status(statusField=StatusEnum.REJECT))
-            # print("Успешно добавлено")
-    session.commit()
-
     # for user in get_all_users():
-    #     a
+    #     for vacancy in user.vacancy:
+    #         vacancy_ = db_methods.get_vacancy_by_id(vacancy.id)
+    #         vacancy_.status.append(Status(statusField=StatusEnum.REJECT))
+    #         # print("Успешно добавлено")
+    # session.commit()
+    parse()
 
     # vacancy = db_methods.get_vacancy_by_id(vacancy_id)
     # statuses = [
