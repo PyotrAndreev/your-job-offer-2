@@ -45,7 +45,8 @@ from your_job_offer.repository.vacancies_repository.db_session import session
 from your_job_offer.models.vacancy import Vacancy, Status, StatusEnum
 from your_job_offer.models.user import User
 from sqlalchemy import select
-from your_job_offer.repository.vacancies_repository.parsing import parse
+
+# from your_job_offer.repository.vacancies_repository.parsing import parse
 
 # vacancies = [
 #     Vacancy(description="1"),
@@ -57,23 +58,26 @@ from your_job_offer.repository.vacancies_repository.parsing import parse
 # for vacancy in vacancies:
 #     session.add(vacancy)
 # session.commit()  # Фиксируем изменения, чтобы данные сохранились в БД
-parse()
+# parse()
 
 # Проверяем ID вакансий, если нужно (опционально)
-vacancy_1 = session.execute(select(Vacancy)).scalars().all()[0]
+vacancies = session.execute(select(Vacancy)).scalars().all()
+while len(vacancies) < 50:
+    vacancies = session.execute(select(Vacancy)).scalars().all()
+vacancy_1 = vacancies[0]
 
 # Создаём пользователя
 user = User(login="ruslan", password="123")
 
 # Добавляем связь между пользователем и вакансиями (1 и 3)
-user.vacancy = [vacancy_1]
+user.vacancy = vacancies
 
 # Сохраняем пользователя в базу данных
 session.add(user)
 session.commit()  # Фиксируем изменения
 
 user = session.execute(select(User)).scalars().all()[0]
-print(*[vacancy.description for vacancy in user.vacancy])
+print(*[vacancy.job for vacancy in user.vacancy])
 
 
 # user = session.query(User).filter_by(login="ruslan").first()
