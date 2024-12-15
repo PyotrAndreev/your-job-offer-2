@@ -30,12 +30,14 @@ from your_job_offer.services.hh_api.publish_resume import publish_resume
 from datetime import date, datetime
 import enum
 
+
 def json_serial(obj):
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
     if isinstance(obj, enum.Enum):
         return obj.value
-    raise TypeError ("Type %s not serializable" % type(obj))
+    raise TypeError("Type %s not serializable" % type(obj))
+
 
 app = Flask("app")
 
@@ -81,14 +83,21 @@ def getVacancies():
     user = UserModel.from_dict(request.json)
     if not user_cases.ifExistUser(user.login):
         return make_response("User not exists", 401)
-    user = user_cases.getUser(user.login)
-    vac: list[VacancyModel] = match_vacancies.get_match_vacancies(user=user)
+        vac: list[VacancyModel] = match_vacancies.get_match_vacancies(user=user)
+    return make_response('{"vacancies":'
+                         + json.dumps([json.loads(v.to_json(default=json_serial)) for v in vac]) + "}",
+                         200, )
 
+
+@app.route("/get_status", methods=["POST"])
+def getStatuses():
+    user = UserModel.from_dict(request.json)
+    if not user_cases.ifExistUser(user.login):
+        return make_response("User not exists", 401)
+        user = user_cases.getUser(user.login)
     return make_response(
-        '{"vacancies":'
-        + json.dumps([json.loads(v.to_json(default=json_serial)) for v in vac])
-        + "}",
-        200,
+        '{"vacancies":' + json.dumps([json.loads(v.to_json(default=json_serial)) for v in user.vacancy])
+        + "}", 200,
     )
 
 
@@ -114,7 +123,7 @@ def get_form():
                 jsonify(
                     {
                         "error": "Invalid request. 'login', 'password' fields are "
-                        "required."
+                                 "required."
                     }
                 ),
                 400,
@@ -124,7 +133,7 @@ def get_form():
         log.info(f"User: {user}")
         hh_token = get_hh_token(user.login)
         resume_id = create_new_resume(user=user, access_token=hh_token.access_token)
-        if resume_id==None:
+        if resume_id == None:
             return make_response(jsonify({"error": "bad form"}), 404)
         is_published = publish_resume(resume_id=resume_id, access_token=hh_token.access_token)
         if not is_published:
@@ -155,16 +164,16 @@ def hh_auth():
     try:
         data = request.json
         if (
-            not data
-            or "access" not in data
-            or "refresh" not in data
-            or "login" not in data
+                not data
+                or "access" not in data
+                or "refresh" not in data
+                or "login" not in data
         ):
             return make_response(
                 jsonify(
                     {
                         "error": "Invalid request. 'login', 'access' and 'refresh' fields are "
-                        "required."
+                                 "required."
                     }
                 ),
                 400,
@@ -195,15 +204,15 @@ def apply():
     try:
         data = request.json
         if (
-            not data
-            or "user" not in data
-            or "vacancy" not in data
+                not data
+                or "user" not in data
+                or "vacancy" not in data
         ):
             return make_response(
                 jsonify(
                     {
                         "error": "Invalid request. 'user', 'vacancy' fields are "
-                        "required."
+                                 "required."
                     }
                 ),
                 400,
