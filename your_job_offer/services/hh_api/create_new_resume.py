@@ -22,7 +22,7 @@ def create_new_resume(user: UserModel, access_token: str):
     data = {
         "first_name": user.first_name,
         "last_name": user.last_name,
-        "middle_name": user.middle_name,
+        "middle_name": user.middle_name if user.middle_name != '' else None,
         "birth_date": user.birth_date,
         "gender": {
             "id": user.gender.value if user.gender else None,

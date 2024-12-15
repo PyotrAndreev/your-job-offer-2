@@ -91,7 +91,7 @@ def get_vacancies_by_role(role: int):
                 minSalary=item["salary"]["from"] if item["salary"] else None,
                 maxSalary=item["salary"]["to"] if item["salary"] else None,
                 address=item["address"]["raw"] if item["address"] else "",
-                link=item["url"],
+                link=item["alternate_url"],
                 applyLink=item["apply_alternate_url"],
                 phone=None,
                 email=item["contacts"]["email"] if item["contacts"] else None,
