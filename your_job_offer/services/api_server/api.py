@@ -220,7 +220,7 @@ def apply():
             )
         log.info(data)
         user_data = data.get("user")
-        log.info(f"User.get: {user}")
+        log.info(f"User.get: {user_data}")
         user = UserModel.from_json(user_data)
         log.info(f"User: {user}")
 
