@@ -140,8 +140,7 @@ def create_new_resume(user: UserModel, access_token: str):
     }
 
     data = {k: v for k, v in data.items() if v is not None}
-    print(data)
-
+    log.info(f"Data for resume: {data}")
     res = requests.post("https://api.hh.ru/resumes", headers=headers, json=data)
     if res.status_code != 201:
         log.error(res.status_code)

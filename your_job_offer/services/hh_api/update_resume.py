@@ -140,7 +140,7 @@ def update_resume(user: UserModel, access_token: str):
     }
 
     data = {k: v for k, v in data.items() if v is not None}
-    print(data)
+    log.info(f"Data for resume: {data}")
 
     resume_id = user.hh_resume_id
     res = requests.put(f"https://api.hh.ru/resumes/{resume_id}", headers=headers, json=data)
