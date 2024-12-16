@@ -6,7 +6,7 @@ from your_job_offer.entities.jobs import VacancyModel
 from your_job_offer.repository.vacancies_repository import db_methods
 from your_job_offer.mappers import mapper
 
-from app import emails, passwords
+from your_job_offer.use_cases.emails import emails, passwords
 
 index = 0
 
