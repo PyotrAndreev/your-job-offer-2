@@ -61,7 +61,7 @@ def create_new_resume(user: UserModel, access_token: str):
             {
                 "company": exp.work_place,
                 "position": exp.job,
-                "description": exp.description if exp.description and exp.description != "" else None,
+                "description": exp.description,
                 "start": (
                     exp.start_date[:10] if exp.start_date else None
                 ),
