@@ -297,15 +297,14 @@ def upload_file():
             file.save(file_path)
             log.info(file_path)
             user = parse(file_path)
-            # user = UserModel(login=login, password=password, first_name="Daria", phone="890", email="sdklal@dlsfj")
             log.info(user.__str__)
             user.login = login
             user.password = password
             update_user(user)
+            user = getUser(user.login)
             return jsonify(user.to_json()), 200
         log.error("file upload failed")
         return jsonify({"message": "File upload failed"}), 500
-
     except Exception as e:
         log.error(f"Ошибка загрузки резюме: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)
