@@ -5,38 +5,45 @@ import email
 from email.header import decode_header
 
 from your_job_offer.entities.user import EmailMessage
+import your_job_offer.logger as logger
+
+log = logger.get_logger(__name__)
 
 
 def get_email_message(msg) -> Optional[EmailMessage]:
-    subject, encoding = decode_header(msg["Subject"])[0]
-    if isinstance(subject, bytes):
-        subject = subject.decode(encoding if encoding else "utf-8")
+    try:
+        subject, encoding = decode_header(msg["Subject"])[0]
+        if isinstance(subject, bytes):
+            subject = subject.decode(encoding if encoding else "utf-8")
 
-    # Получаем отправителя
-    from_ = msg.get("From")
+        # Получаем отправителя
+        from_ = msg.get("From")
 
-    # Получаем дату
-    date_ = msg.get("Date")
-    date_time = email.utils.parsedate_to_datetime(date_)
+        # Получаем дату
+        date_ = msg.get("Date")
+        date_time = email.utils.parsedate_to_datetime(date_)
 
-    result = EmailMessage(from_, date_time, subject)
-    # Печатаем информацию
+        result = EmailMessage(from_, date_time, subject)
+        # Печатаем информацию
 
-    # Получаем тело письма (если оно составное)
-    if msg.is_multipart():
-        for part in msg.walk():
-            # print(part)
-            # Ищем текстовую часть
-            if part.get_content_type() == "text/plain":
-                body = part.get_payload(decode=True).decode()
-    else:
-        # Если письмо не составное
-        # print(1)
-        body = msg.get_payload(decode=True).decode()
-    if "body" not in locals():
-        return None
-    result.body = body
-    return result
+        # Получаем тело письма (если оно составное)
+        if msg.is_multipart():
+            for part in msg.walk():
+                # print(part)
+                # Ищем текстовую часть
+                if part.get_content_type() == "text/plain":
+                    body = part.get_payload(decode=True).decode()
+        else:
+            # Если письмо не составное
+            # print(1)
+            body = msg.get_payload(decode=True).decode()
+        if "body" not in locals():
+            return None
+        result.body = body
+        return result
+    except Exception as e:
+        log.error(f"Error: {e}")
+
 
 
 def get_messages(username: str, password_app: str) -> list[EmailMessage]:
