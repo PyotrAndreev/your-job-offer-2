@@ -352,7 +352,9 @@ def update_user(updated_user: UserModel):
         vac = list()
         if updated_user.vacancy != None:
             for v in updated_user.vacancy:
+                log.warning(f"vacancy: {v}")
                 v = session.scalars(select(Vacancy).filter_by(id=v.id)).first()
+                log.warning(f"map_vacancy: {v}")
                 vac.append(v)
 
         log.info(f"update user: {updated_user}")
@@ -386,14 +388,14 @@ def update_user(updated_user: UserModel):
         if updated_user.professional_role:
             user.roleId = updated_user.professional_role.role_id
 
-        user.birthDate = updated_user.birth_date
+        user.birthDate = updated_user.birth_date if updated_user.birth_date else user.birthDate
         user.firstName = updated_user.first_name
         user.lastName = updated_user.last_name
-        user.middleName = updated_user.middle_name
+        user.middleName = updated_user.middle_name if updated_user.middle_name else user.middleName
         user.photo = updated_user.photo
-        user.gender = updated_user.gender
+        user.gender = updated_user.gender if updated_user.gender else user.gender
         user.phone = updated_user.phone
-        user.email = updated_user.email
+        user.email = updated_user.email if updated_user.email else user.email
         user.cv = updated_user.cv
         user.description = updated_user.description
         user.workType = updated_user.work_type
@@ -407,10 +409,8 @@ def update_user(updated_user: UserModel):
         user.citizenship = updated_user.citizenship
         user.educationLevel = updated_user.education_level
         user.hhResumeId = updated_user.hh_resume_id if updated_user.hh_resume_id != None else user.hhResumeId
-        log.info(f"{user.hhResumeId}")
-        log.info(f"{updated_user.hh_resume_id}")
-        user.innerEmail = updated_user.inner_email
-        user.innerEmailPassword = updated_user.inner_email_password
+        user.innerEmail = updated_user.inner_email if updated_user.inner_email else user.innerEmail
+        user.innerEmailPassword = updated_user.inner_email_password if updated_user.inner_email_password else user.innerEmailPassword
         user.project = (
             list(
                 Project(name=p.name, description=p.description, link=p.link)
