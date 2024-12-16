@@ -22,8 +22,8 @@ def saveUser(user: UserModel) -> UserModel:
     email, password = get_new_email()
     log.info("EMAIL" + str(email))
     log.info("PASSWORD" + str(password))
-    user.innerEmail = email
-    user.innerEmailPassword = password
+    user.inner_email = email
+    user.inner_email_password = password
     user = db_methods.save_user(mapper.map_userModel(user))
     return mapper.map_user(user)
 
