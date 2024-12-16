@@ -240,9 +240,8 @@ def apply():
         )
         if nid == None:
             return make_response(jsonify({"error": "can not apply"}), 404)
+        user.vacancy = user_bd.vacancy
         user.vacancy.append(vacancy)
-        for v in user.vacancy:
-            log.info(f"Vacancy in updated user: {v.__str__}")
         update_statuses(vacancy.id, StatusEnum.CONSIDERATION)
         update_user(user)
         return make_response("OK", 200)
