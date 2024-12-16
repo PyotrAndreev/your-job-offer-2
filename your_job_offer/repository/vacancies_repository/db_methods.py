@@ -110,7 +110,6 @@ def get_user(login: str) -> User:
     return user
 
 
-
 def if_exist_user(login: str) -> bool:
     """
     Checks if a user with the given login exists in the database.
@@ -350,6 +349,7 @@ def save_job(job: Job):
     session.add(job)
     session.commit()
 
+
 def if_exist_job_by_name(name: str) -> bool:
     exist = session.execute(select(Job).filter_by(name=name)).scalar()
     return True if exist else False
@@ -359,6 +359,10 @@ def get_job_by_name(name: str) -> int:
     job = session.scalars(select(Job).filter_by(name=name)).first()
     return job
 
+
+def get_job_id(name: str) -> int:
+    job = session.scalars(select(Job).filter_by(name=name)).first()
+    return job.id
 
 
 def update_user(updated_user: UserModel):
@@ -443,7 +447,7 @@ def update_user(updated_user: UserModel):
             if updated_user.achievements
             else user.achievement
         )
-        
+
         jobs = list()
         for w in updated_user.work_experiences:
             if if_exist_job_by_name(w.job):
@@ -455,12 +459,16 @@ def update_user(updated_user: UserModel):
                 job = get_job_by_name(w.job)
                 jobs.append(job)
 
-
         user.workExperience = (
-            jobs
+            list(
+                WorkExperience(jobId=get_job_id(w.job), userId=user.id, workPlace=w.work_place, startDate=w.start_date,
+                               finishDate=w.finish_date, description=w.description)
+                for w in updated_user.work_experiences
+            )
             if updated_user.work_experiences
             else user.workExperience
         )
+
         user.education = (
             list(
                 Education(
@@ -508,10 +516,10 @@ def update_statuses(vacancy_ids: list[int], statuses: list[Status]):
     for vacancy_id, status in zip(vacancy_ids, statuses):
         vacancy = get_vacancy_by_id(vacancy_id)
         if (
-            session.query(Status)
-            .filter_by(message=status.message)
-            .one_or_none()
-            is None
+                session.query(Status)
+                        .filter_by(message=status.message)
+                        .one_or_none()
+                is None
         ):
             vacancy.status.append(status)
     session.commit()
