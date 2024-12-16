@@ -236,7 +236,6 @@ def apply():
         )
         if nid == None:
             return make_response(jsonify({"error": "can not apply"}), 404)
-        # user.vacancy = user_bd.vacancy
         user.vacancy.append(vacancy)
         update_statuses(vacancy.id, StatusEnum.CONSIDERATION)
         update_user(user)
