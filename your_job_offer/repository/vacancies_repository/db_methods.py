@@ -491,3 +491,15 @@ def update_statuses(vacancy_ids: list[int], statuses: list[Status]):
         ):
             vacancy.status.append(status)
     session.commit()
+
+
+def update_statuses(vacancy_id, status):
+    vacancy_bd = session.scalars(select(Vacancy).filter_by(id=vacancy_id)).first()
+    statuses = list()
+    if vacancy_bd.status != None:
+        for s in vacancy_bd.status:
+            s = session.scalars(select(Status).filter_by(id=s.id)).first()
+            statuses.append(s)
+    statuses.append(Status(statusField=status))
+    vacancy_bd.status = statuses
+    session.commit()

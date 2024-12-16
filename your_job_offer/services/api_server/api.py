@@ -28,6 +28,8 @@ from your_job_offer.repository.vacancies_repository.get_professional_roles impor
 from your_job_offer.services.hh_api.create_new_resume import create_new_resume
 from your_job_offer.services.hh_api.publish_resume import publish_resume
 from your_job_offer.services.hh_api.update_resume import update_resume
+from your_job_offer.repository.vacancies_repository.db_methods import update_statuses
+from your_job_offer.entities.enums import StatusEnum
 from datetime import date, datetime
 import enum
 
@@ -230,14 +232,16 @@ def apply():
 
         hh_token = get_hh_token(user.login)
         vacancy_id = vacancy.id_vacancy_from_source
+        user_bd = getUser(user.login)
         nid = apply_to_vacancy(
             vacancy_id=vacancy_id,
             access_token=hh_token.access_token,
-            resume_id=user.hh_resume_id,
+            resume_id=user_bd.hh_resume_id,
         )
         if nid == None:
             return make_response(jsonify({"error": "can not apply"}), 404)
         user.vacancy.append(vacancy)
+        update_statuses(vacancy.id, StatusEnum.CONSIDERATION)
         update_user(user)
         return make_response("OK", 200)
     except Exception as e:
@@ -330,9 +334,6 @@ def update_form():
         log.info(f"User: {user}")
         hh_token = get_hh_token(user.login)
         update_resume(user, hh_token.access_token)
-        # is_published = publish_resume(resume_id=resume_id, access_token=hh_token.access_token)
-        # if not is_published:
-        #     return make_response(jsonify({"error": "bad form"}), 404)
         user_cases.updateUser(user)
         return make_response("OK", 200)
     except Exception as e:
