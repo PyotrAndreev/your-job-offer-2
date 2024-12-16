@@ -321,26 +321,26 @@ def get_vacancies_by_user(user: User):
         list[Vacancy]: A list of vacancy objects that match the user's preferences.
     """
     stmt = select(Vacancy).where(
-        or_(user.relocation is None, Vacancy.relocation == user.relocation, Vacancy.relocation is None),
-        or_(user.employment is None, Vacancy.employment == user.employment, Vacancy.employment is None),
-        or_(user.workType is None, Vacancy.workType == user.workType, Vacancy.workType is None),
+        or_(user.relocation == None, Vacancy.relocation == user.relocation, Vacancy.relocation == None),
+        or_(user.employment == None, Vacancy.employment == user.employment, Vacancy.employment == None),
+        or_(user.workType == None, Vacancy.workType == user.workType, Vacancy.workType == None),
         or_(
-            user.businessTripReadiness is None,
+            user.businessTripReadiness == None,
             Vacancy.businessTripReadiness == user.businessTripReadiness,
-            Vacancy.businessTripReadiness is None
+            Vacancy.businessTripReadiness == None
         ),
-        or_(user.schedule is None, Vacancy.schedule == user.schedule, Vacancy.schedule is None),
-        or_(user.roleId is None, Vacancy.professionalRoleId == user.roleId, Vacancy.professionalRoleId is None),
+        or_(user.schedule == None, Vacancy.schedule == user.schedule, Vacancy.schedule == None),
+        or_(user.roleId == None, Vacancy.professionalRoleId == user.roleId, Vacancy.professionalRoleId == None),
         Vacancy.hasTest == False
     )
-    if user.workHours is not None:
+    if user.workHours != None:
         stmt = stmt.where(
-            or_(Vacancy.workHours is None, Vacancy.workHours <= user.workHours)
+            or_(Vacancy.workHours == None, Vacancy.workHours <= user.workHours)
         )
 
-    if user.minSalary is not None:
+    if user.minSalary != None:
         stmt = stmt.where(
-            or_(Vacancy.minSalary is None, Vacancy.minSalary >= user.minSalary)
+            or_(Vacancy.minSalary == None, Vacancy.minSalary >= user.minSalary)
         )
 
     return get_vacancies_with_statement(stmt)
