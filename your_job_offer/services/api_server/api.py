@@ -28,7 +28,7 @@ from your_job_offer.repository.vacancies_repository.get_professional_roles impor
 from your_job_offer.services.hh_api.create_new_resume import create_new_resume
 from your_job_offer.services.hh_api.publish_resume import publish_resume
 from your_job_offer.services.hh_api.update_resume import update_resume
-from your_job_offer.repository.vacancies_repository.db_methods import update_statuses
+from your_job_offer.repository.vacancies_repository.db_methods import update_status
 from your_job_offer.entities.enums import StatusEnum
 from datetime import date, datetime
 import enum
@@ -237,7 +237,7 @@ def apply():
         if nid == None:
             return make_response(jsonify({"error": "can not apply"}), 404)
         user.vacancy.append(vacancy)
-        update_statuses(vacancy.id, StatusEnum.CONSIDERATION)
+        update_status(vacancy.id, StatusEnum.CONSIDERATION)
         update_user(user)
         return make_response("OK", 200)
     except Exception as e:
