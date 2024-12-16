@@ -346,6 +346,21 @@ def get_vacancies_by_user(user: User):
     return get_vacancies_with_statement(stmt)
 
 
+def save_job(job: Job):
+    session.add(job)
+    session.commit()
+
+def if_exist_job_by_name(name: str) -> bool:
+    exist = session.execute(select(Job).filter_by(name=name)).scalar()
+    return True if exist else False
+
+
+def get_job_by_name(name: str) -> int:
+    job = session.scalars(select(Job).filter_by(name=name)).first()
+    return job
+
+
+
 def update_user(updated_user: UserModel):
     try:
         user = get_user(updated_user.login)
@@ -428,11 +443,20 @@ def update_user(updated_user: UserModel):
             if updated_user.achievements
             else user.achievement
         )
+        jobs = list()
+        for w in updated_user.work_experiences:
+            if if_exist_job_by_name(w.name):
+                job = get_job_by_name(w.name)
+                jobs.append(job)
+            else:
+                job = Job(name=w.job)
+                save_job(job)
+                job = get_job_by_name(w.name)
+                jobs.append(job)
+
+
         user.workExperience = (
-            list(
-                WorkExperience(description=w.description)
-                for w in updated_user.work_experiences
-            )
+            jobs
             if updated_user.work_experiences
             else user.workExperience
         )
