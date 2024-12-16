@@ -23,7 +23,7 @@ def create_new_resume(user: UserModel, access_token: str):
         "first_name": user.first_name,
         "last_name": user.last_name,
         "middle_name": user.middle_name if user.middle_name != '' else None,
-        "birth_date": user.birth_date,
+        "birth_date": user.birth_date[:10] if user.birth_date != '' and user.birth_date else None,
         "gender": {
             "id": user.gender.value if user.gender else None,
         },
@@ -63,10 +63,10 @@ def create_new_resume(user: UserModel, access_token: str):
                 "position": exp.job,
                 "description": exp.description,
                 "start": (
-                    exp.start_date if exp.start_date else None
+                    exp.start_date[:10] if exp.start_date else None
                 ),
                 "end": (
-                    exp.finish_date if exp.finish_date else None
+                    exp.finish_date[:10] if exp.finish_date else None
                 ),
             }
             for exp in user.work_experiences
