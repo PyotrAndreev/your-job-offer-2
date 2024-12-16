@@ -6,9 +6,7 @@ from your_job_offer.entities.jobs import VacancyModel
 from your_job_offer.repository.vacancies_repository import db_methods
 from your_job_offer.mappers import mapper
 
-from your_job_offer.use_cases.emails import emails, passwords
-
-index = 0
+from your_job_offer.services.mail_checker.methods import get_new_email
 
 
 def getUser(login: str) -> UserModel:
@@ -17,11 +15,10 @@ def getUser(login: str) -> UserModel:
 
 
 def saveUser(user: UserModel) -> UserModel:
-    global index
-    user.innerEmail = emails[index] if index < 20 else None
-    user.innerEmailPassword = passwords[index] if index < 20 else None
+    email, password = get_new_email()
+    user.innerEmail = email
+    user.innerEmailPassword = password
     user = db_methods.save_user(mapper.map_userModel(user))
-    index += 1
     return mapper.map_user(user)
 
 
@@ -72,4 +69,3 @@ def get_vacancies_by_keys(
         else:
             vacancies.append(None)
     return vacancies
-
