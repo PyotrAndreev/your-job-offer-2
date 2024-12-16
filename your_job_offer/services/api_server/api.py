@@ -145,7 +145,7 @@ def get_form():
         user_cases.updateUser(user)
         return make_response("OK", 200)
     except Exception as e:
-        log.error(f"Ошибка сохранения данных из формы: {e}")
+        log.error(f"Ошибка сохранения данных из формы: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)
 
 
@@ -241,7 +241,7 @@ def apply():
         update_user(user)
         return make_response("OK", 200)
     except Exception as e:
-        log.error(f"Ошибка подачи на вакансию на hh.ru: {e}")
+        log.error(f"Ошибка подачи на вакансию на hh.ru: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)
 
 
@@ -333,5 +333,5 @@ def update_form():
         user_cases.updateUser(user)
         return make_response("OK", 200)
     except Exception as e:
-        log.error(f"Ошибка сохранения данных из формы: {e}")
+        log.error(f"Ошибка сохранения данных из формы: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)
