@@ -349,14 +349,14 @@ def get_vacancies_by_user(user: User):
 def update_user(updated_user: UserModel):
     try:
         user = get_user(updated_user.login)
+        vac = list()
         if updated_user.vacancy != None:
-            vac = list()
             for v in updated_user.vacancy:
                 v = session.scalars(select(Vacancy).filter_by(id=v.id)).first()
                 vac.append(v)
-        else:
-            vac = list()
-        log.info(f"update user: {updated_user.login}")
+
+        log.info(f"update user: {updated_user}")
+
         if updated_user.city:
             if not if_exist_city(updated_user.city.name):
                 save_city(
@@ -394,10 +394,6 @@ def update_user(updated_user: UserModel):
         user.gender = updated_user.gender
         user.phone = updated_user.phone
         user.email = updated_user.email
-        # user.city = City(name=updated_user.city.name,
-        #                  areaId=updated_user.city.area_id) if updated_user.city else None
-        # user.country = Country(name=updated_user.country.name,
-        #                        areaId=updated_user.country.area_id) if updated_user.country else None,
         user.cv = updated_user.cv
         user.description = updated_user.description
         user.workType = updated_user.work_type
@@ -410,7 +406,7 @@ def update_user(updated_user: UserModel):
         user.schedule = updated_user.schedule
         user.citizenship = updated_user.citizenship
         user.educationLevel = updated_user.education_level
-        user.hhResumeId = updated_user.hh_resume_id
+        user.hhResumeId = updated_user.hh_resume_id if updated_user.hh_resume_id != None else user.hhResumeId
         user.innerEmail = updated_user.inner_email
         user.innerEmailPassword = updated_user.inner_email_password
         user.project = (
