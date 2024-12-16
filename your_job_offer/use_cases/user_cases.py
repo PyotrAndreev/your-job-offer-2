@@ -6,6 +6,8 @@ from your_job_offer.entities.jobs import VacancyModel
 from your_job_offer.repository.vacancies_repository import db_methods
 from your_job_offer.mappers import mapper
 
+from your_job_offer.services.mail_checker.methods import get_new_email
+
 
 def getUser(login: str) -> UserModel:
     user = db_methods.get_user(login=login)
@@ -13,6 +15,9 @@ def getUser(login: str) -> UserModel:
 
 
 def saveUser(user: UserModel) -> UserModel:
+    email, password = get_new_email()
+    user.innerEmail = email
+    user.innerEmailPassword = password
     user = db_methods.save_user(mapper.map_userModel(user))
     return mapper.map_user(user)
 
@@ -41,7 +46,7 @@ def get_all_statuses_messages(user: UserModel) -> list[str]:
 
 
 def get_vacancies_by_keys(
-    keys: list[VacancyKey], user: UserModel
+        keys: list[VacancyKey], user: UserModel
 ) -> list[Optional[VacancyModel]]:
     vacancies = []
     userVacancies = user.vacancy
