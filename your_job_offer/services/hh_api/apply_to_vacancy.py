@@ -57,5 +57,6 @@ def apply_to_vacancy(
     else:
         if res.json()["errors"][0]["value"] == "test_required":
             log.error("Нужно пройти тестовое задание")
+            return "Нужно пройти тестовое задание"
         log.error(f"Ошибка при подаче на вакансию: {res.json()}")
-        return "Нужно пройти тестовое задание"
+        return None
