@@ -321,15 +321,16 @@ def get_vacancies_by_user(user: User):
         list[Vacancy]: A list of vacancy objects that match the user's preferences.
     """
     stmt = select(Vacancy).where(
-        or_(user.relocation is None, Vacancy.relocation == user.relocation),
-        or_(user.employment is None, Vacancy.employment == user.employment),
-        or_(user.workType is None, Vacancy.workType == user.workType),
+        or_(user.relocation is None, Vacancy.relocation == user.relocation, Vacancy.relocation is None),
+        or_(user.employment is None, Vacancy.employment == user.employment, Vacancy.employment is None),
+        or_(user.workType is None, Vacancy.workType == user.workType, Vacancy.workType is None),
         or_(
             user.businessTripReadiness is None,
             Vacancy.businessTripReadiness == user.businessTripReadiness,
+            Vacancy.businessTripReadiness is None
         ),
-        or_(user.schedule is None, Vacancy.schedule == user.schedule),
-        or_(user.roleId is None, Vacancy.professionalRoleId == user.roleId),
+        or_(user.schedule is None, Vacancy.schedule == user.schedule, Vacancy.schedule is None),
+        or_(user.roleId is None, Vacancy.professionalRoleId == user.roleId, Vacancy.professionalRoleId is None),
         Vacancy.hasTest == False
     )
     if user.workHours is not None:
