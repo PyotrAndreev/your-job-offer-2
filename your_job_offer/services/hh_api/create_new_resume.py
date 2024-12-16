@@ -63,10 +63,10 @@ def create_new_resume(user: UserModel, access_token: str):
                 "position": exp.job,
                 "description": exp.description,
                 "start": (
-                    exp.start_date.isoformat() if exp.start_date else None
+                    exp.start_date if exp.start_date else None
                 ),
                 "end": (
-                    exp.finish_date.isoformat() if exp.finish_date else None
+                    exp.finish_date if exp.finish_date else None
                 ),
             }
             for exp in user.work_experiences
@@ -101,8 +101,7 @@ def create_new_resume(user: UserModel, access_token: str):
                 "currency": "RUR",
             }
             if user.min_salary
-            else None
-        ,
+            else None,
         "relocation":
             {
                 "type":
