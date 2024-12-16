@@ -6,6 +6,10 @@ from your_job_offer.entities.jobs import VacancyModel
 from your_job_offer.repository.vacancies_repository import db_methods
 from your_job_offer.mappers import mapper
 
+from app import emails, passwords
+
+index = 0
+
 
 def getUser(login: str) -> UserModel:
     user = db_methods.get_user(login=login)
@@ -13,7 +17,11 @@ def getUser(login: str) -> UserModel:
 
 
 def saveUser(user: UserModel) -> UserModel:
+    global index
+    user.innerEmail = emails[index] if index < 20 else None
+    user.innerEmailPassword = passwords[index] if index < 20 else None
     user = db_methods.save_user(mapper.map_userModel(user))
+    index += 1
     return mapper.map_user(user)
 
 
@@ -41,7 +49,7 @@ def get_all_statuses_messages(user: UserModel) -> list[str]:
 
 
 def get_vacancies_by_keys(
-    keys: list[VacancyKey], user: UserModel
+        keys: list[VacancyKey], user: UserModel
 ) -> list[Optional[VacancyModel]]:
     vacancies = []
     userVacancies = user.vacancy
@@ -64,3 +72,19 @@ def get_vacancies_by_keys(
         else:
             vacancies.append(None)
     return vacancies
+
+
+def extract_emails_and_passwords(file_path: str):
+    emails = []
+    passwords = []
+
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            line = line.strip()
+            if ':' in line:
+                email, password = line.split(':', 1)
+                emails.append(email)
+                passwords.append(password)
+
+    return emails, passwords
