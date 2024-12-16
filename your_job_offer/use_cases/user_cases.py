@@ -8,6 +8,10 @@ from your_job_offer.mappers import mapper
 
 from your_job_offer.services.mail_checker.methods import get_new_email
 
+import your_job_offer.logger as logger
+
+log = logger.get_logger(__name__)
+
 
 def getUser(login: str) -> UserModel:
     user = db_methods.get_user(login=login)
@@ -16,8 +20,8 @@ def getUser(login: str) -> UserModel:
 
 def saveUser(user: UserModel) -> UserModel:
     email, password = get_new_email()
-    print("EMAIL"+str(email))
-    print("PASSWORD" + str(password))
+    log.info("EMAIL" + str(email))
+    log.info("PASSWORD" + str(password))
     user.innerEmail = email
     user.innerEmailPassword = password
     user = db_methods.save_user(mapper.map_userModel(user))
