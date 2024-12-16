@@ -443,15 +443,16 @@ def update_user(updated_user: UserModel):
             if updated_user.achievements
             else user.achievement
         )
+        
         jobs = list()
         for w in updated_user.work_experiences:
-            if if_exist_job_by_name(w.name):
-                job = get_job_by_name(w.name)
+            if if_exist_job_by_name(w.job):
+                job = get_job_by_name(w.job)
                 jobs.append(job)
             else:
                 job = Job(name=w.job)
                 save_job(job)
-                job = get_job_by_name(w.name)
+                job = get_job_by_name(w.job)
                 jobs.append(job)
 
 
