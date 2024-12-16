@@ -349,13 +349,13 @@ def get_vacancies_by_user(user: User):
 def update_user(updated_user: UserModel):
     try:
         user = get_user(updated_user.login)
-        if updated_user.vacancy:
+        if updated_user.vacancy != None:
             vac = list()
             for v in updated_user.vacancy:
                 v = session.scalars(select(Vacancy).filter_by(id=v.id)).first()
                 vac.append(v)
         else:
-            vac = None
+            vac = list()
         log.info(f"update user: {updated_user.login}")
         if updated_user.city:
             if not if_exist_city(updated_user.city.name):
