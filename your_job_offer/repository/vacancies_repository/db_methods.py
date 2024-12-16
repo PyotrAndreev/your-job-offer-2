@@ -407,6 +407,8 @@ def update_user(updated_user: UserModel):
         user.citizenship = updated_user.citizenship
         user.educationLevel = updated_user.education_level
         user.hhResumeId = updated_user.hh_resume_id if updated_user.hh_resume_id != None else user.hhResumeId
+        log.info(f"{user.hhResumeId}")
+        log.info(f"{updated_user.hh_resume_id}")
         user.innerEmail = updated_user.inner_email
         user.innerEmailPassword = updated_user.inner_email_password
         user.project = (
