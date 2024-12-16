@@ -41,7 +41,7 @@ def create_new_resume(user: UserModel, access_token: str):
                     "id": "email",
                     "name": "Эл. почта",
                 },
-                "value": user.email,
+                "value": user.inner_email if user.inner_email else user.email,
                 "preferred": True,
             },
             {
