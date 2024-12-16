@@ -8,10 +8,12 @@ from your_job_offer.entities.user import EmailMessage
 
 
 def get_email_message(msg) -> Optional[EmailMessage]:
-    subject, encoding = decode_header(msg["Subject"])[0]
-    if isinstance(subject, bytes):
-        subject = subject.decode(encoding if encoding else "utf-8")
-
+    if "Subject" in msg:
+        subject, encoding = decode_header(msg["Subject"])[0]
+        if isinstance(subject, bytes):
+            subject = subject.decode(encoding if encoding else "utf-8")
+    else:
+        subject = ""
     # Получаем отправителя
     from_ = msg.get("From")
 
