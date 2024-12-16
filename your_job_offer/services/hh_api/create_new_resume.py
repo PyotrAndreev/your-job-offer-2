@@ -57,20 +57,20 @@ def create_new_resume(user: UserModel, access_token: str):
         "skill_set": [f"{skill.name}: {skill.description}" for skill in user.skills]
         if user.skills
         else None,
-        # "experience": [
-        #     {
-        #         "company": exp.work_place,
-        #         "position": exp.job,
-        #         "description": exp.description,
-        #         "start": (
-        #             exp.start_date.isoformat() if exp.start_date else None
-        #         ),
-        #         "end": (
-        #             exp.finish_date.isoformat() if exp.finish_date else None
-        #         ),
-        #     }
-        #     for exp in user.work_experiences
-        # ],
+        "experience": [
+            {
+                "company": exp.work_place,
+                "position": exp.job,
+                "description": exp.description,
+                "start": (
+                    exp.start_date.isoformat() if exp.start_date else None
+                ),
+                "end": (
+                    exp.finish_date.isoformat() if exp.finish_date else None
+                ),
+            }
+            for exp in user.work_experiences
+        ],
         "education": {
             "level": {
                 "id": user.education_level.value,
@@ -103,34 +103,34 @@ def create_new_resume(user: UserModel, access_token: str):
             if user.min_salary
             else None
         ,
-        # "relocation":
-        #     {
-        #         "type":
-        #             {
-        #                 "id": user.relocation.value,
-        #                 "name": relocation_id_name.get(user.relocation.value),
-        #             },
-        #     }
-        #     if user.relocation else None,
-        # "business_trip_readiness": {
-        #     "id": user.business_trip_readiness.value
-        # }
-        # if user.business_trip_readiness else None,
-        # "employments": [
-        #     {
-        #         "id": user.employment.value,
-        #         "name": employment_id_name.get(user.employment.value),
-        #     },
-        # ]
-        # if user.employment else None,
-        # "schedules":
-        #     [
-        #         {
-        #             "id": user.schedule.value,
-        #             "name": schedule_id_name.get(user.schedule.value)
-        #         },
-        #     ]
-        #     if user.schedule else None,
+        "relocation":
+            {
+                "type":
+                    {
+                        "id": user.relocation.value,
+                        "name": relocation_id_name.get(user.relocation.value),
+                    },
+            }
+            if user.relocation else None,
+        "business_trip_readiness": {
+            "id": user.business_trip_readiness.value
+        }
+        if user.business_trip_readiness else None,
+        "employments": [
+            {
+                "id": user.employment.value,
+                "name": employment_id_name.get(user.employment.value),
+            },
+        ]
+        if user.employment else None,
+        "schedules":
+            [
+                {
+                    "id": user.schedule.value,
+                    "name": schedule_id_name.get(user.schedule.value)
+                },
+            ]
+            if user.schedule else None,
         "professional_roles": [
             {
                 "id": user.professional_role.role_id,
