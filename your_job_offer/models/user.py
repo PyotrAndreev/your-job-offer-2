@@ -189,8 +189,8 @@ class User(Base):
     )
     country = relationship("Country", back_populates="user")
     city = relationship("City", back_populates="user")
-    vacancy = relationship(
-        "Vacancy", secondary="user_vacancy", back_populates="user"
+    status = relationship(
+        "Status", secondary="user_status", back_populates="user"
     )
 
 

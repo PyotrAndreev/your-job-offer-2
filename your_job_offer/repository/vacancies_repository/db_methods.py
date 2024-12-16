@@ -370,12 +370,12 @@ def update_user(updated_user: UserModel):
     try:
         user = get_user(updated_user.login)
         vac = list()
-        if updated_user.vacancy != None:
-            for v in updated_user.vacancy:
-                v = session.scalars(select(Vacancy).filter_by(id=v.id)).first()
+        if updated_user.status != None:
+            for v in updated_user.status:
+                v = session.scalars(select(Status).filter_by(id=v.id)).first()
                 vac.append(v)
-        if user.vacancy:
-            for v in user.vacancy:
+        if user.status:
+            for v in user.status:
                 vac.append(v)
 
         if updated_user.city:
@@ -498,7 +498,7 @@ def update_user(updated_user: UserModel):
             if updated_user.languages
             else user.language
         )
-        user.vacancy = vac
+        user.status = vac
         session.commit()
     except Exception as e:
         log.error(f"Error: {e}", exc_info=True)

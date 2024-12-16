@@ -10,7 +10,7 @@ from .enums import (
     SourceEnum,
 )
 from .general import *
-from .tracking import StatusModel
+# from .tracking import StatusModel
 
 from dataclasses_json import dataclass_json
 
@@ -76,7 +76,7 @@ class VacancyModel:
     source: Optional[SourceEnum] = None
     id_vacancy_from_source: Optional[str] = None
     professional_role: Optional[ProfessionalRoleModel] = None
-    status: list[StatusModel] = field(default_factory=list)
+    # status: list[StatusModel] = field(default_factory=list)
 
     def __str__(self):
         return (

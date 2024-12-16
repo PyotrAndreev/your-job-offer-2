@@ -68,16 +68,13 @@ class Vacancy(Base):
     user = relationship(
         "User", secondary="user_vacancy", back_populates="vacancy"
     )
-    status = relationship(
-        "Status", secondary="vacancy_status", back_populates="vacancy"
-    )
 
 
-class UserVacancy(Base):
-    __tablename__ = "user_vacancy"
+class UserStatus(Base):
+    __tablename__ = "user_status"
     id = Column(Integer, primary_key=True)
     userId = Column(Integer, ForeignKey("user.id"))
-    vacancyId = Column(Integer, ForeignKey("vacancy.id"))
+    vacancyId = Column(Integer, ForeignKey("status.id"))
 
 
 class Status(Base):
@@ -93,7 +90,9 @@ class Status(Base):
     vacancy = relationship(
         "Vacancy", secondary="vacancy_status", back_populates="status"
     )
-
+    user = relationship(
+        "User", secondary="user_status", back_populates="status"
+    )
 
 class VacancyStatus(Base):
     __tablename__ = "vacancy_status"

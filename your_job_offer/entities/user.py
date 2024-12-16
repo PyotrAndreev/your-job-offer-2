@@ -15,6 +15,7 @@ from .enums import (
 )
 from .general import SkillModel, LanguageModel, CityModel, CountryModel, ProfessionalRoleModel
 from .jobs import VacancyModel
+from .tracking import StatusModel
 
 
 @dataclass_json
@@ -223,7 +224,7 @@ class UserModel:
     educations: List[EducationModel] = field(default_factory=list)
     skills: List[SkillModel] = field(default_factory=list)
     languages: List[LanguageModel] = field(default_factory=list)
-    vacancy: List[VacancyModel] = field(default_factory=list)
+    status: List[StatusModel] = field(default_factory=list)
 
     def __str__(self):
         return (

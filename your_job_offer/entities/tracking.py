@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from .enums import StatusEnum
+from your_job_offer.entities.jobs import VacancyModel
 
 
 @dataclass
@@ -11,6 +12,7 @@ class StatusModel:
     deadline: Optional[str] = None
     date: Optional[str] = None
     message: Optional[str] = None
+    vacancy: Optional[VacancyModel] = None
 
 
 @dataclass(frozen=True)

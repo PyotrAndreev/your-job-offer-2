@@ -117,7 +117,7 @@ def map_user(user: User) -> UserModel:
             LanguageModel(id=l.id, name=l.name, level=l.level)
             for l in user.language
         ],
-        vacancy=[map_vacancy(v) for v in user.vacancy],
+        status=[map_status(s) for s in user.status],
     )
 
 
@@ -160,7 +160,6 @@ def map_vacancy(vacancy: Vacancy) -> VacancyModel:
             if professional_role
             else None
         ),
-        status=[map_status(status) for status in vacancy.status],
     )
 
 
@@ -271,7 +270,7 @@ def map_userModel(user: UserModel) -> User:
             for s in user.skills
         ],
         language=[Language(id=l.id, name=l.name) for l in user.languages],
-        vacancy=[map_vacancy_model(v) for v in user.vacancy],
+        vacancy=[map_status_model(s) for s in user.status],
     )
 
 
@@ -326,6 +325,7 @@ def map_status_model(status: StatusModel) -> Status:
         deadline=status.deadline,
         date=status.date,
         message=status.message,
+        vacancy=map_vacancy_model(status.vacancy)
     )
 
 
@@ -336,4 +336,5 @@ def map_status(status: Status) -> StatusModel:
         deadline=status.deadline,
         date=status.date,
         message=status.message,
+        vacancy=map_vacancy(status.vacancy)
     )
