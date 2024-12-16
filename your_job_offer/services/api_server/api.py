@@ -206,7 +206,6 @@ def hh_auth():
 def apply():
     try:
         data = request.json
-        log.info(data)
         if (
                 not data
                 or "user" not in data
@@ -221,14 +220,11 @@ def apply():
                 ),
                 400,
             )
-        log.info(data)
         user_data = json.dumps(data.get("user"))
         user = UserModel.from_json(user_data)
-        log.info(f"User: {user}")
 
         vacancy = json.dumps(data.get("vacancy"))
         vacancy = VacancyModel.from_json(vacancy)
-        log.info(f"Vacancy: {vacancy}")
 
         hh_token = get_hh_token(user.login)
         vacancy_id = vacancy.id_vacancy_from_source
@@ -240,7 +236,7 @@ def apply():
         )
         if nid == None:
             return make_response(jsonify({"error": "can not apply"}), 404)
-        user.vacancy = user_bd.vacancy
+        # user.vacancy = user_bd.vacancy
         user.vacancy.append(vacancy)
         update_statuses(vacancy.id, StatusEnum.CONSIDERATION)
         update_user(user)

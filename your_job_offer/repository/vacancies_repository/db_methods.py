@@ -352,12 +352,10 @@ def update_user(updated_user: UserModel):
         vac = list()
         if updated_user.vacancy != None:
             for v in updated_user.vacancy:
-                log.warning(f"vacancy: {v}")
                 v = session.scalars(select(Vacancy).filter_by(id=v.id)).first()
-                log.warning(f"map_vacancy: {v}")
                 vac.append(v)
-
-        log.info(f"update user: {updated_user}")
+        if user.vacancy:
+            vac.append(user.vacancy)
 
         if updated_user.city:
             if not if_exist_city(updated_user.city.name):
