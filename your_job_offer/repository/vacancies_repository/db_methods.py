@@ -323,7 +323,6 @@ def get_vacancies_by_user(user: User):
     stmt = select(Vacancy).where(
         or_(user.relocation is None, Vacancy.relocation == user.relocation),
         or_(user.employment is None, Vacancy.employment == user.employment),
-        or_(user.workType is None, Vacancy.workType == user.workType),
         or_(
             user.businessTripReadiness is None,
             Vacancy.businessTripReadiness == user.businessTripReadiness,
