@@ -355,7 +355,8 @@ def update_user(updated_user: UserModel):
                 v = session.scalars(select(Vacancy).filter_by(id=v.id)).first()
                 vac.append(v)
         if user.vacancy:
-            vac.append(user.vacancy)
+            for v in user.vacancy:
+                vac.append(v)
 
         if updated_user.city:
             if not if_exist_city(updated_user.city.name):
