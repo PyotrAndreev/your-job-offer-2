@@ -65,16 +65,13 @@ class Vacancy(Base):
     idVacancyFromSource = Column(
         String, nullable=True, name="id_vacancy_from_source"
     )
-    user = relationship(
-        "User", secondary="user_vacancy", back_populates="vacancy"
-    )
 
 
 class UserStatus(Base):
     __tablename__ = "user_status"
     id = Column(Integer, primary_key=True)
     userId = Column(Integer, ForeignKey("user.id"))
-    vacancyId = Column(Integer, ForeignKey("status.id"))
+    statusId = Column(Integer, ForeignKey("status.id"))
 
 
 class Status(Base):
