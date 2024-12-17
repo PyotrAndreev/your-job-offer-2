@@ -369,14 +369,14 @@ def get_job_id(name: str) -> int:
 def update_user(updated_user: UserModel):
     try:
         user = get_user(updated_user.login)
-        vac = list()
+        stat = list()
         if updated_user.status != None:
-            for v in updated_user.status:
-                v = session.scalars(select(Status).filter_by(id=v.id)).first()
-                vac.append(v)
+            for s in updated_user.status:
+                st = session.scalars(select(Status).filter_by(id=s.id)).first()
+                stat.append(st)
         if user.status:
-            for v in user.status:
-                vac.append(v)
+            for s in user.status:
+                stat.append(s)
 
         if updated_user.city:
             if not if_exist_city(updated_user.city.name):
@@ -498,7 +498,7 @@ def update_user(updated_user: UserModel):
             if updated_user.languages
             else user.language
         )
-        user.status = vac
+        user.status = stat
         session.commit()
     except Exception as e:
         log.error(f"Error: {e}", exc_info=True)
@@ -526,13 +526,14 @@ def update_statuses(vacancy_ids: list[int], statuses: list[Status]):
     session.commit()
 
 
-def update_status(vacancy_id, status):
+def update_status(login, vacancy_id, status):
     vacancy_bd = session.scalars(select(Vacancy).filter_by(id=vacancy_id)).first()
+    user_bd = session.scalars(select(User).filter_by(login=login)).first()
     statuses = list()
-    if vacancy_bd.status != None:
-        for s in vacancy_bd.status:
+    if user_bd.status != None:
+        for s in user_bd.status:
             s = session.scalars(select(Status).filter_by(id=s.id)).first()
             statuses.append(s)
-    statuses.append(Status(statusField=status))
-    vacancy_bd.status = statuses
+    statuses.append(Status(statusField=status, vacancy=vacancy_bd))
+    user_bd.status = statuses
     session.commit()
