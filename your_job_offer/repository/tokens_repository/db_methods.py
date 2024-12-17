@@ -50,11 +50,6 @@ def get_hh_token(login: str) -> HHTokenModel:
         log.error(f"Ошибка получения токена: {e}")
 
 
-# def get_tokens():
-#     tokens = session.execute(select(HH_Token)).scalars().all()
-#     return tokens
-
-
 def update_hh_token(hh_token: HHTokenModel):
     """
     Updates the HH token in the database for a given user. If the user is not found, logs a warning.

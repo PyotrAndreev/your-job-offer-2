@@ -32,125 +32,23 @@ from your_job_offer.mappers.mapper import map_vacancy_model
 log = logger.get_logger(__name__)
 
 
+# vacancies
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 def save_vacancy(vacancy: Vacancy):
-    """
-    Saves a new vacancy to the database.
-
-    Args:
-        vacancy (Vacancy): The vacancy object to save.
-
-    """
     session.add(vacancy)
     session.commit()
 
-
-def save_country(country: Country):
-    session.add(country)
-    session.commit()
-
-
-def if_exist_city(name: str) -> bool:
-    exist = session.execute(select(City).filter_by(name=name)).scalar()
-    return True if exist else False
-
-
-def if_exist_country(name: str) -> bool:
-    exist = session.execute(select(Country).filter_by(name=name)).scalar()
-    return True if exist else False
-
-
-def save_city(city: City):
-    session.add(city)
-    session.commit()
-
-
 def get_all_vacancies() -> list[Vacancy]:
-    """
-    Retrieves all vacancies from the database.
-
-    Returns:
-        list[Vacancy]: A list of all vacancy objects.
-    """
     vacancies = session.execute(select(Vacancy)).scalars().all()
     return vacancies
 
-
-def save_user(user: User) -> User:
-    """
-    Saves a user to the database.
-
-    Args:
-        user (User): The user object to save.
-
-    """
-    session.add(user)
-    session.commit()
-    return user
-
-
-def save_role(role: ProfessionalRole):
-    session.add(role)
-    session.commit()
-
-
-def get_user(login: str) -> User:
-    """
-    Retrieves a user from the database by login and password.
-
-    Args:
-        login (str): The user's login.
-
-    Returns:
-        User: The user object associated with the provided login and password.
-
-    Raises:
-        NoResultFound: If no user is found with the provided login and password.
-    """
-    user = session.scalars(select(User).filter_by(login=login)).first()
-    return user
-
-
-def if_exist_user(login: str) -> bool:
-    """
-    Checks if a user with the given login exists in the database.
-
-    Args:
-        login (str): The user's login.
-
-    Returns:
-        bool: True if the user exists, False otherwise.
-    """
-    exist = session.execute(select(User).filter_by(login=login)).scalar()
-    return True if exist else False
-
-
 def get_vacancy(key: VacancyKey) -> Vacancy:
-    """
-    Retrieves a vacancy by its unique key (job ID).
-
-    Args:
-        key (VacancyKey): The key for the vacancy.
-
-    Returns:
-        Vacancy: The vacancy object associated with the provided key.
-
-    Raises:
-        NoResultFound: If no vacancy is found with the provided key.
-    """
     vacancy = session.scalars(select(Vacancy).filter_by(job_id=key.id)).first()
     return vacancy
 
 
 def get_vacancies_with_statement(stmt):
-    """
-    Retrieves a list of vacancies based on a custom SQL statement.
-
-    Args:
-        stmt: The SQL statement to execute.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects returned by the query.
-    """
     vacancies = []
     row = session.execute(stmt).scalars().all()
     for item in row:
@@ -171,155 +69,56 @@ def get_vacancies_by_filters(filters: dict):
 
 
 def get_vacancies_by_employment(employment: EmploymentEnum):
-    """
-    Retrieves vacancies based on employment type.
-
-    Args:
-        employment (EmploymentEnum): The employment type to filter by.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects that match the specified employment type.
-    """
     stmt = select(Vacancy).where(Vacancy.employment == employment)
     return get_vacancies_with_statement(stmt)
 
 
 def get_vacancies_by_name(job):
-    """
-    Retrieves vacancies based on job name.
-
-    Args:
-        job (str): The job name to filter by.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects that match the specified job name.
-    """
     stmt = select(Vacancy).where(Vacancy.job == job)
     return get_vacancies_with_statement(stmt)
 
 
 def get_vacancies_by_schedule(schedule: ScheduleEnum):
-    """
-    Retrieves vacancies based on the work schedule.
-
-    Args:
-        schedule (ScheduleEnum): The work schedule to filter by.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects that match the specified schedule.
-    """
     stmt = select(Vacancy).where(Vacancy.schedule == schedule)
     return get_vacancies_with_statement(stmt)
 
 
 def get_vacancies_by_salary(salary):
-    """
-    Retrieves vacancies with a minimum salary greater than or equal to the specified amount.
-
-    Args:
-        salary (int): The minimum salary to filter by.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects that meet the salary condition.
-    """
     stmt = select(Vacancy).where(Vacancy.minSalary >= salary)
     return get_vacancies_with_statement(stmt)
 
 
 def get_vacancies_by_employer(employer):
-    """
-    Retrieves vacancies based on employer name.
-
-    Args:
-        employer (str): The employer name to filter by.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects that match the specified employer.
-    """
     stmt = select(Vacancy).where(Vacancy.employer == employer)
     return get_vacancies_with_statement(stmt)
 
 
 def get_vacancies_by_work_type(work_type: WorkTypeEnum):
-    """
-    Retrieves vacancies based on work type.
-
-    Args:
-        work_type (WorkTypeEnum): The work type to filter by.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects that match the specified work type.
-    """
     stmt = select(Vacancy).where(Vacancy.workType == work_type)
     return get_vacancies_with_statement(stmt)
 
 
 def get_vacancies_by_bus_trip_ready(readiness: BusinessTripReadinessEnum):
-    """
-    Retrieves vacancies based on business trip readiness.
-
-    Args:
-        readiness (BusinessTripReadinessEnum): The business trip readiness status to filter by.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects that match the specified readiness status.
-    """
     stmt = select(Vacancy).where(Vacancy.businessTripReadiness == readiness)
     return get_vacancies_with_statement(stmt)
 
 
 def get_vacancies_by_test(has_test):
-    """
-    Retrieves vacancies based on whether a test is required.
-
-    Args:
-        has_test (bool): True if a test is required, False otherwise.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects that match the test requirement.
-    """
     stmt = select(Vacancy).where(Vacancy.hasTest == has_test)
     return get_vacancies_with_statement(stmt)
 
 
 def get_vacancies_by_area(area):
-    """
-    Retrieves vacancies based on area/location.
-
-    Args:
-        area (str): The area to filter by.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects that match the specified area.
-    """
     stmt = select(Vacancy).where(Vacancy.area == area)
     return get_vacancies_with_statement(stmt)
 
 
 def get_vacancies_by_relocation(relocation: RelocationEnum):
-    """
-    Retrieves vacancies based on relocation availability.
-
-    Args:
-        relocation (RelocationEnum): The relocation status to filter by.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects that match the specified relocation status.
-    """
     stmt = select(Vacancy).where(Vacancy.relocation == relocation)
     return get_vacancies_with_statement(stmt)
 
 
 def get_vacancies_by_user(user: User):
-    """
-    Retrieves vacancies that match the user's preferences.
-
-    Args:
-        user (User): The user object containing preferences such as employment, work type, etc.
-
-    Returns:
-        list[Vacancy]: A list of vacancy objects that match the user's preferences.
-    """
     stmt = select(Vacancy).where(
         or_(user.relocation == None, Vacancy.relocation == user.relocation, Vacancy.relocation == None),
         or_(user.employment == None, Vacancy.employment == user.employment, Vacancy.employment == None),
@@ -345,26 +144,24 @@ def get_vacancies_by_user(user: User):
 
     return get_vacancies_with_statement(stmt)
 
+def get_vacancy_by_id(vacancy_id: int) -> Vacancy:
+    return session.get(Vacancy, vacancy_id)
 
-def save_job(job: Job):
-    session.add(job)
+# user
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def save_user(user: User) -> User:
+    session.add(user)
     session.commit()
+    return user
+
+def get_user(login: str) -> User:
+    user = session.scalars(select(User).filter_by(login=login)).first()
+    return user
 
 
-def if_exist_job_by_name(name: str) -> bool:
-    exist = session.execute(select(Job).filter_by(name=name)).scalar()
+def if_exist_user(login: str) -> bool:
+    exist = session.execute(select(User).filter_by(login=login)).scalar()
     return True if exist else False
-
-
-def get_job_by_name(name: str) -> int:
-    job = session.scalars(select(Job).filter_by(name=name)).first()
-    return job
-
-
-def get_job_id(name: str) -> int:
-    job = session.scalars(select(Job).filter_by(name=name)).first()
-    return job.id
-
 
 def update_user(updated_user: UserModel):
     try:
@@ -509,10 +306,67 @@ def get_all_users() -> list[User]:
     return users
 
 
-def get_vacancy_by_id(vacancy_id: int) -> Vacancy:
-    return session.get(Vacancy, vacancy_id)
+
+# country
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def save_country(country: Country):
+    session.add(country)
+    session.commit()
 
 
+def if_exist_country(name: str) -> bool:
+    exist = session.execute(select(Country).filter_by(name=name)).scalar()
+    return True if exist else False
+
+
+
+# city
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def save_city(city: City):
+    session.add(city)
+    session.commit()
+
+def if_exist_city(name: str) -> bool:
+    exist = session.execute(select(City).filter_by(name=name)).scalar()
+    return True if exist else False
+
+
+# professional role
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def save_role(role: ProfessionalRole):
+    session.add(role)
+    session.commit()
+
+
+
+# job
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+def save_job(job: Job):
+    session.add(job)
+    session.commit()
+
+
+def if_exist_job_by_name(name: str) -> bool:
+    exist = session.execute(select(Job).filter_by(name=name)).scalar()
+    return True if exist else False
+
+
+def get_job_by_name(name: str) -> int:
+    job = session.scalars(select(Job).filter_by(name=name)).first()
+    return job
+
+
+def get_job_id(name: str) -> int:
+    job = session.scalars(select(Job).filter_by(name=name)).first()
+    return job.id
+
+
+# statuses
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# TODO: update
 def update_statuses(vacancy_ids: list[int], statuses: list[Status]):
     for vacancy_id, status in zip(vacancy_ids, statuses):
         vacancy = get_vacancy_by_id(vacancy_id)

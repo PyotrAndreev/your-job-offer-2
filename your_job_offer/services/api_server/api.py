@@ -92,6 +92,7 @@ def getVacancies():
                          200, )
 
 
+# TODO: update
 @app.route("/get_status", methods=["POST"])
 def getStatuses():
     user = UserModel.from_dict(request.json)
@@ -236,8 +237,7 @@ def apply():
         )
         if nid == None:
             return make_response(jsonify({"error": "can not apply"}), 404)
-        user.vacancy.append(vacancy)
-        update_status(vacancy.id, StatusEnum.CONSIDERATION)
+        update_status(user_bd.login, vacancy.id, StatusEnum.CONSIDERATION)
         update_user(user)
         return make_response("OK", 200)
     except Exception as e:
