@@ -80,7 +80,11 @@ def filter_from_spam(messages: list[EmailMessage]) -> list[EmailMessage]:
 def parse_messages(
     messages: list[EmailMessage],
 ) -> list[Optional[ParsedMessage]]:
-    return parser.parse(messages)
+    try:
+        return parser.parse(messages)
+    except Exception:
+        log.exception("что-то пошло не так: ")
+        return [None] * len(messages)
 
 
 def clean_text(text):
