@@ -9,7 +9,7 @@ _log_format = f"%(asctime)s - [%(levelname)s] - %(name)s - (%(filename)s).%(func
 
 def init_sentry():
     sentry_sdk.init(
-        dsn="https://c4ae42687e4ad55f3107e293cea8db25@o4508405530558464.ingest.de.sentry.io/4508405614837840",
+        dsn="",
         integrations=[FlaskIntegration(), LoggingIntegration(
             level=logging.INFO,
             event_level=logging.INFO
