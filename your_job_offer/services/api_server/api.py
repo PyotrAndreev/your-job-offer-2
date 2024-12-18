@@ -55,70 +55,81 @@ def ping():
 
 @app.route("/register", methods=["POST"])
 def registerUser():
-    user = UserModel.from_dict(request.json)
+    try:
+        user = UserModel.from_dict(request.json)
 
-    if db_methods.if_exist_user(user.login):
-        return make_response("User exists", 401)
-    old_password = user.password
-    hashed_password = generate_password_hash(user.password)
-    user.password = hashed_password
-    user = user_cases.saveUser(user)
-    user.password = old_password
-    return make_response(user.to_json(default=json_serial), 200)
+        if db_methods.if_exist_user(user.login):
+            log.info(f"User already exists: {user.login}")
+            return make_response(jsonify({"error": "User already exists"}), 401)
+        old_password = user.password
+        hashed_password = generate_password_hash(user.password)
+        user.password = hashed_password
+        user = user_cases.saveUser(user)
+        user.password = old_password
+        log.info(f"Success registration: {user.login}")
+        return make_response(user.to_json(default=json_serial), 200)
+    except Exception as e:
+        log.error(f"Error user registration: {e}", exc_info=True)
+        return make_response(jsonify({"error": str(e)}), 500)
 
 
 @app.route("/login", methods=["POST"])
 def loginUser():
-    user = UserModel.from_dict(request.json)
-    if not user_cases.ifExistUser(user.login):
-        return make_response("User not exists", 401)
-    user_login = user_cases.getUser(user.login)
-    print(user)
-    if check_password_hash(user_login.password, user.password):
-        user_login.password = user.password
-        return make_response(user_login.to_json(default=json_serial), 200)
-    else:
-        return make_response("Wrong password", 401)
+    try:
+        user = UserModel.from_dict(request.json)
+        if not user_cases.ifExistUser(user.login):
+            log.info(f"User {user.login} not exists")
+            return make_response(jsonify({"error": "User not exists"}), 401)
+        user_login = user_cases.getUser(user.login)
+        if check_password_hash(user_login.password, user.password):
+            user_login.password = user.password
+            log.info(f"Success authentification user {user.login}")
+            return make_response(user_login.to_json(default=json_serial), 200)
+        else:
+            log.info(f"Wrong password for user {user.login}")
+            return make_response(jsonify({"error": "Wrong password"}), 401)
+    except Exception as e:
+        log.error(f"Error user authorization: {e}", exc_info=True)
+        return make_response(jsonify({"error": str(e)}), 500)
 
 
 @app.route("/get_vacancies", methods=["POST"])
 def getVacancies():
-    user = UserModel.from_dict(request.json)
-    if not user_cases.ifExistUser(user.login):
-        return make_response("User not exists", 401)
-    vac: list[VacancyModel] = match_vacancies.get_match_vacancies(user=user)
-    return make_response('{"vacancies":'
-                         + json.dumps([json.loads(v.to_json(default=json_serial)) for v in vac]) + "}",
-                         200, )
+    try:
+        user = UserModel.from_dict(request.json)
+        if not user_cases.ifExistUser(user.login):
+            log.info(f"User {user.login} not exists")
+            return make_response(jsonify({"error": "User not exists"}), 401)
+        vac: list[VacancyModel] = match_vacancies.get_match_vacancies(user=user)
+        log.info(f"Succesful get vacancies for user {user.login}")
+        return make_response('{"vacancies":'
+                             + json.dumps([json.loads(v.to_json(default=json_serial)) for v in vac]) + "}",
+                             200, )
+    except Exception as e:
+        log.error(f"Error getting vacancies: {e}", exc_info=True)
+        return make_response(jsonify({"error": str(e)}), 500)
 
 
 @app.route("/get_status", methods=["POST"])
 def getStatuses():
-    user = UserModel.from_dict(request.json)
-    if not user_cases.ifExistUser(user.login):
-        return make_response("User not exists", 401)
-    user = user_cases.getUser(user.login)
-    return make_response(
-        '{"vacancies":' + json.dumps([json.loads(v.to_json(default=json_serial)) for v in user.vacancy])
-        + "}", 200,
-    )
+    try:
+        user = UserModel.from_dict(request.json)
+        if not user_cases.ifExistUser(user.login):
+            log.info(f"User {user.login} not exists")
+            return make_response(jsonify({"error": "User not exists"}), 401)
+        user = user_cases.getUser(user.login)
+        log.info(f"Succesful get statuses for user {user.login}")
+        return make_response(
+            '{"vacancies":' + json.dumps([json.loads(v.to_json(default=json_serial)) for v in user.vacancy])
+            + "}", 200,
+        )
+    except Exception as e:
+        log.error(f"Error getting statuses: {e}", exc_info=True)
+        return make_response(jsonify({"error": str(e)}), 500)
 
 
 @app.route("/form", methods=["POST"])
 def get_form():
-    """
-    Handles the POST request for the form submission. Validates the input data,
-    updates the user, and returns an appropriate response.
-
-    If the required fields ('login', 'password', 'id') are missing or invalid,
-    returns a 400 error with an explanation.
-
-    If an exception occurs during the process, logs the error and returns a 500 error.
-
-    Returns:
-        Response: The HTTP response object with status code 200 if successful,
-                  or 400/500 if an error occurs.
-    """
     try:
         data = request.json
         if not data or "login" not in data or "password" not in data:
@@ -133,37 +144,31 @@ def get_form():
             )
 
         user = UserModel.from_json(request.data)
-        log.info(f"User: {user}")
+        log.info(f"User get form: {user}")
         hh_token = get_hh_token(user.login)
+        if hh_token == None:
+            log.info(f"User {user.login} not exists")
+            return make_response(jsonify({"error": "User nor authorized on hh.ru"}), 403)
+
         resume_id = create_new_resume(user=user, access_token=hh_token.access_token)
         if resume_id == None:
-            return make_response(jsonify({"error": "bad form"}), 404)
+            return make_response(jsonify({"error": "Can't make resume"}), 404)
+
         is_published = publish_resume(resume_id=resume_id, access_token=hh_token.access_token)
         if not is_published:
-            return make_response(jsonify({"error": "bad form"}), 404)
+            return make_response(jsonify({"error": "Can't publish resume"}), 404)
+
+
         user.hh_resume_id = resume_id
         user_cases.updateUser(user)
         return make_response("OK", 200)
     except Exception as e:
-        log.error(f"Ошибка сохранения данных из формы: {e}", exc_info=True)
+        log.error(f"Error saving data from form: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)
 
 
 @app.route("/hh_auth", methods=["POST"])
 def hh_auth():
-    """
-    Handles the POST request for authenticating with hh.ru. It validates the input data and
-    saves the provided access and refresh tokens along with the user's login.
-
-    If the required fields ('login', 'access', 'refresh') are missing or invalid,
-    returns a 400 error with an explanation.
-
-    If an exception occurs during the process, logs the error and returns a 500 error.
-
-    Returns:
-        Response: The HTTP response object with status code 200 if successful,
-                  or 400/500 if an error occurs.
-    """
     try:
         data = request.json
         if (
@@ -185,9 +190,6 @@ def hh_auth():
         access_token = data["access"]
         refresh_token = data["refresh"]
         login = data["login"]
-        log.info(
-            f"login={login} \nrefresh_token={refresh_token} \naccess_token={access_token}"
-        )
         save_hh_token(
             HH_Token(
                 login=login,
@@ -196,9 +198,8 @@ def hh_auth():
             )
         )
         return make_response("OK", 200)
-
     except Exception as e:
-        log.error(f"Ошибка авторизации на hh.ru: {e}")
+        log.error(f"Error saving tokens from hh.ru: {e}")
         return make_response(jsonify({"error": str(e)}), 500)
 
 
@@ -220,13 +221,20 @@ def apply():
                 ),
                 400,
             )
-        user_data = json.dumps(data.get("user"))
-        user = UserModel.from_json(user_data)
+        try:
+            user_data = json.dumps(data.get("user"))
+            user = UserModel.from_json(user_data)
 
-        vacancy = json.dumps(data.get("vacancy"))
-        vacancy = VacancyModel.from_json(vacancy)
+            vacancy = json.dumps(data.get("vacancy"))
+            vacancy = VacancyModel.from_json(vacancy)
+        except Exception as e:
+            return make_response(jsonify({"error": str(e)}), 400)
 
         hh_token = get_hh_token(user.login)
+        if hh_token == None:
+            log.info(f"User {user.login} not exists")
+            return make_response(jsonify({"error": "User nor authorized on hh.ru"}), 403)
+
         vacancy_id = vacancy.id_vacancy_from_source
         user_bd = getUser(user.login)
         nid = apply_to_vacancy(
@@ -241,7 +249,7 @@ def apply():
         update_user(user)
         return make_response("OK", 200)
     except Exception as e:
-        log.error(f"Ошибка подачи на вакансию на hh.ru: {e}", exc_info=True)
+        log.error(f"Error applying on hh.ru: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)
 
 
@@ -256,14 +264,6 @@ def test():
     return make_response(user.to_json(default=json_serial), 200)
 
 
-@app.route("/add", methods=["POST"])
-def add():
-    user = UserModel(login="test", password="test")
-    saveUser(user)
-    return make_response(user.to_json(default=json_serial), 200)
-
-
-# Configure upload folder
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -277,18 +277,21 @@ def upload_file():
             return (
                 jsonify(
                     {
-                        "message": "No file part in the request or no data in request"
+                        "error": "No file part in the request or no data in request"
                     }
                 ),
                 400,
             )
 
-        file = request.files["file"]
-        login = data.form.get("login")
-        password = data.form.get("password")
+        try:
+            file = request.files["file"]
+            login = data.form.get("login")
+            password = data.form.get("password")
+        except Exception as e:
+            return make_response(jsonify({"error": str(e)}), 400)
 
         if file.filename == "":
-            return jsonify({"message": "No file selected"}), 400
+            return jsonify({"error": "No file selected"}), 400
 
         if file:
             file_path = os.path.join(
