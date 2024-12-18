@@ -163,6 +163,6 @@ def create_new_resume(user: UserModel, access_token: str):
         else:
             log.error(f"Error while creating resume: {res.json()}")
             return f"Error while creating resume: {res.json()}", 520
-    except (Timeout, ConnectionError):
+    except (TimeoutError, ConnectionError):
         log.error("Can't connect to hh.ru while creating new resume")
         return "Can't connect to hh.ru", 503

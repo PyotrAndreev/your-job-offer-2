@@ -36,6 +36,6 @@ def publish_resume(resume_id: str, access_token: str):
         else:
             log.error(f"Error while publishing resume: {res.json()}")
             return f"Error while publishing resume: {res.json()}", 520
-    except (Timeout, ConnectionError):
+    except (TimeoutError, ConnectionError):
         log.error("Can't connect to hh.ru while publishing resume")
         return "Can't connect to hh.ru", 503

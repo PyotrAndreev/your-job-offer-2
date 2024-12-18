@@ -52,6 +52,6 @@ def apply_to_vacancy(
                 return "Test required", 302
             log.error(f"Error during applying: {res.json()}")
             return f"Error during applying: {res.json()}", 520
-    except (Timeout, ConnectionError):
+    except (TimeoutError, ConnectionError):
         log.error("Can't connect to hh.ru while applying")
         return "Can't connect to hh.ru", 503

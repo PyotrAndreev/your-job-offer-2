@@ -33,6 +33,6 @@ def refresh_hh_token(hh_token: HHTokenModel):
             hh_token.refresh_token = responce.get("refresh_token")
             update_hh_token(hh_token)
             return "", 200
-    except (Timeout, ConnectionError):
+    except (TimeoutError, ConnectionError):
         log.error("Can't connect to hh.ru while refreshing hh token")
         return "Can't connect to hh.ru", 503
