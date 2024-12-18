@@ -25,12 +25,16 @@ class OpenaAIQueryBuilder:
         )
 
     def query(self, content: str, max_tokens: int = 1000) -> Optional[str]:
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": content}],
-            max_tokens=max_tokens,
-        )
-        return response.choices[0].message.content
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": content}],
+                max_tokens=max_tokens,
+            )
+        
+            return response.choices[0].message.content
+        except Exception:
+            log.info("деньги закончились(")
 
 
 def pdf2string(pdf_path: str) -> str:
@@ -160,6 +164,8 @@ class _ResumeParser:
         response = self.query_builder.query(
             prompt, max_tokens=max_answer_tokens
         )
+        if response is None:
+            return {}
         tokens_answer_count = num_tokens_from_string(response, self.model)
         if tokens_answer_count == max_answer_tokens:
             self._too_big_file_error(estimated_prompt_tokens)
@@ -201,8 +207,12 @@ class ResumeParser:
         self.parser = _ResumeParser(openai_api_key)
 
     def parse(self, pdf_path: str) -> user_models.UserModel:
-        result_dict = self.parser.parse(pdf_path)
-        return ResumeParser._dict_to_user(result_dict)
+        try:
+            result_dict = self.parser.parse(pdf_path)
+            return ResumeParser._dict_to_user(result_dict)
+        except Exception:
+            log.exception("что-то пошло не так: ")
+            return user_models.UserModel()
 
     @staticmethod
     def _field_to_class(field: str, cls=str) -> Optional[Any]:
@@ -220,6 +230,8 @@ class ResumeParser:
 
     @staticmethod
     def _dict_to_user(user: dict) -> user_models.UserModel:
+        if user == {}:
+            return user_models.UserModel()
         projects = [
             user_models.ProjectModel(**project)
             for project in user["project_experience"]

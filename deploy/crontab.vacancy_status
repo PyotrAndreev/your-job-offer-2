@@ -1,1 +1,1 @@
-* * * * * (cd /app && export $(grep -v '^#' secrets/.env | xargs) && /usr/local/bin/python /app/your_job_offer/use_cases/tracking/methods.py >> /app/app_logs/vacancy_status_parsing.txt)
+0 * * * * (cd /app && export $(grep -v '^#' secrets/.env | xargs) && /usr/local/bin/python /app/your_job_offer/use_cases/tracking/methods.py >> /app/app_logs/vacancy_status_parsing.txt)
