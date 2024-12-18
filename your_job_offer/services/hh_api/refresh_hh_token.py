@@ -10,30 +10,29 @@ log = logger.get_logger(__name__)
 
 
 def refresh_hh_token(hh_token: HHTokenModel):
-    """
-    Refreshes the HH token and updates it in the database.
+    try:
+        headers = {
+            "HH-User-Agent": "YourJobOffer (zaitseva.dr@phystech.edu)",
+        }
 
-    Args:
-        hh_token (HHTokenModel): The HH token model containing the current access and refresh tokens.
+        params = {
+            "grant_type": "refresh_token",
+            "refresh_token": hh_token.refresh_token,
+        }
 
-    """
-    headers = {
-        "HH-User-Agent": "YourJobOffer (zaitseva.dr@phystech.edu)",
-    }
-
-    params = {
-        "grant_type": "refresh_token",
-        "refresh_token": hh_token.refresh_token,
-    }
-
-    res = requests.post(
-        "https://hh.ru/oauth/token", headers=headers, params=params
-    )
-    responce = res.json()
-    if res.status_code != 200:
-        log.error(f"Error refreshing hh token: {res.json()}")
-    else:
-        log.info(f"Refreshed hh token: {res.json()}")
-        hh_token.access_token = responce.get("access_token")
-        hh_token.refresh_token = responce.get("refresh_token")
-        update_hh_token(hh_token)
+        res = requests.post(
+            "https://hh.ru/oauth/token", headers=headers, params=params
+        )
+        responce = res.json()
+        if res.status_code != 200:
+            log.warning(f"Refreshing hh token failed: {res.json()}")
+            return "Refreshing hh token failed", 404
+        else:
+            log.info(f"Refreshed hh token: {res.json()}")
+            hh_token.access_token = responce.get("access_token")
+            hh_token.refresh_token = responce.get("refresh_token")
+            update_hh_token(hh_token)
+            return "", 200
+    except (Timeout, ConnectionError):
+        log.error("Can't connect to hh.ru while refreshing hh token")
+        return "Can't connect to hh.ru", 503

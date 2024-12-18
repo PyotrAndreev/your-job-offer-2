@@ -33,6 +33,13 @@ from your_job_offer.entities.enums import StatusEnum
 from datetime import date, datetime
 import enum
 
+app = Flask("app")
+
+log = logger.get_logger(__name__)
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
 
 def json_serial(obj):
     if isinstance(obj, (datetime, date)):
@@ -40,12 +47,6 @@ def json_serial(obj):
     if isinstance(obj, enum.Enum):
         return obj.value
     raise TypeError("Type %s not serializable" % type(obj))
-
-
-app = Flask("app")
-
-log = logger.get_logger(__name__)
-
 
 @app.route("/ping")
 def ping():
@@ -150,13 +151,13 @@ def get_form():
             log.info(f"User {user.login} not exists")
             return make_response(jsonify({"error": "User nor authorized on hh.ru"}), 403)
 
-        resume_id = create_new_resume(user=user, access_token=hh_token.access_token)
-        if resume_id == None:
-            return make_response(jsonify({"error": "Can't make resume"}), 404)
+        resume_id, status = create_new_resume(user=user, access_token=hh_token.access_token)
+        if status != 200:
+            return make_response(jsonify({"error": resume_id}), status)
 
-        is_published = publish_resume(resume_id=resume_id, access_token=hh_token.access_token)
-        if not is_published:
-            return make_response(jsonify({"error": "Can't publish resume"}), 404)
+        err, status = publish_resume(resume_id=resume_id, access_token=hh_token.access_token)
+        if status != 200:
+            return make_response(jsonify({"error": err}), status)
 
 
         user.hh_resume_id = resume_id
@@ -237,13 +238,13 @@ def apply():
 
         vacancy_id = vacancy.id_vacancy_from_source
         user_bd = getUser(user.login)
-        nid = apply_to_vacancy(
+        nid, status = apply_to_vacancy(
             vacancy_id=vacancy_id,
             access_token=hh_token.access_token,
             resume_id=user_bd.hh_resume_id,
         )
-        if nid == None:
-            return make_response(jsonify({"error": "can not apply"}), 404)
+        if status != 200:
+            return make_response(jsonify({"error": nid}), status)
         user.vacancy.append(vacancy)
         update_status(vacancy.id, StatusEnum.CONSIDERATION)
         update_user(user)
@@ -252,21 +253,6 @@ def apply():
         log.error(f"Error applying on hh.ru: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)
 
-
-@app.route("/test", methods=["POST"])
-def test():
-    log.info(request.json)
-    login = request.json["login"]
-    log.info(f"login: {login}")
-    password = request.json["password"]
-    user = getUser(login)
-    log.info(f"User: {user.__str__()}")
-    return make_response(user.to_json(default=json_serial), 200)
-
-
-UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
 @app.route("/upload", methods=["POST"])
@@ -298,18 +284,16 @@ def upload_file():
                 app.config["UPLOAD_FOLDER"], f"{login}.pdf"
             )
             file.save(file_path)
-            log.info(file_path)
             user = parse(file_path)
-            log.info(user.__str__)
             user.login = login
             user.password = password
             update_user(user)
             user = getUser(user.login)
             return jsonify(user.to_json()), 200
-        log.error("file upload failed")
-        return jsonify({"message": "File upload failed"}), 500
+        log.error("Resume upload failed")
+        return jsonify({"error": "Resume upload failed"}), 500
     except Exception as e:
-        log.error(f"Ошибка загрузки резюме: {e}", exc_info=True)
+        log.error(f"Error resume upload: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)
 
 
@@ -331,9 +315,22 @@ def update_form():
         user = UserModel.from_json(request.data)
         log.info(f"User: {user}")
         hh_token = get_hh_token(user.login)
-        update_resume(user, hh_token.access_token)
+        err, status = update_resume(user, hh_token.access_token)
+        if status != 200:
+            return make_response(jsonify({"error": err}), status)
         user_cases.updateUser(user)
         return make_response("OK", 200)
     except Exception as e:
         log.error(f"Ошибка сохранения данных из формы: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)
+
+
+@app.route("/test", methods=["POST"])
+def test():
+    log.info(request.json)
+    login = request.json["login"]
+    log.info(f"login: {login}")
+    password = request.json["password"]
+    user = getUser(login)
+    log.info(f"User: {user.__str__()}")
+    return make_response(user.to_json(default=json_serial), 200)
