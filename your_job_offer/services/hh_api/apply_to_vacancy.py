@@ -55,3 +55,6 @@ def apply_to_vacancy(
     except (TimeoutError, ConnectionError):
         log.error("Can't connect to hh.ru while applying")
         return "Can't connect to hh.ru", 503
+    except Exception as e:
+        log.error(f"Error during applying: {e}", exc_info=True)
+        return f"Error during applying: {e}", 500

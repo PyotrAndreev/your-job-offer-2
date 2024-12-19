@@ -160,5 +160,8 @@ def update_resume(user: UserModel, access_token: str):
     except (TimeoutError, ConnectionError):
         log.error("Can't connect to hh.ru while updating resume")
         return "Can't connect to hh.ru", 503
+    except Exception as e:
+        log.error(f"Error during updating: {e}", exc_info=True)
+        return f"Error during updating: {e}", 500
 
 

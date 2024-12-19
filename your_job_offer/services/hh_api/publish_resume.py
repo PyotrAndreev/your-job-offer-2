@@ -39,3 +39,6 @@ def publish_resume(resume_id: str, access_token: str):
     except (TimeoutError, ConnectionError):
         log.error("Can't connect to hh.ru while publishing resume")
         return "Can't connect to hh.ru", 503
+    except Exception as e:
+        log.error(f"Error during publishing: {e}", exc_info=True)
+        return f"Error during publishing: {e}", 500
