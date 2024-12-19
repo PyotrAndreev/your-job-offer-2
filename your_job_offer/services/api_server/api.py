@@ -258,9 +258,8 @@ def apply():
 @app.route("/upload", methods=["POST"])
 def upload_file():
     try:
-        data = request
         if "file" not in request.files:
-            return (
+            return make_response(
                 jsonify(
                     {
                         "error": "No file part in the request or no data in request"
@@ -271,13 +270,13 @@ def upload_file():
 
         try:
             file = request.files["file"]
-            login = data.form.get("login")
-            password = data.form.get("password")
+            login = request.form.get("login")
+            password = request.form.get("password")
         except Exception as e:
             return make_response(jsonify({"error": str(e)}), 400)
 
         if file.filename == "":
-            return jsonify({"error": "No file selected"}), 400
+            return make_response(jsonify({"error": "No file selected"}), 400)
 
         if file:
             file_path = os.path.join(
@@ -289,7 +288,7 @@ def upload_file():
             user.password = password
             update_user(user)
             user = getUser(user.login)
-            return jsonify(user.to_json()), 200
+            return make_response(user.to_json(), 200)
         log.error("Resume upload failed")
         return jsonify({"error": "Resume upload failed"}), 500
     except Exception as e:
@@ -324,13 +323,3 @@ def update_form():
         log.error(f"Ошибка сохранения данных из формы: {e}", exc_info=True)
         return make_response(jsonify({"error": str(e)}), 500)
 
-
-@app.route("/test", methods=["POST"])
-def test():
-    log.info(request.json)
-    login = request.json["login"]
-    log.info(f"login: {login}")
-    password = request.json["password"]
-    user = getUser(login)
-    log.info(f"User: {user.__str__()}")
-    return make_response(user.to_json(default=json_serial), 200)
