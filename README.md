@@ -23,7 +23,7 @@ docker compose up
 Для buildа мобильного приложения, у вас должен быть установлен ```flutter```:
 
 ```
-git clone git@github.com:PyotrAndreev/your-job-offer-2.git
+git clone https://github.com/PyotrAndreev/your-job-offer-2.git
 cd your-job-offer-2
 git checkout dev
 cd app
