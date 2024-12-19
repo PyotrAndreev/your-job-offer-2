@@ -31,4 +31,4 @@ flutter pub get
 flutter run
 ```
 
-Или вы можете скачать apk c [Нашего сайта](https://anastasiaduplina.github.io/yourJobOffer.github.io/)
+Или вы можете скачать приложение c [Нашего сайта](https://anastasiaduplina.github.io/yourJobOffer.github.io/)
