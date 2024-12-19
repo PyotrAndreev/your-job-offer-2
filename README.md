@@ -1,6 +1,6 @@
 # your-job-offer-2
 Сервис, который автоматически анализирует загруженное резюме и информацию о пользователе, чтобы находить и подавать заявки на подходящие вакансии, стажировки и студенческие возможности.
-[Узнать подробнее](https://github.com/PyotrAndreev/your-job-offer-2/tree/main)
+[Узнать подробнее](https://anastasiaduplina.github.io/yourJobOffer.github.io/)
 
 ## Бэкенд
 
@@ -19,4 +19,16 @@ docker compose up
 - 20GB дискового пространства
 
 ### Мобилка
-Даша сделай пж
+
+Для buildа мобильного приложения, у вас должен быть установлен ```flutter```:
+
+```
+git clone git@github.com:PyotrAndreev/your-job-offer-2.git
+cd your-job-offer-2
+git checkout dev
+cd app
+flutter pub get
+flutter run
+```
+
+Или вы можете скачать apk c [Нашего сайта](https://anastasiaduplina.github.io/yourJobOffer.github.io/)
